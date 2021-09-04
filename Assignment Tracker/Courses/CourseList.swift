@@ -11,6 +11,18 @@ struct CourseList: View {
     @Environment(\.managedObjectContext) private var moc
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Course.order, ascending: true)]) private var courses: FetchedResults<Course>
     
+    @AppStorage("courses", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var coursesData: [Data] = []
+    
+    var courses2: [Course2] {
+        var arr: [Course2] = []
+        for data in coursesData {
+            if let course = Course2.getCourse(from: data) {
+                arr.append(course)
+            }
+        }
+        return arr
+    }
+    
     @State private var editMode: EditMode = .inactive
     @State private var deleteAllAlert = false
     
@@ -46,6 +58,7 @@ struct CourseList: View {
             }
         }
         .onAppear(perform: manageOrder)
+        .onAppear() { print(courses2) }
         .listStyle(InsetGroupedListStyle())
         .navigationTitle("Classes")
         .toolbar {

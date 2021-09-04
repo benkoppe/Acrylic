@@ -9,9 +9,6 @@ import SwiftUI
 import UIKit
 
 struct Settings: View {
-    @AppStorage("Auth") var savedValue: String = ""
-    @AppStorage("prefixes") var prefixes: [String] = []
-    
     var body: some View {
         NavigationView {
             Form {
@@ -22,8 +19,8 @@ struct Settings: View {
     }
     
     struct CanvasSettings: View {
-        @AppStorage("Auth") var authCode: String = ""
-        @AppStorage("prefixes") var prefixes: [String] = []
+        @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var authCode: String = ""
+        @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
         
         @State private var showingAuthInfo = false
         

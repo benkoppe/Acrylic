@@ -5,32 +5,45 @@
 //  Created by Ben K on 9/3/21.
 //
 
-/*
-
 import WidgetKit
 import SwiftUI
-import Intents
 import CoreData
 
 struct Provider: TimelineProvider {
     
-    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Course.order, ascending: true)]) private var courses: FetchedResults<Course>
-    @AppStorage("auth") var auth: String = ""
-    @AppStorage("prefixes") var prefixes: [String] = []
+    @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var auth: String = ""
+    @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
+    let courses: [Course] = []
+    
+    enum FetchError: Error {
+        case badURL, noAuth, badLoad
+    }
     
     func placeholder(in context: Context) -> Entry {
-        Entry(date: Date(), assignments: Assignment.sampleAssignments())
+        print("placeholder")
+        return Entry(date: Date(), assignments: Assignment.sampleAssignments())
     }
     
     func getSnapshot(in context: Context, completion: @escaping (Entry) -> Void) {
+        print("\(auth)")
+        print("\(prefixes)")
+        print("\(courses[0].uName)")
         if !context.isPreview {
-            fetchAssignments() { assignments in
-                if let assignments = assignments {
+            fetchAssignments() { result in
+                print("built successfully")
+                switch result {
+                case .success(let assignments):
+                    print(assignments)
                     let entry = Entry(date: Date(), assignments: assignments)
+                    completion(entry)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    let entry = Entry(date: Date(), assignments: Assignment.sampleAssignments())
                     completion(entry)
                 }
             }
         } else {
+            print("did not build")
             let assignments = Assignment.sampleAssignments()
             let entry = Entry(date: Date(), assignments: assignments)
             completion(entry)
@@ -38,17 +51,38 @@ struct Provider: TimelineProvider {
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
-        let date = Date()
-        let entry = Entry(date: date, assignments: Assignment.sampleAssignments())
+        print("hello?")
+        print("\(auth)")
+        print("\(prefixes)")
+        print("\(courses[0].uName)")
+        let nextUpdateDate = Calendar.current.date(byAdding: .second, value: 1, to: Date())!
         
-        let nextUpdateDate = Calendar.current.date(byAdding: .minute, value: 1, to: date)!
+        if !context.isPreview {
+            print("beginning fetch")
+            fetchAssignments() { result in
+                switch result {
+                case .success(let assignments):
+                    let entry = Entry(date: Date(), assignments: assignments)
+                    let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
+                    completion(timeline)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    let entry = Entry(date: Date(), assignments: Assignment.sampleAssignments())
+                    let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
+                    completion(timeline)
+                }
+            }
+        } else {
+            print("did not build")
+            let assignments = Assignment.sampleAssignments()
+            let entry = Entry(date: Date(), assignments: assignments)
+            let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
+            completion(timeline)
+        }
         
-        let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
-        
-        completion(timeline)
     }
     
-    func fetchAssignments(completion: @escaping ([Assignment]?) -> Void) {
+    func fetchAssignments(completion: @escaping (Result<[Assignment], FetchError>) -> Void) {
         var assignments: [Assignment] = []
         var loadedPrefixes: [String] = []
         
@@ -56,6 +90,7 @@ struct Provider: TimelineProvider {
             let urlString = "https://\(prefix).instructure.com/api/v1/users/self/todo"
             guard let url = URL(string: urlString) else {
                 print("Bad URL: \(urlString)")
+                completion(.failure(.badURL))
                 return
             }
             var request = URLRequest(url: url)
@@ -63,6 +98,7 @@ struct Provider: TimelineProvider {
             request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
             
             URLSession.shared.dataTask(with: request) { data, response, error in
+                print("started session")
                 loadedPrefixes.append(prefix)
                 var isLastPrefix: Bool {
                     for prefix in prefixes {
@@ -75,7 +111,7 @@ struct Provider: TimelineProvider {
                 
                 if let response = response, let httpResponse = response as? HTTPURLResponse {
                     if httpResponse.statusCode == 401 {
-                        return
+                        completion(.failure(.noAuth))
                     }
                 }
                 
@@ -90,11 +126,11 @@ struct Provider: TimelineProvider {
                         
                         if isLastPrefix {
                             assignments.sort()
-                            completion(assignments)
+                            completion(.success(assignments))
                         }
                     }
                 } else {
-                    return
+                    completion(.failure(.badLoad))
                 }
             }.resume()
         }
@@ -153,14 +189,19 @@ struct Assignment_WidgetEntryView: View {
     }
     
     var body: some View {
-        Text("Hello")
-    }
-    
-    /*var body: some View {
         //switch fetchState {
         
         //case .success:
+        /*if entry.assignments.count > 0 {
             successView(assignments: entry.assignments)
+        } else {
+            Text("Hello")
+        }*/
+        if entry.assignments.count > 0 {
+            Text("\(entry.assignments[0].name)")
+        } else {
+            Text("Hello")
+        }
             
         /*default:
             ProgressView()
@@ -174,24 +215,20 @@ struct Assignment_WidgetEntryView: View {
         @State private var placedFirstHeader = false
         
         var body: some View {
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack {
-                    ZStack {
-                        Color(.secondarySystemBackground)
-                        
-                        VStack(alignment: .leading, spacing: 0) {
-                            ForEach(0 ..< assignments.count) { index in
-                                if index < assignments.count {
-                                    assignmentItem(assignments: assignments, index: index)
-                                }
+            VStack {
+                ZStack {
+                    Color(.secondarySystemBackground)
+                    
+                    VStack(alignment: .leading, spacing: 0) {
+                        ForEach(0 ..< assignments.count) { index in
+                            if index < assignments.count {
+                                assignmentItem(assignments: assignments, index: index)
                             }
                         }
                     }
-                    .frame(minWidth: .infinity, minHeight: .infinity)
                 }
+                .frame(minWidth: .infinity, minHeight: .infinity)
             }
-            .navigationTitle("Assignments")
-            //.navigationBarTitleDisplayMode(.inline)
         }
         
         struct assignmentItem: View {
@@ -282,14 +319,15 @@ struct Assignment_WidgetEntryView: View {
                 }
             }
         }
-    }*/
+    }
 }
 
 
 
 @main
-struct Assignment_Widget: Widget {
-    let kind: String = "Assignment_Widget"
+struct AssignmentWidget: Widget {
+    let kind: String = "AssignmentWidget"
+    //let provider = Provider(moc: PersistenceController.shared.container.viewContext)
     let provider = Provider()
 
     var body: some WidgetConfiguration {
@@ -308,4 +346,3 @@ struct Assignment_Widget_Previews: PreviewProvider {
             .previewContext(WidgetPreviewContext(family: .systemLarge))
     }
 }
-*/

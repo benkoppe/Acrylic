@@ -12,8 +12,8 @@ struct AssignmentList: View {
     
     @State private var doneFetching = false
     
-    @AppStorage("Auth") var auth: String = ""
-    @AppStorage("prefixes") var prefixes: [String] = []
+    @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var auth: String = ""
+    @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
     @State private var assignments: [Assignment] = []
     @State private var fetchState: FetchState = .loading
     @State private var errorType: ErrorType = .none

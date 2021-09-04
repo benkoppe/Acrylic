@@ -7,27 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B507EFF426E2B6DD00861CEE /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B507EFF326E2B6DD00861CEE /* WidgetKit.framework */; };
-		B507EFF626E2B6DD00861CEE /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B507EFF526E2B6DD00861CEE /* SwiftUI.framework */; };
-		B507EFF926E2B6DD00861CEE /* Assignment_Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507EFF826E2B6DD00861CEE /* Assignment_Widget.swift */; };
-		B507EFFC26E2B6DE00861CEE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B507EFFB26E2B6DE00861CEE /* Assets.xcassets */; };
-		B507EFFE26E2B6DE00861CEE /* Assignment_Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B507EFFA26E2B6DD00861CEE /* Assignment_Widget.intentdefinition */; };
 		B507EFFF26E2B6DE00861CEE /* Assignment_Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B507EFFA26E2B6DD00861CEE /* Assignment_Widget.intentdefinition */; };
-		B507F00226E2B6DE00861CEE /* Assignment WidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B507EFF126E2B6DD00861CEE /* Assignment WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B507F00826E2C0F700861CEE /* CanvasStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F00726E2C0F600861CEE /* CanvasStructs.swift */; };
-		B507F00926E2C0F700861CEE /* CanvasStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F00726E2C0F600861CEE /* CanvasStructs.swift */; };
 		B507F00B26E2C50000861CEE /* AssignmentWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F00A26E2C50000861CEE /* AssignmentWidgetView.swift */; };
-		B507F00C26E2C50000861CEE /* AssignmentWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F00A26E2C50000861CEE /* AssignmentWidgetView.swift */; };
-		B507F00E26E2C55E00861CEE /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5926D6B3800047C6E2 /* Persistence.swift */; };
-		B507F00F26E2C56300861CEE /* Assignment_Tracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5B26D6B3800047C6E2 /* Assignment_Tracker.xcdatamodeld */; };
-		B507F01026E2C56800861CEE /* Course+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C8626D6EAE90047C6E2 /* Course+CoreDataClass.swift */; };
-		B507F01126E2C56A00861CEE /* Course+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C8726D6EAE90047C6E2 /* Course+CoreDataProperties.swift */; };
-		B507F01326E2C58600861CEE /* Array-AppStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A0987626E00E3300411DCC /* Array-AppStorage.swift */; };
-		B507F01426E2C58800861CEE /* CourseColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C9126DB37B00047C6E2 /* CourseColors.swift */; };
-		B507F01526E2C58B00861CEE /* View-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C9526DB3CEB0047C6E2 /* View-Extensions.swift */; };
-		B507F01626E2C58E00861CEE /* Date-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */; };
-		B507F01726E2C59100861CEE /* Color-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C8D26D96E280047C6E2 /* Color-Extensions.swift */; };
 		B507F01A26E2D5B100861CEE /* Assignment_Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507EFF826E2B6DD00861CEE /* Assignment_Widget.swift */; };
+		B507F02726E3E15500861CEE /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B507EFF326E2B6DD00861CEE /* WidgetKit.framework */; };
+		B507F02826E3E15500861CEE /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B507EFF526E2B6DD00861CEE /* SwiftUI.framework */; };
+		B507F02B26E3E15500861CEE /* AssignmentWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F02A26E3E15500861CEE /* AssignmentWidget.swift */; };
+		B507F02D26E3E15600861CEE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B507F02C26E3E15600861CEE /* Assets.xcassets */; };
+		B507F03126E3E15600861CEE /* AssignmentWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B507F02626E3E15500861CEE /* AssignmentWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B507F03526E3E23100861CEE /* CanvasStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F00726E2C0F600861CEE /* CanvasStructs.swift */; };
+		B507F03626E3E24A00861CEE /* Course+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C8626D6EAE90047C6E2 /* Course+CoreDataClass.swift */; };
+		B507F03726E3E24C00861CEE /* Course+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C8726D6EAE90047C6E2 /* Course+CoreDataProperties.swift */; };
+		B507F03826E3E24E00861CEE /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5926D6B3800047C6E2 /* Persistence.swift */; };
+		B507F03926E3E25B00861CEE /* Assignment_Tracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5B26D6B3800047C6E2 /* Assignment_Tracker.xcdatamodeld */; };
+		B507F03A26E3E26200861CEE /* Date-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */; };
+		B507F03B26E3E26400861CEE /* Color-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C8D26D96E280047C6E2 /* Color-Extensions.swift */; };
+		B507F03C26E3E26600861CEE /* Array-AppStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A0987626E00E3300411DCC /* Array-AppStorage.swift */; };
+		B507F03D26E3E26800861CEE /* CourseColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C9126DB37B00047C6E2 /* CourseColors.swift */; };
+		B507F03E26E3E26A00861CEE /* View-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C9526DB3CEB0047C6E2 /* View-Extensions.swift */; };
+		B507F04426E409D000861CEE /* URL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04326E409D000861CEE /* URL-Extensions.swift */; };
+		B507F04526E409D700861CEE /* URL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04326E409D000861CEE /* URL-Extensions.swift */; };
+		B507F04726E413A600861CEE /* Course.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04626E413A600861CEE /* Course.swift */; };
 		B52F2D4526E13F6100AAEDC0 /* Date-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */; };
 		B57A2C5126D6B37F0047C6E2 /* Assignment_TrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5026D6B37F0047C6E2 /* Assignment_TrackerApp.swift */; };
 		B57A2C5326D6B37F0047C6E2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5226D6B37F0047C6E2 /* ContentView.swift */; };
@@ -51,12 +52,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		B507F00026E2B6DE00861CEE /* PBXContainerItemProxy */ = {
+		B507F02F26E3E15600861CEE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B57A2C4526D6B37F0047C6E2 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = B507EFF026E2B6DD00861CEE;
-			remoteInfo = "Assignment WidgetExtension";
+			remoteGlobalIDString = B507F02526E3E15500861CEE;
+			remoteInfo = AssignmentWidgetExtension;
 		};
 		B57A2C6426D6B3800047C6E2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -81,7 +82,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				B507F00226E2B6DE00861CEE /* Assignment WidgetExtension.appex in Embed App Extensions */,
+				B507F03126E3E15600861CEE /* AssignmentWidgetExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -89,7 +90,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		B507EFF126E2B6DD00861CEE /* Assignment WidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Assignment WidgetExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B507EFF326E2B6DD00861CEE /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		B507EFF526E2B6DD00861CEE /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		B507EFF826E2B6DD00861CEE /* Assignment_Widget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment_Widget.swift; sourceTree = "<group>"; };
@@ -98,6 +98,14 @@
 		B507EFFD26E2B6DE00861CEE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B507F00726E2C0F600861CEE /* CanvasStructs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CanvasStructs.swift; sourceTree = "<group>"; };
 		B507F00A26E2C50000861CEE /* AssignmentWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentWidgetView.swift; sourceTree = "<group>"; };
+		B507F02626E3E15500861CEE /* AssignmentWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AssignmentWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B507F02A26E3E15500861CEE /* AssignmentWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentWidget.swift; sourceTree = "<group>"; };
+		B507F02C26E3E15600861CEE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B507F02E26E3E15600861CEE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B507F03F26E4038900861CEE /* Assignment Tracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Assignment Tracker.entitlements"; sourceTree = "<group>"; };
+		B507F04226E407E100861CEE /* AssignmentWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AssignmentWidgetExtension.entitlements; sourceTree = "<group>"; };
+		B507F04326E409D000861CEE /* URL-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL-Extensions.swift"; sourceTree = "<group>"; };
+		B507F04626E413A600861CEE /* Course.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Course.swift; sourceTree = "<group>"; };
 		B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date-Extensions.swift"; sourceTree = "<group>"; };
 		B57A2C4D26D6B37F0047C6E2 /* Assignment Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Assignment Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B57A2C5026D6B37F0047C6E2 /* Assignment_TrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment_TrackerApp.swift; sourceTree = "<group>"; };
@@ -127,12 +135,12 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		B507EFEE26E2B6DD00861CEE /* Frameworks */ = {
+		B507F02326E3E15500861CEE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B507EFF626E2B6DD00861CEE /* SwiftUI.framework in Frameworks */,
-				B507EFF426E2B6DD00861CEE /* WidgetKit.framework in Frameworks */,
+				B507F02826E3E15500861CEE /* SwiftUI.framework in Frameworks */,
+				B507F02726E3E15500861CEE /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,6 +189,16 @@
 			path = "Assignment Widget";
 			sourceTree = "<group>";
 		};
+		B507F02926E3E15500861CEE /* AssignmentWidget */ = {
+			isa = PBXGroup;
+			children = (
+				B507F02A26E3E15500861CEE /* AssignmentWidget.swift */,
+				B507F02C26E3E15600861CEE /* Assets.xcassets */,
+				B507F02E26E3E15600861CEE /* Info.plist */,
+			);
+			path = AssignmentWidget;
+			sourceTree = "<group>";
+		};
 		B52F2D4226E11DEE00AAEDC0 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -200,10 +218,12 @@
 		B57A2C4426D6B37F0047C6E2 = {
 			isa = PBXGroup;
 			children = (
+				B507F04226E407E100861CEE /* AssignmentWidgetExtension.entitlements */,
 				B57A2C4F26D6B37F0047C6E2 /* Assignment Tracker */,
 				B57A2C6626D6B3800047C6E2 /* Assignment TrackerTests */,
 				B57A2C7126D6B3800047C6E2 /* Assignment TrackerUITests */,
 				B507EFF726E2B6DD00861CEE /* Assignment Widget */,
+				B507F02926E3E15500861CEE /* AssignmentWidget */,
 				B507EFF226E2B6DD00861CEE /* Frameworks */,
 				B57A2C4E26D6B37F0047C6E2 /* Products */,
 			);
@@ -215,7 +235,7 @@
 				B57A2C4D26D6B37F0047C6E2 /* Assignment Tracker.app */,
 				B57A2C6326D6B3800047C6E2 /* Assignment TrackerTests.xctest */,
 				B57A2C6E26D6B3800047C6E2 /* Assignment TrackerUITests.xctest */,
-				B507EFF126E2B6DD00861CEE /* Assignment WidgetExtension.appex */,
+				B507F02626E3E15500861CEE /* AssignmentWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -223,6 +243,7 @@
 		B57A2C4F26D6B37F0047C6E2 /* Assignment Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				B507F03F26E4038900861CEE /* Assignment Tracker.entitlements */,
 				B57A2C5026D6B37F0047C6E2 /* Assignment_TrackerApp.swift */,
 				B57A2C5226D6B37F0047C6E2 /* ContentView.swift */,
 				B5A0986D26DEFA4500411DCC /* Courses */,
@@ -289,6 +310,7 @@
 				B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */,
 				B57A2C8D26D96E280047C6E2 /* Color-Extensions.swift */,
 				B5A0987626E00E3300411DCC /* Array-AppStorage.swift */,
+				B507F04326E409D000861CEE /* URL-Extensions.swift */,
 				B57A2C9126DB37B00047C6E2 /* CourseColors.swift */,
 				B57A2C9526DB3CEB0047C6E2 /* View-Extensions.swift */,
 			);
@@ -309,6 +331,7 @@
 			isa = PBXGroup;
 			children = (
 				B507F00726E2C0F600861CEE /* CanvasStructs.swift */,
+				B507F04626E413A600861CEE /* Course.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -316,23 +339,21 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B507EFF026E2B6DD00861CEE /* Assignment WidgetExtension */ = {
+		B507F02526E3E15500861CEE /* AssignmentWidgetExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B507F00326E2B6DE00861CEE /* Build configuration list for PBXNativeTarget "Assignment WidgetExtension" */;
+			buildConfigurationList = B507F03226E3E15600861CEE /* Build configuration list for PBXNativeTarget "AssignmentWidgetExtension" */;
 			buildPhases = (
-				B507EFED26E2B6DD00861CEE /* Sources */,
-				B507EFEE26E2B6DD00861CEE /* Frameworks */,
-				B507EFEF26E2B6DD00861CEE /* Resources */,
+				B507F02226E3E15500861CEE /* Sources */,
+				B507F02326E3E15500861CEE /* Frameworks */,
+				B507F02426E3E15500861CEE /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = "Assignment WidgetExtension";
-			packageProductDependencies = (
-			);
-			productName = "Assignment WidgetExtension";
-			productReference = B507EFF126E2B6DD00861CEE /* Assignment WidgetExtension.appex */;
+			name = AssignmentWidgetExtension;
+			productName = AssignmentWidgetExtension;
+			productReference = B507F02626E3E15500861CEE /* AssignmentWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		B57A2C4C26D6B37F0047C6E2 /* Assignment Tracker */ = {
@@ -347,7 +368,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				B507F00126E2B6DE00861CEE /* PBXTargetDependency */,
+				B507F03026E3E15600861CEE /* PBXTargetDependency */,
 			);
 			name = "Assignment Tracker";
 			packageProductDependencies = (
@@ -401,7 +422,7 @@
 				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1250;
 				TargetAttributes = {
-					B507EFF026E2B6DD00861CEE = {
+					B507F02526E3E15500861CEE = {
 						CreatedOnToolsVersion = 12.5;
 					};
 					B57A2C4C26D6B37F0047C6E2 = {
@@ -435,17 +456,17 @@
 				B57A2C4C26D6B37F0047C6E2 /* Assignment Tracker */,
 				B57A2C6226D6B3800047C6E2 /* Assignment TrackerTests */,
 				B57A2C6D26D6B3800047C6E2 /* Assignment TrackerUITests */,
-				B507EFF026E2B6DD00861CEE /* Assignment WidgetExtension */,
+				B507F02526E3E15500861CEE /* AssignmentWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		B507EFEF26E2B6DD00861CEE /* Resources */ = {
+		B507F02426E3E15500861CEE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B507EFFC26E2B6DE00861CEE /* Assets.xcassets in Resources */,
+				B507F02D26E3E15600861CEE /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,23 +496,22 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		B507EFED26E2B6DD00861CEE /* Sources */ = {
+		B507F02226E3E15500861CEE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B507F00926E2C0F700861CEE /* CanvasStructs.swift in Sources */,
-				B507F01326E2C58600861CEE /* Array-AppStorage.swift in Sources */,
-				B507F01026E2C56800861CEE /* Course+CoreDataClass.swift in Sources */,
-				B507F01726E2C59100861CEE /* Color-Extensions.swift in Sources */,
-				B507F00C26E2C50000861CEE /* AssignmentWidgetView.swift in Sources */,
-				B507EFF926E2B6DD00861CEE /* Assignment_Widget.swift in Sources */,
-				B507F01426E2C58800861CEE /* CourseColors.swift in Sources */,
-				B507EFFE26E2B6DE00861CEE /* Assignment_Widget.intentdefinition in Sources */,
-				B507F00E26E2C55E00861CEE /* Persistence.swift in Sources */,
-				B507F01626E2C58E00861CEE /* Date-Extensions.swift in Sources */,
-				B507F01526E2C58B00861CEE /* View-Extensions.swift in Sources */,
-				B507F01126E2C56A00861CEE /* Course+CoreDataProperties.swift in Sources */,
-				B507F00F26E2C56300861CEE /* Assignment_Tracker.xcdatamodeld in Sources */,
+				B507F03C26E3E26600861CEE /* Array-AppStorage.swift in Sources */,
+				B507F03A26E3E26200861CEE /* Date-Extensions.swift in Sources */,
+				B507F03D26E3E26800861CEE /* CourseColors.swift in Sources */,
+				B507F03626E3E24A00861CEE /* Course+CoreDataClass.swift in Sources */,
+				B507F03526E3E23100861CEE /* CanvasStructs.swift in Sources */,
+				B507F03726E3E24C00861CEE /* Course+CoreDataProperties.swift in Sources */,
+				B507F02B26E3E15500861CEE /* AssignmentWidget.swift in Sources */,
+				B507F03B26E3E26400861CEE /* Color-Extensions.swift in Sources */,
+				B507F03E26E3E26A00861CEE /* View-Extensions.swift in Sources */,
+				B507F03826E3E24E00861CEE /* Persistence.swift in Sources */,
+				B507F03926E3E25B00861CEE /* Assignment_Tracker.xcdatamodeld in Sources */,
+				B507F04526E409D700861CEE /* URL-Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -504,12 +524,14 @@
 				B57A2C9226DB37B00047C6E2 /* CourseColors.swift in Sources */,
 				B57A2C9E26DE8A450047C6E2 /* GetCourses.swift in Sources */,
 				B507F01A26E2D5B100861CEE /* Assignment_Widget.swift in Sources */,
+				B507F04426E409D000861CEE /* URL-Extensions.swift in Sources */,
 				B57A2C9026D9712A0047C6E2 /* AddCourse.swift in Sources */,
 				B507EFFF26E2B6DE00861CEE /* Assignment_Widget.intentdefinition in Sources */,
 				B57A2C5326D6B37F0047C6E2 /* ContentView.swift in Sources */,
 				B52F2D4526E13F6100AAEDC0 /* Date-Extensions.swift in Sources */,
 				B507F00B26E2C50000861CEE /* AssignmentWidgetView.swift in Sources */,
 				B57A2C5126D6B37F0047C6E2 /* Assignment_TrackerApp.swift in Sources */,
+				B507F04726E413A600861CEE /* Course.swift in Sources */,
 				B5A0987726E00E3300411DCC /* Array-AppStorage.swift in Sources */,
 				B57A2C9826DD7B650047C6E2 /* AssignmentList.swift in Sources */,
 				B57A2C8926D6EAE90047C6E2 /* Course+CoreDataProperties.swift in Sources */,
@@ -541,10 +563,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		B507F00126E2B6DE00861CEE /* PBXTargetDependency */ = {
+		B507F03026E3E15600861CEE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B507EFF026E2B6DD00861CEE /* Assignment WidgetExtension */;
-			targetProxy = B507F00026E2B6DE00861CEE /* PBXContainerItemProxy */;
+			target = B507F02526E3E15500861CEE /* AssignmentWidgetExtension */;
+			targetProxy = B507F02F26E3E15600861CEE /* PBXContainerItemProxy */;
 		};
 		B57A2C6526D6B3800047C6E2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -559,20 +581,21 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		B507F00426E2B6DE00861CEE /* Debug */ = {
+		B507F03326E3E15600861CEE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = AssignmentWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T8PATWK92J;
-				INFOPLIST_FILE = "Assignment Widget/Info.plist";
+				INFOPLIST_FILE = AssignmentWidget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.assytrack.Assignment-Tracker.Widget";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.assytrack.Assignment-Tracker.AssignmentWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -580,20 +603,21 @@
 			};
 			name = Debug;
 		};
-		B507F00526E2B6DE00861CEE /* Release */ = {
+		B507F03426E3E15600861CEE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = AssignmentWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T8PATWK92J;
-				INFOPLIST_FILE = "Assignment Widget/Info.plist";
+				INFOPLIST_FILE = AssignmentWidget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.assytrack.Assignment-Tracker.Widget";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.assytrack.Assignment-Tracker.AssignmentWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -725,6 +749,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Assignment Tracker/Assignment Tracker.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Assignment Tracker/Preview Content\"";
 				DEVELOPMENT_TEAM = T8PATWK92J;
@@ -749,6 +774,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Assignment Tracker/Assignment Tracker.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Assignment Tracker/Preview Content\"";
 				DEVELOPMENT_TEAM = T8PATWK92J;
@@ -854,11 +880,11 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B507F00326E2B6DE00861CEE /* Build configuration list for PBXNativeTarget "Assignment WidgetExtension" */ = {
+		B507F03226E3E15600861CEE /* Build configuration list for PBXNativeTarget "AssignmentWidgetExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B507F00426E2B6DE00861CEE /* Debug */,
-				B507F00526E2B6DE00861CEE /* Release */,
+				B507F03326E3E15600861CEE /* Debug */,
+				B507F03426E3E15600861CEE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

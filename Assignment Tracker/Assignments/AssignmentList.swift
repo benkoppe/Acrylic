@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct AssignmentList: View {
-    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Course.order, ascending: true)]) private var courses: FetchedResults<Course>
-    
     @State private var doneFetching = false
     
     @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var auth: String = ""
@@ -17,6 +15,8 @@ struct AssignmentList: View {
     @State private var assignments: [Assignment] = []
     @State private var fetchState: FetchState = .loading
     @State private var errorType: ErrorType = .none
+    
+    @EnvironmentObject var courseArray: CourseArray
     
     enum FetchState {
         case success, loading, failure
@@ -238,12 +238,12 @@ struct AssignmentList: View {
         var name: String?
         var order: Int?
         var color: Color?
-        for course in courses {
-            if course.uCode == todoAssignment.courseID {
-                id = course.uCode
-                name = course.uName
-                order = course.uOrder
-                color = course.uColor
+        for course in courseArray.courses {
+            if course.code == todoAssignment.courseID {
+                id = course.code
+                name = course.name
+                order = course.order
+                color = course.color
                 break
             }
         }
@@ -258,7 +258,6 @@ struct AssignmentList: View {
 struct WidgetView_Previews: PreviewProvider {
     static var previews: some View {
         AssignmentList(auth: "26~yxSOVTuYIh0Fx9dMdm1VgaMXyv7VvCa1Ub7JHMZUhzJpakh254MmtBblpzmv7Gb9", prefixes: ["hsccsd"])
-            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
             .preferredColorScheme(.dark)
     }
 }

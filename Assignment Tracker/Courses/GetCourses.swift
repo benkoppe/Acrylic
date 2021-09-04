@@ -8,26 +8,15 @@
 import SwiftUI
 
 struct GetCourses: View {
-    @Environment(\.managedObjectContext) private var moc
     @Environment(\.presentationMode) private var presentationMode
     
     @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var auth: String = ""
     @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
-    @State private var courses: [CanvasCourse] = []
+    @State private var canvasCourses: [CanvasCourse] = []
     @State private var fetchState: FetchState = .loading
     @State private var errorType: ErrorType = .none
     
-    @AppStorage("courses", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var coursesData: [Data] = []
-    
-    var courses2: [Course2] {
-        var arr: [Course2] = []
-        for data in coursesData {
-            if let course = Course2.getCourse(from: data) {
-                arr.append(course)
-            }
-        }
-        return arr
-    }
+    @EnvironmentObject var courseArray: CourseArray
     
     enum FetchState {
         case success, loading, failure
@@ -45,14 +34,13 @@ struct GetCourses: View {
                 FailureView()
             case .success:
                 NavigationView {
-                    SuccessView(courses: courses)
+                    SuccessView(courses: canvasCourses)
                         .navigationBarTitleDisplayMode(.inline)
                         .navigationBarTitle("Get Canvas Courses")
                         .navigationBarItems(leading: Button("Cancel") {
                             presentationMode.wrappedValue.dismiss()
                         }.padding([.trailing]), trailing: Button("Add") {
                             addCourses()
-                            addCourses2()
                             presentationMode.wrappedValue.dismiss()
                         }.padding([.leading]).disabled(fetchState != .success))
                 }
@@ -178,21 +166,21 @@ struct GetCourses: View {
                             if let term = course.term {
                                 if let start = term.startDate, let end = term.endDate, let startDate = ISO8601DateFormatter().date(from: start), let endDate = ISO8601DateFormatter().date(from: end) {
                                     if Date() > startDate && Date() < endDate {
-                                        courses.append(course)
+                                        canvasCourses.append(course)
                                     }
                                 }
                             }
                         }
-                        if courses.isEmpty {
+                        if canvasCourses.isEmpty {
                             for course in list {
                                 if course.isFavorite ?? false {
-                                    courses.append(course)
+                                    canvasCourses.append(course)
                                 }
                             }
                         }
-                        if courses.isEmpty {
+                        if canvasCourses.isEmpty {
                             for course in list {
-                                courses.append(course)
+                                canvasCourses.append(course)
                             }
                         }
                         
@@ -212,35 +200,8 @@ struct GetCourses: View {
     func addCourses() {
         var order = 0
         var colorsAdded = 0
-        for course in courses {
-            guard let name = course.name else { return }
-            let newCourse = Course(name: name, code: course.id, context: moc)
-            
-            newCourse.uOrder = order
-            order += 1
-            
-            if let teachers = course.teachers {
-                if teachers.count > 0 {
-                    newCourse.uTeacher = teachers[0].name
-                }
-            }
-            
-            if colorsAdded < courseColors.count {
-                newCourse.uColor = Color(courseColors[colorsAdded])
-                colorsAdded += 1
-            } else {
-                newCourse.uColor = Color(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1))
-            }
-        }
-        
-        try? moc.save()
-    }
-    
-    func addCourses2() {
-        var order = 0
-        var colorsAdded = 0
-        var arr: [Course2] = []
-        for course in courses {
+        var arr: [Course] = []
+        for course in canvasCourses {
             guard let name = course.name else { return }
             
             var teacher: String? = nil
@@ -256,14 +217,14 @@ struct GetCourses: View {
                 colorsAdded += 1
             }
             
-            let newCourse = Course2(name: name, code: course.id, order: order, color: color, teacher: teacher)
+            let newCourse = Course(name: name, code: course.id, order: order, color: color, teacher: teacher)
             
             order += 1
             
             arr.append(newCourse)
         }
         
-        coursesData = Course2.getData(array: arr)
+        courseArray.courses = arr
     }
 }
 

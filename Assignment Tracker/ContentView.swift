@@ -9,14 +9,13 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var moc
+    @ObservedObject var courseArray = CourseArray()
     
-    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Course.order, ascending: true)]) private var courses: FetchedResults<Course>
-
     var body: some View {
         TabView {
             NavigationView {
                 CourseList()
+                    .environmentObject(courseArray)
             }
             .tabItem {
                 Image(systemName: "graduationcap")
@@ -24,6 +23,7 @@ struct ContentView: View {
             }
             
             AssignmentList()
+                .environmentObject(courseArray)
                 .tabItem {
                     //Image(systemName: "checklist")
                     Image(systemName: "list.bullet.rectangle")
@@ -42,6 +42,5 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

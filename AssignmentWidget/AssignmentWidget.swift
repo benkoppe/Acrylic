@@ -13,7 +13,7 @@ struct Provider: TimelineProvider {
     
     @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var auth: String = ""
     @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
-    let courses: [Course] = []
+    @ObservedObject var courseArray = CourseArray()
     
     enum FetchError: Error {
         case badURL, noAuth, badLoad
@@ -27,7 +27,7 @@ struct Provider: TimelineProvider {
     func getSnapshot(in context: Context, completion: @escaping (Entry) -> Void) {
         print("\(auth)")
         print("\(prefixes)")
-        print("\(courses[0].uName)")
+        print("\(courseArray.courses[0].name)")
         if !context.isPreview {
             fetchAssignments() { result in
                 print("built successfully")
@@ -54,7 +54,7 @@ struct Provider: TimelineProvider {
         print("hello?")
         print("\(auth)")
         print("\(prefixes)")
-        print("\(courses[0].uName)")
+        print("\(courseArray.courses[0].name)")
         let nextUpdateDate = Calendar.current.date(byAdding: .second, value: 1, to: Date())!
         
         if !context.isPreview {
@@ -141,12 +141,12 @@ struct Provider: TimelineProvider {
         var name: String?
         var order: Int?
         var color: Color?
-        for course in courses {
-            if course.uCode == todoAssignment.courseID {
-                id = course.uCode
-                name = course.uName
-                order = course.uOrder
-                color = course.uColor
+        for course in courseArray.courses {
+            if course.code == todoAssignment.courseID {
+                id = course.code
+                name = course.name
+                order = course.order
+                color = course.color
                 break
             }
         }

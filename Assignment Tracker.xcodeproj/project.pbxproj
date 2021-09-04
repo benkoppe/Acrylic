@@ -17,10 +17,6 @@
 		B507F02D26E3E15600861CEE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B507F02C26E3E15600861CEE /* Assets.xcassets */; };
 		B507F03126E3E15600861CEE /* AssignmentWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B507F02626E3E15500861CEE /* AssignmentWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B507F03526E3E23100861CEE /* CanvasStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F00726E2C0F600861CEE /* CanvasStructs.swift */; };
-		B507F03626E3E24A00861CEE /* Course+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C8626D6EAE90047C6E2 /* Course+CoreDataClass.swift */; };
-		B507F03726E3E24C00861CEE /* Course+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C8726D6EAE90047C6E2 /* Course+CoreDataProperties.swift */; };
-		B507F03826E3E24E00861CEE /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5926D6B3800047C6E2 /* Persistence.swift */; };
-		B507F03926E3E25B00861CEE /* Assignment_Tracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5B26D6B3800047C6E2 /* Assignment_Tracker.xcdatamodeld */; };
 		B507F03A26E3E26200861CEE /* Date-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */; };
 		B507F03B26E3E26400861CEE /* Color-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C8D26D96E280047C6E2 /* Color-Extensions.swift */; };
 		B507F03C26E3E26600861CEE /* Array-AppStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A0987626E00E3300411DCC /* Array-AppStorage.swift */; };
@@ -29,17 +25,14 @@
 		B507F04426E409D000861CEE /* URL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04326E409D000861CEE /* URL-Extensions.swift */; };
 		B507F04526E409D700861CEE /* URL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04326E409D000861CEE /* URL-Extensions.swift */; };
 		B507F04726E413A600861CEE /* Course.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04626E413A600861CEE /* Course.swift */; };
+		B507F04826E41EBA00861CEE /* Course.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04626E413A600861CEE /* Course.swift */; };
 		B52F2D4526E13F6100AAEDC0 /* Date-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */; };
 		B57A2C5126D6B37F0047C6E2 /* Assignment_TrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5026D6B37F0047C6E2 /* Assignment_TrackerApp.swift */; };
 		B57A2C5326D6B37F0047C6E2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5226D6B37F0047C6E2 /* ContentView.swift */; };
 		B57A2C5526D6B3800047C6E2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B57A2C5426D6B3800047C6E2 /* Assets.xcassets */; };
 		B57A2C5826D6B3800047C6E2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B57A2C5726D6B3800047C6E2 /* Preview Assets.xcassets */; };
-		B57A2C5A26D6B3800047C6E2 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5926D6B3800047C6E2 /* Persistence.swift */; };
-		B57A2C5D26D6B3800047C6E2 /* Assignment_Tracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5B26D6B3800047C6E2 /* Assignment_Tracker.xcdatamodeld */; };
 		B57A2C6826D6B3800047C6E2 /* Assignment_TrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C6726D6B3800047C6E2 /* Assignment_TrackerTests.swift */; };
 		B57A2C7326D6B3800047C6E2 /* Assignment_TrackerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C7226D6B3800047C6E2 /* Assignment_TrackerUITests.swift */; };
-		B57A2C8826D6EAE90047C6E2 /* Course+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C8626D6EAE90047C6E2 /* Course+CoreDataClass.swift */; };
-		B57A2C8926D6EAE90047C6E2 /* Course+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C8726D6EAE90047C6E2 /* Course+CoreDataProperties.swift */; };
 		B57A2C8B26D967250047C6E2 /* CourseList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C8A26D967250047C6E2 /* CourseList.swift */; };
 		B57A2C8E26D96E280047C6E2 /* Color-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C8D26D96E280047C6E2 /* Color-Extensions.swift */; };
 		B57A2C9026D9712A0047C6E2 /* AddCourse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C8F26D9712A0047C6E2 /* AddCourse.swift */; };
@@ -112,8 +105,6 @@
 		B57A2C5226D6B37F0047C6E2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B57A2C5426D6B3800047C6E2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B57A2C5726D6B3800047C6E2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		B57A2C5926D6B3800047C6E2 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
-		B57A2C5C26D6B3800047C6E2 /* Assignment_Tracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Assignment_Tracker.xcdatamodel; sourceTree = "<group>"; };
 		B57A2C5E26D6B3800047C6E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B57A2C6326D6B3800047C6E2 /* Assignment TrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Assignment TrackerTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B57A2C6726D6B3800047C6E2 /* Assignment_TrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment_TrackerTests.swift; sourceTree = "<group>"; };
@@ -121,8 +112,6 @@
 		B57A2C6E26D6B3800047C6E2 /* Assignment TrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Assignment TrackerUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B57A2C7226D6B3800047C6E2 /* Assignment_TrackerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment_TrackerUITests.swift; sourceTree = "<group>"; };
 		B57A2C7426D6B3800047C6E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B57A2C8626D6EAE90047C6E2 /* Course+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Course+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
-		B57A2C8726D6EAE90047C6E2 /* Course+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Course+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		B57A2C8A26D967250047C6E2 /* CourseList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseList.swift; sourceTree = "<group>"; };
 		B57A2C8D26D96E280047C6E2 /* Color-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color-Extensions.swift"; sourceTree = "<group>"; };
 		B57A2C8F26D9712A0047C6E2 /* AddCourse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCourse.swift; sourceTree = "<group>"; };
@@ -252,7 +241,6 @@
 				B57A2C5426D6B3800047C6E2 /* Assets.xcassets */,
 				B5A0986E26DEFA6E00411DCC /* Data */,
 				B57A2C8C26D96E170047C6E2 /* Extensions */,
-				B57A2C8026D6EAA90047C6E2 /* CoreData */,
 				B57A2C5E26D6B3800047C6E2 /* Info.plist */,
 				B57A2C5626D6B3800047C6E2 /* Preview Content */,
 			);
@@ -283,25 +271,6 @@
 				B57A2C7426D6B3800047C6E2 /* Info.plist */,
 			);
 			path = "Assignment TrackerUITests";
-			sourceTree = "<group>";
-		};
-		B57A2C8026D6EAA90047C6E2 /* CoreData */ = {
-			isa = PBXGroup;
-			children = (
-				B57A2C8126D6EABA0047C6E2 /* Entities */,
-				B57A2C5926D6B3800047C6E2 /* Persistence.swift */,
-				B57A2C5B26D6B3800047C6E2 /* Assignment_Tracker.xcdatamodeld */,
-			);
-			path = CoreData;
-			sourceTree = "<group>";
-		};
-		B57A2C8126D6EABA0047C6E2 /* Entities */ = {
-			isa = PBXGroup;
-			children = (
-				B57A2C8626D6EAE90047C6E2 /* Course+CoreDataClass.swift */,
-				B57A2C8726D6EAE90047C6E2 /* Course+CoreDataProperties.swift */,
-			);
-			path = Entities;
 			sourceTree = "<group>";
 		};
 		B57A2C8C26D96E170047C6E2 /* Extensions */ = {
@@ -500,17 +469,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B507F04826E41EBA00861CEE /* Course.swift in Sources */,
 				B507F03C26E3E26600861CEE /* Array-AppStorage.swift in Sources */,
 				B507F03A26E3E26200861CEE /* Date-Extensions.swift in Sources */,
 				B507F03D26E3E26800861CEE /* CourseColors.swift in Sources */,
-				B507F03626E3E24A00861CEE /* Course+CoreDataClass.swift in Sources */,
 				B507F03526E3E23100861CEE /* CanvasStructs.swift in Sources */,
-				B507F03726E3E24C00861CEE /* Course+CoreDataProperties.swift in Sources */,
 				B507F02B26E3E15500861CEE /* AssignmentWidget.swift in Sources */,
 				B507F03B26E3E26400861CEE /* Color-Extensions.swift in Sources */,
 				B507F03E26E3E26A00861CEE /* View-Extensions.swift in Sources */,
-				B507F03826E3E24E00861CEE /* Persistence.swift in Sources */,
-				B507F03926E3E25B00861CEE /* Assignment_Tracker.xcdatamodeld in Sources */,
 				B507F04526E409D700861CEE /* URL-Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -519,8 +485,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B57A2C8826D6EAE90047C6E2 /* Course+CoreDataClass.swift in Sources */,
-				B57A2C5A26D6B3800047C6E2 /* Persistence.swift in Sources */,
 				B57A2C9226DB37B00047C6E2 /* CourseColors.swift in Sources */,
 				B57A2C9E26DE8A450047C6E2 /* GetCourses.swift in Sources */,
 				B507F01A26E2D5B100861CEE /* Assignment_Widget.swift in Sources */,
@@ -534,12 +498,10 @@
 				B507F04726E413A600861CEE /* Course.swift in Sources */,
 				B5A0987726E00E3300411DCC /* Array-AppStorage.swift in Sources */,
 				B57A2C9826DD7B650047C6E2 /* AssignmentList.swift in Sources */,
-				B57A2C8926D6EAE90047C6E2 /* Course+CoreDataProperties.swift in Sources */,
 				B5A0987026DEFA9500411DCC /* Settings.swift in Sources */,
 				B57A2C8E26D96E280047C6E2 /* Color-Extensions.swift in Sources */,
 				B57A2C9626DB3CEB0047C6E2 /* View-Extensions.swift in Sources */,
 				B507F00826E2C0F700861CEE /* CanvasStructs.swift in Sources */,
-				B57A2C5D26D6B3800047C6E2 /* Assignment_Tracker.xcdatamodeld in Sources */,
 				B57A2C8B26D967250047C6E2 /* CourseList.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -926,19 +888,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		B57A2C5B26D6B3800047C6E2 /* Assignment_Tracker.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				B57A2C5C26D6B3800047C6E2 /* Assignment_Tracker.xcdatamodel */,
-			);
-			currentVersion = B57A2C5C26D6B3800047C6E2 /* Assignment_Tracker.xcdatamodel */;
-			path = Assignment_Tracker.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = B57A2C4526D6B37F0047C6E2 /* Project object */;
 }

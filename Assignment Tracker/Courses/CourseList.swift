@@ -8,20 +8,7 @@
 import SwiftUI
 
 struct CourseList: View {
-    @Environment(\.managedObjectContext) private var moc
-    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Course.order, ascending: true)]) private var courses: FetchedResults<Course>
-    
-    @AppStorage("courses", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var coursesData: [Data] = []
-    
-    var courses2: [Course2] {
-        var arr: [Course2] = []
-        for data in coursesData {
-            if let course = Course2.getCourse(from: data) {
-                arr.append(course)
-            }
-        }
-        return arr
-    }
+    @EnvironmentObject var courseArray: CourseArray
     
     @State private var editMode: EditMode = .inactive
     @State private var deleteAllAlert = false
@@ -34,13 +21,12 @@ struct CourseList: View {
     
     var body: some View {
         List {
-            if courses.count > 0 {
-                ForEach(courses) { course in
+            if courseArray.courses.count > 0 {
+                ForEach(courseArray.courses, id: \.self.code) { course in
                     Button(action: {
                         editCourse = course
                     }) {
-                        listItem()
-                            .environmentObject(course)
+                        listItem(course: course)
                             .foregroundColor(.primary)
                     }
                 }
@@ -58,13 +44,12 @@ struct CourseList: View {
             }
         }
         .onAppear(perform: manageOrder)
-        .onAppear() { print(courses2) }
         .listStyle(InsetGroupedListStyle())
         .navigationTitle("Classes")
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 EditButton()
-                    .disabled(courses.count == 0)
+                    .disabled(courseArray.courses.count == 0)
             }
         }
         .navigationBarItems(trailing:
@@ -100,74 +85,51 @@ struct CourseList: View {
     }
     
     func delete(at offsets: IndexSet) {
-        for offset in offsets {
-            moc.delete(courses[offset])
-            try? moc.save()
-            manageOrder()
-        }
+        courseArray.courses.remove(atOffsets: offsets)
+        manageOrder()
     }
     
     func deleteAll() {
         editMode = .inactive
-        for course in courses {
-            moc.delete(course)
-        }
-        try? moc.save()
+        courseArray.courses.removeAll()
     }
     
     func move(from source: IndexSet, to destination: Int) {
-        for offset in source {
-            let movingCourse = courses[offset]
-            let start = movingCourse.uOrder
-            
-            if start < destination {
-                for index in start+1...destination-1 {
-                    courses[index].uOrder = index-1
-                }
-                movingCourse.uOrder = destination-1
-            } else if start > destination {
-                for index in destination...start-1 {
-                    courses[index].uOrder = index+1
-                }
-                movingCourse.uOrder = destination
-            }
-        }
-        
-        if moc.hasChanges {
-            try? moc.save()
-            manageOrder()
-        }
+        courseArray.courses.move(fromOffsets: source, toOffset: destination)
+        manageOrder()
     }
     
     func manageOrder() {
         var currentOrder = 0
-        for course in courses {
-            course.uOrder = currentOrder
+        for course in courseArray.courses {
+            course.order = currentOrder
             currentOrder += 1
         }
     }
     
     struct listItem: View {
-        @EnvironmentObject var course: Course
+        @ObservedObject var course: Course
         
         var body: some View {
             HStack {
                 Text(String("\u{007C}"))
                     .font(.system(size: 40, design: .rounded))
-                    .foregroundColor(course.uColor)
+                    .foregroundColor(course.color)
                     .offset(x: 0, y: -2.5)
                 
                 VStack(alignment: .leading) {
-                    Text("\(course.uName)")
+                    Text("\(course.name)")
                         .font(.system(size: 22, weight: .regular, design: .rounded))
-                        .foregroundColor(course.uColor)
+                        .foregroundColor(course.color)
                         .lineLimit(1)
-                    if course.uTeacher != "" {
-                        Text("\(course.uTeacher)")
-                            .font(.system(size: 12, weight: .regular, design: .rounded))
-                            .foregroundColor(course.uColor)
-                            .contrast(0.2)
-                            .lineLimit(1)
+                    if let teacher = course.teacher {
+                        if teacher != "" {
+                            Text("\(teacher)")
+                                .font(.system(size: 12, weight: .regular, design: .rounded))
+                                .foregroundColor(course.color)
+                                .contrast(0.2)
+                                .lineLimit(1)
+                        }
                     }
                 }
                 
@@ -189,7 +151,6 @@ struct CourseList_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             CourseList()
-                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
         }
     }
 }

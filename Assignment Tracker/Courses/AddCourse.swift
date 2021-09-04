@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct AddCourse: View {
-    @Environment(\.managedObjectContext) private var moc
     @Environment(\.presentationMode) private var presentationMode
     
+    @EnvironmentObject var courseArray: CourseArray
     var course: Course?
     
     @State private var name = ""
@@ -138,37 +138,42 @@ struct AddCourse: View {
             
         case .edit:
             if let course = course {
-                name = course.uName
-                teacher = course.uTeacher
-                code = String(course.uCode)
-                order = course.uOrder
-                color = course.uColor
+                self.name = course.name
+                
+                if let teacher = course.teacher {
+                    self.teacher = teacher
+                } else {
+                    self.teacher = ""
+                }
+                self.code = String(course.code)
+                self.order = course.order
+                self.color = course.color
             }
         }
     }
     
     func saveData() {
-        switch style {
-        case .new:
-            if let code = Int(code) {
-                let newCourse = Course(name: name, code: code, context: moc)
-                newCourse.uOrder = order
-                newCourse.uColor = color
-                newCourse.uTeacher = teacher
+        if let code = Int(code) {
+            var addTeacher: String? = nil
+            if teacher.trimmingCharacters(in: .whitespacesAndNewlines) != "" { addTeacher = teacher }
+            let newCourse = Course(name: name, code: code, order: order, color: color, teacher: addTeacher)
+            
+            switch style {
+            case .new:
+                courseArray.courses.append(newCourse)
+                
+            case .edit:
+                if let course = course, let index = courseArray.courses.firstIndex(of: course) {
+                    courseArray.courses[index].name = name
+                    courseArray.courses[index].code = code
+                    courseArray.courses[index].order = order
+                    courseArray.courses[index].color = color
+                    courseArray.courses[index].teacher = addTeacher
+                }
             }
             
-        case .edit:
-            if let course = course, let code = Int(code) {
-                course.uName = name
-                course.uTeacher = teacher
-                course.uCode = code
-                course.uOrder = order
-                course.uColor = color
-            }
+            presentationMode.wrappedValue.dismiss()
         }
-        
-        try? moc.save()
-        presentationMode.wrappedValue.dismiss()
     }
 }
 

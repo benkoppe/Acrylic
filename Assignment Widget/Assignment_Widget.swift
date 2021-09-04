@@ -285,7 +285,7 @@ struct Assignment_WidgetEntryView: View {
 
 
 
-//@main
+@main
 struct Assignment_Widget: Widget {
     let kind: String = "Assignment_Widget"
     let provider = Provider()

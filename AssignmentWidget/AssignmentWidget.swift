@@ -15,67 +15,33 @@ struct Provider: TimelineProvider {
     @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
     @ObservedObject var courseArray = CourseArray()
     
-    enum FetchError: Error {
-        case badURL, noAuth, badLoad
-    }
-    
     func placeholder(in context: Context) -> Entry {
-        print("placeholder")
-        return Entry(date: Date(), assignments: Assignment.sampleAssignments())
+        return Entry(date: Date(), result: .success(Assignment.sampleAssignments()))
     }
     
     func getSnapshot(in context: Context, completion: @escaping (Entry) -> Void) {
-        print("\(auth)")
-        print("\(prefixes)")
-        print("\(courseArray.courses[0].name)")
         if !context.isPreview {
             fetchAssignments() { result in
-                print("built successfully")
-                switch result {
-                case .success(let assignments):
-                    print(assignments)
-                    let entry = Entry(date: Date(), assignments: assignments)
-                    completion(entry)
-                case .failure(let error):
-                    print(error.localizedDescription)
-                    let entry = Entry(date: Date(), assignments: Assignment.sampleAssignments())
-                    completion(entry)
-                }
+                let entry = Entry(date: Date(), result: result)
+                completion(entry)
             }
         } else {
-            print("did not build")
-            let assignments = Assignment.sampleAssignments()
-            let entry = Entry(date: Date(), assignments: assignments)
+            let entry = Entry(date: Date(), result: .success(Assignment.sampleAssignments()))
             completion(entry)
         }
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
-        print("hello?")
-        print("\(auth)")
-        print("\(prefixes)")
-        print("\(courseArray.courses[0].name)")
         let nextUpdateDate = Calendar.current.date(byAdding: .second, value: 1, to: Date())!
         
         if !context.isPreview {
-            print("beginning fetch")
             fetchAssignments() { result in
-                switch result {
-                case .success(let assignments):
-                    let entry = Entry(date: Date(), assignments: assignments)
-                    let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
-                    completion(timeline)
-                case .failure(let error):
-                    print(error.localizedDescription)
-                    let entry = Entry(date: Date(), assignments: Assignment.sampleAssignments())
-                    let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
-                    completion(timeline)
-                }
+                let entry = Entry(date: Date(), result: result)
+                let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
+                completion(timeline)
             }
         } else {
-            print("did not build")
-            let assignments = Assignment.sampleAssignments()
-            let entry = Entry(date: Date(), assignments: assignments)
+            let entry = Entry(date: Date(), result: .success(Assignment.sampleAssignments()))
             let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
             completion(timeline)
         }
@@ -87,7 +53,7 @@ struct Provider: TimelineProvider {
         var loadedPrefixes: [String] = []
         
         for prefix in prefixes {
-            let urlString = "https://\(prefix).instructure.com/api/v1/users/self/todo"
+            let urlString = "https://\(prefix).instructure.com/api/v1/users/self/todo?per_page=100"
             guard let url = URL(string: urlString) else {
                 print("Bad URL: \(urlString)")
                 completion(.failure(.badURL))
@@ -160,24 +126,8 @@ struct Provider: TimelineProvider {
 
 struct Entry: TimelineEntry {
     let date: Date
-    let assignments: [Assignment]
+    let result: Result<[Assignment], FetchError>
 }
-
-
-/*struct Assignment_WidgetEntryView : View {
-    var entry: Entry
-
-    var body: some View {
-        Text(entry.assignments[0].due, style: .time)
-    }
-}*/
-
-//
-//  AssignmentWidgetView.swift
-//  Assignment Tracker
-//
-//  Created by Ben K on 9/3/21.
-//
 
 struct Assignment_WidgetEntryView: View {
     var entry: Entry
@@ -189,24 +139,20 @@ struct Assignment_WidgetEntryView: View {
     }
     
     var body: some View {
-        //switch fetchState {
+        switch entry.result {
         
-        //case .success:
-        /*if entry.assignments.count > 0 {
-            successView(assignments: entry.assignments)
-        } else {
-            Text("Hello")
-        }*/
-        if entry.assignments.count > 0 {
-            Text("\(entry.assignments[0].name)")
-        } else {
-            Text("Hello")
+        case .success(let assignments):
+            if assignments.count > 0 {
+                successView(assignments: assignments)
+                    .frame(alignment: .topLeading)
+            } else {
+                Text("No assignments")
+            }
+            
+        case .failure(let error):
+            Text("Error: \(error.localizedDescription)")
+            
         }
-            
-        /*default:
-            ProgressView()
-            
-        }*/
     }
     
     struct successView: View {
@@ -215,19 +161,23 @@ struct Assignment_WidgetEntryView: View {
         @State private var placedFirstHeader = false
         
         var body: some View {
-            VStack {
-                ZStack {
-                    Color(.secondarySystemBackground)
-                    
-                    VStack(alignment: .leading, spacing: 0) {
-                        ForEach(0 ..< assignments.count) { index in
-                            if index < assignments.count {
-                                assignmentItem(assignments: assignments, index: index)
+            GeometryReader { geo in
+                VStack {
+                    ZStack {
+                        Color("WidgetBackground")
+                        
+                        VStack(alignment: .leading, spacing: 0) {
+                            ForEach(0 ..< assignments.count) { index in
+                                if index < assignments.count && assignments[index].due > Date() {
+                                    assignmentItem(assignments: assignments, index: index)
+                                }
                             }
                         }
+                        .padding()
+                        .padding(.top, 3)
                     }
                 }
-                .frame(minWidth: .infinity, minHeight: .infinity)
+                //.frame(width: geo.size.width, height: geo.size.height, alignment: .topLeading)
             }
         }
         
@@ -251,59 +201,74 @@ struct Assignment_WidgetEntryView: View {
             
             var body: some View {
                 
-                if spaceTop && includeHeader {
-                    Divider()
-                        .padding(.top, 12)
-                        .padding(.bottom, 12)
-                        .padding(.horizontal, 2)
-                }
-                
                 if includeHeader {
-                    Text(createTitleText(for: assignment.due))
-                        //.font(.system(.title, design: .rounded))
-                        .font(.system(size: 25, weight: .semibold, design: .rounded))
-                        .foregroundColor(.gray)
-                        .brightness(0.5)
-                        .padding(.bottom, 7)
+                    HStack(alignment: .center, spacing: 0) {
+                        Text(createTitleText(for: assignment.due))
+                            //.font(.system(.title, design: .rounded))
+                            .font(.system(size: 20, weight: .semibold, design: .rounded))
+                            .foregroundColor(.gray)
+                            .brightness(0.5)
+                            .frame(height: 30)
+                        //.padding(.bottom, 7)
+                        
+                        Spacer()
+                    }
                 }
                 
-                Link(destination: assignment.url) {
-                    HStack {
-                        Text(String("\u{007C}"))
-                            .font(.system(size: 42, weight: .semibold, design: .rounded))
-                            .foregroundColor(assignment.color)
-                            .offset(x: 7, y: -3.5)
-                            .padding(.leading, 5)
-                        
-                        VStack(alignment: .leading, spacing: 0) {
-                            Text(assignment.name)
-                                .font(.system(size: 17, weight: .semibold, design: .rounded))
-                                .lineLimit(1)
-                                .padding(.bottom, 1)
-                            
-                            HStack(spacing: 0) {
-                                Text(timeFormatter.string(from: assignment.due))
-                                    .contrast(0.5)
-                                
-                                Text(" • ")
-                                
-                                Text(assignment.courseName)
-                                    .foregroundColor(assignment.color)
-                            }
-                            .font(.system(size: 8, weight: .semibold, design: .default))
-                            .lineLimit(1)
-                            .offset(x: 2, y: 0)
-                        }
-                    }
-                    .foregroundColor(.primary)
-                    .offset(x: 10, y: 0)
+                
+                HStack(alignment: .center, spacing: 0) {
+                    Spacer().frame(width: 7)
                     
+                    Link(destination: URL(string: "widget://\(assignment.url)")!) {
+                        
+                        HStack(alignment: .center, spacing: 0) {
+                            
+                            Text(String("\u{007C}"))
+                                .font(.system(size: 35, weight: .semibold, design: .rounded))
+                                .foregroundColor(assignment.color)
+                                .offset(y: -2)
+                                //.padding(.leading, 5)
+                            
+                            VStack(alignment: .leading, spacing: 0) {
+                                Text(assignment.name)
+                                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                                    .lineLimit(1)
+                                    .padding(.bottom, 1)
+                                
+                                HStack(spacing: 0) {
+                                    Text(timeFormatter.string(from: assignment.due))
+                                    .contrast(0.5)
+                                    
+                                    Text(" • ")
+                                    
+                                    Text(assignment.courseName)
+                                        .foregroundColor(assignment.color)
+                                }
+                                .font(.system(size: 7, weight: .semibold, design: .default))
+                                .lineLimit(1)
+                                .offset(x: 2, y: 0)
+                            }
+                            .padding(.top, 1)
+                            
+                        }
+                        .foregroundColor(.primary)
+                        
+                    }
+                    
+                    Spacer()
                 }
+                .offset(x: 1)
+                .frame(height: 40)
                 
             }
             
             func createTitleText(for date: Date) -> String {
                 let day = date.getYearDay()
+                var shortFormatter: DateFormatter {
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "EEEE"
+                    return formatter
+                }
                 var formatter: DateFormatter {
                     let formatter = DateFormatter()
                     formatter.dateFormat = "EEEE, MMM d"
@@ -314,6 +279,8 @@ struct Assignment_WidgetEntryView: View {
                     return "Today"
                 } else if day == (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() {
                     return "Tomorrow"
+                } else if (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() - day < 7 {
+                    return shortFormatter.string(from: date)
                 } else {
                     return formatter.string(from: date)
                 }
@@ -329,7 +296,7 @@ struct AssignmentWidget: Widget {
     let kind: String = "AssignmentWidget"
     //let provider = Provider(moc: PersistenceController.shared.container.viewContext)
     let provider = Provider()
-
+    
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: provider) { entry in
             Assignment_WidgetEntryView(entry: entry)
@@ -342,7 +309,8 @@ struct AssignmentWidget: Widget {
 
 struct Assignment_Widget_Previews: PreviewProvider {
     static var previews: some View {
-        Assignment_WidgetEntryView(entry: Entry(date: Date(), assignments: Assignment.sampleAssignments()))
+        Assignment_WidgetEntryView(entry: Entry(date: Date(), result: .success(Assignment.sampleAssignments())))
             .previewContext(WidgetPreviewContext(family: .systemLarge))
+            .preferredColorScheme(.dark)
     }
 }

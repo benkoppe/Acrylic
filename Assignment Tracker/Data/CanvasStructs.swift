@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+
+enum FetchError: Error {
+    case badURL, noAuth, badLoad
+}
+
 typealias TodoList = [TodoItem]
 
 struct TodoItem: Codable {
@@ -59,17 +64,20 @@ struct Assignment: Comparable, Equatable, Hashable, Identifiable {
         var components = DateComponents()
         components.hour = 23
         components.minute = 59
-        let due = Calendar.current.nextDate(after: Date(), matching: components, matchingPolicy: .nextTime, direction: .forward)!
+        var due = Date()
+        for _ in 1 ... daysAhead {
+        due = Calendar.current.nextDate(after: due, matching: components, matchingPolicy: .nextTime, direction: .forward)!
+        }
         return Assignment(name: name, due: due, courseID: 0, courseName: courseName, courseOrder: courseOrder, url: URL(string: "https://www.google.com")!, color: courseColor)
     }
     
     static func sampleAssignments() -> [Assignment] {
         var assignments: [Assignment] = []
-        assignments.append(sampleAssignment())
-        assignments.append(sampleAssignment())
-        assignments.append(sampleAssignment())
-        assignments.append(sampleAssignment())
-        assignments.append(sampleAssignment())
+        assignments.append(sampleAssignment(name: "Water Lab", daysAhead: 1, courseName: "Biology", courseOrder: 0, courseColor: Color("green")))
+        assignments.append(sampleAssignment(name: "Chapter 3 Notes and Presentation", daysAhead: 1, courseName: "AP Calculus", courseOrder: 1, courseColor: Color("red")))
+        assignments.append(sampleAssignment(name: "Poetry Notes", daysAhead: 2, courseName: "Literature", courseOrder: 3, courseColor: Color("blue")))
+        assignments.append(sampleAssignment(name: "Chapter Seventeen Identities/Quiz", daysAhead: 3, courseName: "APUSH", courseOrder: 4, courseColor: Color("yellow")))
+        assignments.append(sampleAssignment(name: "Chapter 4 Notes", daysAhead: 4, courseName: "AP Calculus", courseOrder: 1, courseColor: Color("red")))
         
         return assignments
     }

@@ -51,11 +51,33 @@ struct AssignmentList: View {
         @Binding var assignments: [Assignment]
         @State private var placedFirstHeader = false
         
+        var splitAssignments: [[Assignment]] {
+            if assignments.count > 0 {
+                var assy: [[Assignment]] = []
+                var shortAssy: [Assignment] = [assignments[0]]
+                var lastDate = assignments[0].due
+                
+                for assignment in assignments {
+                    if assignment.due.getYearDay() != lastDate.getYearDay() {
+                        assy.append(shortAssy)
+                        shortAssy = []
+                        shortAssy.append(assignment)
+                    }
+                    shortAssy.append(assignment)
+                    lastDate = assignment.due
+                }
+                assy.append(shortAssy)
+                
+                return assy
+                
+            } else { return [] }
+        }
+        
         var body: some View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack {
                     ZStack {
-                        Color(.secondarySystemBackground)
+                        Color("WidgetBackground")
                             .clipShape(
                                 RoundedRectangle(cornerRadius: 25)
                             )
@@ -66,6 +88,15 @@ struct AssignmentList: View {
                             ForEach(0 ..< assignments.count) { index in
                                 if index < assignments.count {
                                     assignmentItem(assignments: assignments, index: index)
+                                }
+                            }
+                            
+                            ForEach(splitAssignments, id: \.self) { assignmentArray in
+                                Text("\(assignmentArray[0].due)")
+                                    .font(.title)
+                                ForEach(assignmentArray, id: \.self) { assignment in
+                                    Text(assignment.name)
+                                        .foregroundColor(.secondary)
                                 }
                             }
                         }
@@ -180,7 +211,7 @@ struct AssignmentList: View {
         for prefix in prefixes {
             fetchState = .loading
             
-            let urlString = "https://\(prefix).instructure.com/api/v1/users/self/todo"
+            let urlString = "https://\(prefix).instructure.com/api/v1/users/self/todo?per_page=100"
             guard let url = URL(string: urlString) else {
                 print("Bad URL: \(urlString)")
                 fetchState = .failure

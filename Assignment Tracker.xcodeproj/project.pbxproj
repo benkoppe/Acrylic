@@ -26,6 +26,8 @@
 		B507F04526E409D700861CEE /* URL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04326E409D000861CEE /* URL-Extensions.swift */; };
 		B507F04726E413A600861CEE /* Course.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04626E413A600861CEE /* Course.swift */; };
 		B507F04826E41EBA00861CEE /* Course.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04626E413A600861CEE /* Course.swift */; };
+		B507F04D26E9EAAB00861CEE /* ReadSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04C26E9EAAB00861CEE /* ReadSize.swift */; };
+		B507F04F26E9EFDD00861CEE /* ReadSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04C26E9EAAB00861CEE /* ReadSize.swift */; };
 		B52F2D4526E13F6100AAEDC0 /* Date-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */; };
 		B57A2C5126D6B37F0047C6E2 /* Assignment_TrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5026D6B37F0047C6E2 /* Assignment_TrackerApp.swift */; };
 		B57A2C5326D6B37F0047C6E2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5226D6B37F0047C6E2 /* ContentView.swift */; };
@@ -99,6 +101,7 @@
 		B507F04226E407E100861CEE /* AssignmentWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AssignmentWidgetExtension.entitlements; sourceTree = "<group>"; };
 		B507F04326E409D000861CEE /* URL-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL-Extensions.swift"; sourceTree = "<group>"; };
 		B507F04626E413A600861CEE /* Course.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Course.swift; sourceTree = "<group>"; };
+		B507F04C26E9EAAB00861CEE /* ReadSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadSize.swift; sourceTree = "<group>"; };
 		B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date-Extensions.swift"; sourceTree = "<group>"; };
 		B57A2C4D26D6B37F0047C6E2 /* Assignment Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Assignment Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B57A2C5026D6B37F0047C6E2 /* Assignment_TrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment_TrackerApp.swift; sourceTree = "<group>"; };
@@ -279,6 +282,7 @@
 				B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */,
 				B57A2C8D26D96E280047C6E2 /* Color-Extensions.swift */,
 				B5A0987626E00E3300411DCC /* Array-AppStorage.swift */,
+				B507F04C26E9EAAB00861CEE /* ReadSize.swift */,
 				B507F04326E409D000861CEE /* URL-Extensions.swift */,
 				B57A2C9126DB37B00047C6E2 /* CourseColors.swift */,
 				B57A2C9526DB3CEB0047C6E2 /* View-Extensions.swift */,
@@ -473,6 +477,7 @@
 				B507F03C26E3E26600861CEE /* Array-AppStorage.swift in Sources */,
 				B507F03A26E3E26200861CEE /* Date-Extensions.swift in Sources */,
 				B507F03D26E3E26800861CEE /* CourseColors.swift in Sources */,
+				B507F04F26E9EFDD00861CEE /* ReadSize.swift in Sources */,
 				B507F03526E3E23100861CEE /* CanvasStructs.swift in Sources */,
 				B507F02B26E3E15500861CEE /* AssignmentWidget.swift in Sources */,
 				B507F03B26E3E26400861CEE /* Color-Extensions.swift in Sources */,
@@ -495,6 +500,7 @@
 				B52F2D4526E13F6100AAEDC0 /* Date-Extensions.swift in Sources */,
 				B507F00B26E2C50000861CEE /* AssignmentWidgetView.swift in Sources */,
 				B57A2C5126D6B37F0047C6E2 /* Assignment_TrackerApp.swift in Sources */,
+				B507F04D26E9EAAB00861CEE /* ReadSize.swift in Sources */,
 				B507F04726E413A600861CEE /* Course.swift in Sources */,
 				B5A0987726E00E3300411DCC /* Array-AppStorage.swift in Sources */,
 				B57A2C9826DD7B650047C6E2 /* AssignmentList.swift in Sources */,
@@ -624,7 +630,6 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -686,7 +691,6 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

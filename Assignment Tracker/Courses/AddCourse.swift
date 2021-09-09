@@ -169,6 +169,7 @@ struct AddCourse: View {
                     courseArray.courses[index].order = order
                     courseArray.courses[index].color = color
                     courseArray.courses[index].teacher = addTeacher
+                    courseArray.save()
                 }
             }
             

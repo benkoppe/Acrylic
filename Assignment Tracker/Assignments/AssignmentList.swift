@@ -61,7 +61,6 @@ struct AssignmentList: View {
                     if assignment.due.getYearDay() != lastDate.getYearDay() {
                         assy.append(shortAssy)
                         shortAssy = []
-                        shortAssy.append(assignment)
                     }
                     shortAssy.append(assignment)
                     lastDate = assignment.due
@@ -85,18 +84,18 @@ struct AssignmentList: View {
                             .padding(3)
                         
                         VStack(alignment: .leading, spacing: 0) {
-                            ForEach(0 ..< assignments.count) { index in
-                                if index < assignments.count {
-                                    assignmentItem(assignments: assignments, index: index)
-                                }
-                            }
-                            
                             ForEach(splitAssignments, id: \.self) { assignmentArray in
-                                Text("\(assignmentArray[0].due)")
-                                    .font(.title)
+                                
+                                
+                                Text(createTitleText(for: assignmentArray[0].due))
+                                    //.font(.system(.title, design: .rounded))
+                                    .font(.system(size: 25, weight: .semibold, design: .rounded))
+                                    .foregroundColor(.gray)
+                                    .brightness(0.5)
+                                    .padding(.bottom, 7)
+                                
                                 ForEach(assignmentArray, id: \.self) { assignment in
-                                    Text(assignment.name)
-                                        .foregroundColor(.secondary)
+                                    assignmentItem(assignment: assignment)
                                 }
                             }
                         }
@@ -112,16 +111,25 @@ struct AssignmentList: View {
             //.navigationBarTitleDisplayMode(.inline)
         }
         
-        struct assignmentItem: View {
-            init(assignments: [Assignment], index: Int) {
-                self.assignment = assignments[index]
-                self.includeHeader = index == 0 || assignments[index].due.getYearDay() != assignments[index-1].due.getYearDay()
-                self.spaceTop = index != 0
+        func createTitleText(for date: Date) -> String {
+            let day = date.getYearDay()
+            var formatter: DateFormatter {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "EEEE, MMM d"
+                return formatter
             }
             
+            if day == Date().getYearDay() {
+                return "Today"
+            } else if day == (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() {
+                return "Tomorrow"
+            } else {
+                return formatter.string(from: date)
+            }
+        }
+        
+        struct assignmentItem: View {
             let assignment: Assignment
-            let includeHeader: Bool
-            let spaceTop: Bool
             
             var timeFormatter: DateFormatter {
                 let formatter = DateFormatter()
@@ -131,22 +139,6 @@ struct AssignmentList: View {
             }
             
             var body: some View {
-                
-                if spaceTop && includeHeader {
-                    Divider()
-                        .padding(.top, 12)
-                        .padding(.bottom, 12)
-                        .padding(.horizontal, 2)
-                }
-                
-                if includeHeader {
-                    Text(createTitleText(for: assignment.due))
-                        //.font(.system(.title, design: .rounded))
-                        .font(.system(size: 25, weight: .semibold, design: .rounded))
-                        .foregroundColor(.gray)
-                        .brightness(0.5)
-                        .padding(.bottom, 7)
-                }
                 
                 Link(destination: assignment.url) {
                     HStack {
@@ -181,23 +173,6 @@ struct AssignmentList: View {
                     
                 }
                 
-            }
-            
-            func createTitleText(for date: Date) -> String {
-                let day = date.getYearDay()
-                var formatter: DateFormatter {
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "EEEE, MMM d"
-                    return formatter
-                }
-                
-                if day == Date().getYearDay() {
-                    return "Today"
-                } else if day == (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() {
-                    return "Tomorrow"
-                } else {
-                    return formatter.string(from: date)
-                }
             }
         }
     }

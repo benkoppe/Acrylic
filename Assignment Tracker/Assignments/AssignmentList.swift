@@ -33,15 +33,30 @@ struct AssignmentList: View {
     
     var body: some View {
         NavigationView {
-            switch fetchState {
-            
-            case .success:
-                successView(assignments: $assignments)
+            Group {
+                switch fetchState {
                 
-            default:
-                ProgressView("Loading Assignments...")
-                    .offset(x: 0, y: -40)
-                
+                case .success:
+                    successView(assignments: $assignments)
+                    
+                default:
+                    ProgressView("Loading Assignments...")
+                        .offset(x: 0, y: -40)
+                    
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("\(Image(systemName: "paintbrush")) Assignments")
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        print("Button pressed")
+                    }) {
+                        Image(systemName: "person.crop.circle")
+                    }
+                }
             }
         }
         .onAppear(perform: fetchAssignments)
@@ -75,40 +90,44 @@ struct AssignmentList: View {
         var body: some View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack {
-                    ZStack {
-                        Color("WidgetBackground")
-                            .clipShape(
-                                RoundedRectangle(cornerRadius: 25)
-                            )
-                            .padding(.vertical, 1)
-                            .padding(3)
-                        
-                        VStack(alignment: .leading, spacing: 0) {
-                            ForEach(splitAssignments, id: \.self) { assignmentArray in
-                                
-                                
-                                Text(createTitleText(for: assignmentArray[0].due))
-                                    //.font(.system(.title, design: .rounded))
-                                    .font(.system(size: 25, weight: .semibold, design: .rounded))
-                                    .foregroundColor(.gray)
-                                    .brightness(0.5)
-                                    .padding(.bottom, 7)
-                                
-                                ForEach(assignmentArray, id: \.self) { assignment in
-                                    assignmentItem(assignment: assignment)
+                    Spacer().frame(height: 12)
+                    
+                    ForEach(splitAssignments, id: \.self) { assignmentArray in
+                        ZStack {
+                            Color("WidgetBackground")
+                                .clipShape(
+                                    RoundedRectangle(cornerRadius: 15)
+                                )
+                                .padding(.vertical, 1)
+                                .padding(3)
+                            
+                            
+                            HStack {
+                                VStack(alignment: .leading, spacing: 0) {
+                                    Text(createTitleText(for: assignmentArray[0].due))
+                                        //.font(.system(.title, design: .rounded))
+                                        .font(.system(size: 25, weight: .semibold, design: .rounded))
+                                        .foregroundColor(.gray)
+                                        .brightness(0.5)
+                                        .padding(.bottom, 7)
+                                    
+                                    ForEach(assignmentArray, id: \.self) { assignment in
+                                        assignmentItem(assignment: assignment)
+                                    }
                                 }
+                                Spacer()
                             }
+                            .padding()
+                            .padding(.vertical, 7)
+                            .padding(.leading, 4)
                         }
-                        .padding()
-                        .padding(.vertical, 5)
-                        .padding(.leading, 4)
+                        
+                        Spacer().frame(height: 10)
                     }
                     
                     Spacer()
                 }
             }
-            .navigationTitle("Assignments")
-            //.navigationBarTitleDisplayMode(.inline)
         }
         
         func createTitleText(for date: Date) -> String {

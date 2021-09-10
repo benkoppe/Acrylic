@@ -158,13 +158,45 @@ struct Assignment_WidgetEntryView: View {
     struct successView: View {
         
         let assignments: [Assignment]
-        @State private var placedFirstHeader = false
+        
+        var splitAssignments: [[Assignment]] {
+            if assignments.count > 0 {
+                var assy: [[Assignment]] = []
+                var shortAssy: [Assignment] = []
+                var lastDate = assignments[0].due
+                
+                for assignment in assignments {
+                    if assignment.due.getYearDay() != lastDate.getYearDay() {
+                        assy.append(shortAssy)
+                        shortAssy = []
+                    }
+                    shortAssy.append(assignment)
+                    lastDate = assignment.due
+                }
+                assy.append(shortAssy)
+                
+                return assy
+                
+            } else { return [] }
+        }
         
         var body: some View {
             GeometryReader { geo in
                 VStack {
                     ZStack {
                         Color("WidgetBackground")
+                        
+                        ForEach(splitAssignments, id: \.self) { assignmentArray in
+                            
+                            HStack {
+                                VStack(alignment: .leading, spacing: 0) {
+                                    
+                                }
+                                
+                                Spacer()
+                            }
+                            
+                        }
                         
                         VStack(alignment: .leading, spacing: 0) {
                             ForEach(0 ..< assignments.count) { index in
@@ -178,6 +210,30 @@ struct Assignment_WidgetEntryView: View {
                     }
                 }
                 //.frame(width: geo.size.width, height: geo.size.height, alignment: .topLeading)
+            }
+        }
+        
+        func createTitleText(for date: Date) -> String {
+            let day = date.getYearDay()
+            var shortFormatter: DateFormatter {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "EEEE"
+                return formatter
+            }
+            var formatter: DateFormatter {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "EEEE, MMM d"
+                return formatter
+            }
+            
+            if day == Date().getYearDay() {
+                return "Today"
+            } else if day == (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() {
+                return "Tomorrow"
+            } else if (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() - day < 7 {
+                return shortFormatter.string(from: date)
+            } else {
+                return formatter.string(from: date)
             }
         }
         
@@ -260,30 +316,6 @@ struct Assignment_WidgetEntryView: View {
                 .offset(x: 1)
                 .frame(height: 40)
                 
-            }
-            
-            func createTitleText(for date: Date) -> String {
-                let day = date.getYearDay()
-                var shortFormatter: DateFormatter {
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "EEEE"
-                    return formatter
-                }
-                var formatter: DateFormatter {
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "EEEE, MMM d"
-                    return formatter
-                }
-                
-                if day == Date().getYearDay() {
-                    return "Today"
-                } else if day == (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() {
-                    return "Tomorrow"
-                } else if (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() - day < 7 {
-                    return shortFormatter.string(from: date)
-                } else {
-                    return formatter.string(from: date)
-                }
             }
         }
     }

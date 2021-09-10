@@ -12,30 +12,13 @@ struct ContentView: View {
     @ObservedObject var courseArray = CourseArray()
     
     var body: some View {
-        TabView {
-            NavigationView {
-                CourseList()
-                    .environmentObject(courseArray)
-            }
+        AssignmentList()
+            .environmentObject(courseArray)
             .tabItem {
-                Image(systemName: "graduationcap")
-                Text("Courses")
+                //Image(systemName: "checklist")
+                //Image(systemName: "list.bullet.rectangle")
+                Text("Assignments")
             }
-            
-            AssignmentList()
-                .environmentObject(courseArray)
-                .tabItem {
-                    //Image(systemName: "checklist")
-                    Image(systemName: "list.bullet.rectangle")
-                    Text("Assignments")
-                }
-            
-            Settings()
-                .tabItem {
-                    Image(systemName: "gearshape")
-                    Text("Settings")
-                }
-        }
     }
 }
 

@@ -53,7 +53,7 @@ struct AddCourse: View {
                 presentationMode.wrappedValue.dismiss()
             }.padding([.trailing, .vertical]), trailing: Button("Save") {
                 saveData()
-            }.padding([.leading]))
+            }.padding([.leading, .vertical]))
         }
     }
     

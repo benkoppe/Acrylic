@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct CourseList: View {
+    init() {
+        UITableView.appearance().backgroundColor = .clear
+    }
+    
     @EnvironmentObject var courseArray: CourseArray
     
     @State private var editMode: EditMode = .inactive
@@ -19,34 +23,62 @@ struct CourseList: View {
     @State private var addCourse = false
     @State private var editCourse: Course?
     
+    var activeEditButton: Bool {
+        return courseArray.courses.count == 0
+    }
+    
     var body: some View {
         List {
-            if courseArray.courses.count > 0 {
-                ForEach(courseArray.courses, id: \.self.code) { course in
+            Section(header:
+                HStack {
+                    EditButton()
+                        .disabled(activeEditButton)
+                        .environment(\.editMode, self.$editMode)
+                    Spacer()
                     Button(action: {
-                        editCourse = course
+                        if editMode == .active {
+                            deleteAllAlert = true
+                        } else {
+                            showingAddSheet = true
+                        }
                     }) {
-                        listItem(course: course)
-                            .foregroundColor(.primary)
+                        Image(systemName: editMode == .active ? "trash" : "plus")
+                    }.foregroundColor(editMode == .active ? .red : .accentColor)
+                }
+                .padding([.horizontal, .top])
+            ) {
+                if courseArray.courses.count > 0 {
+                    ForEach(courseArray.courses, id: \.self.code) { course in
+                        Button(action: {
+                            editCourse = course
+                        }) {
+                            listItem(course: course, editMode: editMode)
+                                .foregroundColor(.primary)
+                        }
                     }
+                    .onDelete(perform: delete)
+                    .onMove(perform: move)
+                    .listRowBackground(Color(.systemGroupedBackground))
+                } else {
+                    VStack(alignment: .leading) {
+                        Text("No courses yet")
+                            .font(.headline)
+                        Text("Press the plus button to add your classes!")
+                            .font(.caption)
+                            .italic()
+                    }
+                    .padding(8)
+                    .listRowBackground(Color(.systemGroupedBackground))
                 }
-                .onDelete(perform: delete)
-                .onMove(perform: move)
-            } else {
-                VStack(alignment: .leading) {
-                    Text("No courses yet")
-                        .font(.headline)
-                    Text("Press the plus button to add your classes!")
-                        .font(.caption)
-                        .italic()
-                }
-                .padding(8)
             }
         }
+        .background(Color(.black).ignoresSafeArea())
         .onAppear(perform: manageOrder)
+        .onDisappear() {
+            UITableView.appearance().backgroundColor = .systemBackground
+        }
         .listStyle(InsetGroupedListStyle())
-        .navigationTitle("Classes")
-        .toolbar {
+        /*.toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 EditButton()
                     .disabled(courseArray.courses.count == 0)
@@ -62,7 +94,7 @@ struct CourseList: View {
             }) {
                 Image(systemName: editMode == .active ? "trash" : "plus")
             }.foregroundColor(editMode == .active ? .red : .accentColor).padding([.vertical, .leading])
-        )
+        )*/
         .environment(\.editMode, self.$editMode)
         .actionSheet(isPresented: $showingAddSheet) {
             ActionSheet(title: Text("How would you like to add your course(s)?"), buttons: [
@@ -109,6 +141,7 @@ struct CourseList: View {
     
     struct listItem: View {
         @ObservedObject var course: Course
+        let editMode: EditMode
         
         var body: some View {
             HStack {
@@ -135,10 +168,12 @@ struct CourseList: View {
                 
                 Spacer()
                 
-                Image(systemName: "chevron.right")
-                    .renderingMode(.template)
-                    .padding(.trailing, 10)
-                    .opacity(0.5)
+                if editMode == .inactive {
+                    Image(systemName: "chevron.right")
+                        .renderingMode(.template)
+                        .padding(.trailing, 10)
+                        .opacity(0.5)
+                }
             }
             .id(UUID())
             .padding(.vertical, 3)

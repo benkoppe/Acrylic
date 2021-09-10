@@ -39,10 +39,10 @@ struct GetCourses: View {
                         .navigationBarTitle("Get Canvas Courses")
                         .navigationBarItems(leading: Button("Cancel") {
                             presentationMode.wrappedValue.dismiss()
-                        }.padding([.trailing]), trailing: Button("Add") {
+                        }.padding([.trailing, .vertical]), trailing: Button("Add") {
                             addCourses()
                             presentationMode.wrappedValue.dismiss()
-                        }.padding([.leading]).disabled(fetchState != .success))
+                        }.padding([.leading, .vertical]).disabled(fetchState != .success))
                 }
             }
         }
@@ -117,6 +117,7 @@ struct GetCourses: View {
                         }
                     }
                 }
+                .listStyle(PlainListStyle())
                 .padding([.horizontal, .bottom])
             }
         }

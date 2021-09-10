@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct AssignmentList: View {
+    @State private var showingMeView = false
+    @State private var showingSettingsView = false
+    
     @State private var doneFetching = false
     
     @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var auth: String = ""
@@ -39,24 +42,54 @@ struct AssignmentList: View {
                 case .success:
                     successView(assignments: $assignments)
                     
-                default:
+                case .loading:
                     ProgressView("Loading Assignments...")
-                        .offset(x: 0, y: -40)
+                        .offset(y: -40)
+                    
+                default:
+                    VStack {
+                        Image(systemName: "xmark.circle")
+                            .font(.system(size: 40))
+                            .padding(.horizontal, 5)
+                            .foregroundColor(.red)
+                        Spacer()
+                            .frame(height: 10)
+                        Text("An error occured. Please check your settings and internet connection, and try again.")
+                            .font(.caption)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 300)
+                    }
+                    .offset(y: -40)
+                    .foregroundColor(.secondary)
                     
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("\(Image(systemName: "paintbrush")) Assignments")
+                ToolbarItemGroup(placement: .navigationBarLeading) {
+                    //Text("\(Image(systemName: "paintbrush")) Assignments")
+                    Text("Acrylic")
+                        .font(.title2)
+                        .bold()
+                        .padding(.vertical)
+                    Button(action: {
+                        fetchAssignments()
+                    }) {
+                        Image(systemName: "arrow.clockwise")
+                    }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        print("Button pressed")
+                        showingMeView = true
                     }) {
                         Image(systemName: "person.crop.circle")
+                            .font(.callout)
                     }
                 }
+            }
+            .sheet(isPresented: $showingMeView) {
+                MeView()
+                    .environmentObject(courseArray)
             }
         }
         .onAppear(perform: fetchAssignments)
@@ -64,12 +97,11 @@ struct AssignmentList: View {
     
     struct successView: View {
         @Binding var assignments: [Assignment]
-        @State private var placedFirstHeader = false
         
         var splitAssignments: [[Assignment]] {
             if assignments.count > 0 {
                 var assy: [[Assignment]] = []
-                var shortAssy: [Assignment] = [assignments[0]]
+                var shortAssy: [Assignment] = []
                 var lastDate = assignments[0].due
                 
                 for assignment in assignments {
@@ -98,7 +130,7 @@ struct AssignmentList: View {
                                 .clipShape(
                                     RoundedRectangle(cornerRadius: 15)
                                 )
-                                .padding(.vertical, 1)
+                                .padding(.vertical, 7)
                                 .padding(3)
                             
                             
@@ -122,7 +154,7 @@ struct AssignmentList: View {
                             .padding(.leading, 4)
                         }
                         
-                        Spacer().frame(height: 10)
+                        Spacer().frame(height: 0.1)
                     }
                     
                     Spacer()
@@ -132,6 +164,11 @@ struct AssignmentList: View {
         
         func createTitleText(for date: Date) -> String {
             let day = date.getYearDay()
+            var shortFormatter: DateFormatter {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "EEEE"
+                return formatter
+            }
             var formatter: DateFormatter {
                 let formatter = DateFormatter()
                 formatter.dateFormat = "EEEE, MMM d"
@@ -142,6 +179,8 @@ struct AssignmentList: View {
                 return "Today"
             } else if day == (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() {
                 return "Tomorrow"
+            } else if (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() - day < 7 {
+                return shortFormatter.string(from: date)
             } else {
                 return formatter.string(from: date)
             }
@@ -255,6 +294,10 @@ struct AssignmentList: View {
                     return
                 }
             }.resume()
+        }
+        if prefixes.isEmpty {
+            fetchState = .failure
+            return
         }
     }
     

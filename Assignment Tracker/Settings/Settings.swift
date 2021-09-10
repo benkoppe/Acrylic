@@ -7,22 +7,29 @@
 
 import SwiftUI
 import UIKit
+import Introspect
 
 struct Settings: View {
+    init() {
+        
+    }
+    
     var body: some View {
-        NavigationView {
+        //NavigationView {
             Form {
                 CanvasSettings()
             }
             .navigationTitle("Settings")
-        }
+            .navigationBarTitleDisplayMode(.inline)
+        //}
     }
     
     struct CanvasSettings: View {
         @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var authCode: String = ""
         @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
         
-        @State private var showingAuthInfo = false
+        @State private var showingPrefixes = false
+        @State private var showingAuth = false
         
         @State private var userFetchState: FetchState = .unstarted
         
@@ -35,50 +42,60 @@ struct Settings: View {
         
         var body: some View {
             Section(header: Text("Canvas Authentication")) {
-                NavigationLink(destination: PrefixView(prefixes: $prefixes)) {
+                Button(action: {
+                    showingPrefixes = true
+                }) {
                     HStack {
                         Text("Prefixes")
                         Spacer()
-                        Text(prefixes.joined(separator: ", "))
-                            .lineLimit(1)
-                            .foregroundColor(.secondary)
-                            .frame(maxWidth: 200, alignment: .trailing)
-                            
-                    }
-                }
-                
-                HStack {
-                    SecureField("Authentication Code", text: $authCode)
-                        .disableAutocorrection(true)
-                    
-                    Spacer()
-                    
-                    if authCode == "" {
-                        Button(action: {
-                            showingAuthInfo = true
-                        }) {
-                            Image(systemName: "info.circle")
-                                .foregroundColor(.blue)
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                    } else {
-                        switch userFetchState {
-                        case .loading:
-                            ProgressView()
-                        case .success:
-                            if let pfp = pfp {
-                                Image(uiImage: pfp)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .clipShape(Circle())
-                                    .frame(width: 20, height: 20)
-                            } else {
-                                Image(systemName: "checkmark")
-                            }
-                        default:
+                        if !prefixes.isEmpty {
+                            Text(prefixes.joined(separator: ", "))
+                                .lineLimit(1)
+                                .foregroundColor(.secondary)
+                                .frame(maxWidth: 200, alignment: .trailing)
+                        } else {
                             Image(systemName: "exclamationmark.circle")
                                 .foregroundColor(.red)
                         }
+                        Spacer().frame(width: 5)
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundColor(.tertiaryLabel)
+                    }
+                }
+                .foregroundColor(.primary)
+                .sheet(isPresented: $showingPrefixes) {
+                    PrefixView(prefixes: $prefixes)
+                }
+                
+                HStack {
+                    Button(action: {
+                        showingAuth = true
+                    }) {
+                        HStack {
+                            Text("Auth Code")
+                            Spacer()
+                            
+                            switch userFetchState {
+                            case .loading:
+                                ProgressView()
+                            case .success:
+                                Image(systemName: "checkmark.circle")
+                                    .foregroundColor(.green)
+                            default:
+                                Image(systemName: "exclamationmark.circle")
+                                    .foregroundColor(.red)
+                            }
+                            
+                            Spacer().frame(width: 5)
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 13, weight: .bold))
+                                .foregroundColor(.tertiaryLabel)
+                        }
+                    }
+                    .foregroundColor(.primary)
+                    .fullScreenCover(isPresented: $showingAuth) {
+                        AuthView(authCode: $authCode)
                     }
                 }
                 .onAppear() { loadUser() }
@@ -88,12 +105,14 @@ struct Settings: View {
         
         func loadUser() {
             self.pfp = nil
+            let defaults = UserDefaults.init(suiteName: "group.com.benk.assytrack")
             for prefix in prefixes {
                 userFetchState = .loading
                 let urlString = "https://\(prefix).instructure.com/api/v1/users/self/profile"
                 guard let url = URL(string: urlString) else {
                     userFetchState = .failure
                     print("URL Failure")
+                    defaults?.setValue(nil, forKey: "pfp")
                     return
                 }
                 var request = URLRequest(url: url)
@@ -102,6 +121,7 @@ struct Settings: View {
                     if let response = response, let httpResponse = response as? HTTPURLResponse {
                         if httpResponse.statusCode == 401 {
                             userFetchState = .failure
+                            defaults?.setValue(nil, forKey: "pfp")
                             return
                         }
                     }
@@ -121,12 +141,19 @@ struct Settings: View {
                     }
                 }.resume()
             }
+            return
         }
         
         func fetchImage(url: URL) {
             URLSession.shared.dataTask(with: url) { data, response, error in
                 guard let data = data else { return }
+                let defaults = UserDefaults.init(suiteName: "group.com.benk.assytrack")
                 if let pfp = UIImage(data: data) {
+                    if let pngData = pfp.pngData() {
+                        defaults?.setValue(pngData, forKey: "pfp")
+                    } else {
+                        defaults?.setValue(nil, forKey: "pfp")
+                    }
                     self.pfp = pfp
                 }
             }.resume()
@@ -140,35 +167,180 @@ struct Settings: View {
             }
         }
         
+        struct AuthView: View {
+            @Environment(\.presentationMode) var presentationMode
+            
+            @Binding var authCode: String
+            @State private var editCode: String = ""
+            
+            @State private var isSecure = false
+            
+            var body: some View {
+                NavigationView {
+                    ScrollView {
+                        VStack(alignment: .center) {
+                            Text("A Canvas Authentication Token is required to access your assignments.")
+                                .font(.title2)
+                                .bold()
+                                .multilineTextAlignment(.center)
+                                .padding(.top, 30)
+                                .padding(.bottom)
+                                .padding(.horizontal)
+                                .fixedSize(horizontal: false, vertical: true)
+                            
+                            /*Image("Instructions")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 300, height: 300)*/
+                            
+                            Spacer()
+                            
+                            Group {
+                                Image("Settings")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 100)
+                                    .padding(3)
+                                Image(systemName: "arrow.down")
+                                Image("NewToken")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 200)
+                                    .padding(3)
+                                Image(systemName: "arrow.down")
+                                Image("GenerateToken")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 150)
+                                    .padding(3)
+                            }
+                            
+                            HStack(spacing: 0) {
+                                
+                                /*if !isSecure {
+                                    
+                                    TextField("Authentication Code", text: $editCode)
+                                        .lineLimit(1)
+                                        .disableAutocorrection(true)
+                                        .autocapitalization(.none)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    
+                                } else {
+                                    
+                                    SecureField("Authentication Code", text: $editCode)
+                                        .lineLimit(1)
+                                        .disableAutocorrection(true)
+                                        .autocapitalization(.none)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                        .disabled(true)
+                                        .contrast(0.9)
+                                    
+                                    Button("Clear") {
+                                        withAnimation { isSecure.toggle() }
+                                        editCode = ""
+                                    }
+                                    .padding(.horizontal)
+                                    
+                                }*/
+                                
+                                TextField("Authentication Code", text: $editCode)
+                                    .lineLimit(1)
+                                    .disableAutocorrection(true)
+                                    .autocapitalization(.none)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .disabled(isSecure)
+                                    .contrast(isSecure ? 0.7 : 1)
+                                    .introspectTextField { textField in
+                                        textField.isSecureTextEntry = isSecure
+                                    }
+                                
+                                if isSecure {
+                                    Button("Clear") {
+                                        withAnimation { isSecure.toggle(); editCode = "" }
+                                    }
+                                    .padding(.horizontal)
+                                }
+                                
+                                //Spacer().frame(width: 5)
+                                
+                                /*Image(systemName: "checkmark")
+                                    .foregroundColor(.green)
+                                    .padding(.horizontal)(*/
+                            }
+                            .padding(.horizontal)
+                            .padding(.top, 20)
+                            
+                            Text("Your code will only be stored on-device, and Canvas will only be accessed for display purposes.")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                                .italic()
+                                .multilineTextAlignment(.center)
+                                .padding()
+                                .fixedSize(horizontal: false, vertical: true)
+                            
+                            Spacer()
+                        }
+                        .onAppear() { editCode = authCode; if !authCode.isEmpty { isSecure = true } }
+                        .navigationBarTitleDisplayMode(.inline)
+                        .navigationBarTitle("Set Auth Code")
+                        .navigationBarItems(leading: Button(action: {
+                            presentationMode.wrappedValue.dismiss()
+                        }) {
+                            Text("Cancel")
+                        }.padding([.vertical, .trailing]), trailing: Button(action: {
+                            authCode = editCode
+                            presentationMode.wrappedValue.dismiss()
+                        }){
+                            Text("Done")
+                        }.padding([.vertical, .leading]))
+                    }
+                    .background(Color(.secondarySystemBackground).ignoresSafeArea(.all))
+                }
+            }
+        }
+        
         struct PrefixView: View {
+            @Environment(\.presentationMode) var presentationMode
+            
             @Binding var prefixes: [String]
             
             @State private var addNew = false
             
             var body: some View {
-                List {
-                    ForEach(prefixes, id: \.self) { prefix in
-                        Group {
-                            Text("https://")
-                                .foregroundColor(.tertiaryLabel)
-                                + Text(prefix)
-                                .foregroundColor(.primary)
-                                + Text(".instructure.com/")
-                                .foregroundColor(.tertiaryLabel)
+                NavigationView {
+                    List {
+                        if !prefixes.isEmpty {
+                            ForEach(prefixes, id: \.self) { prefix in
+                                Group {
+                                    Text("https://")
+                                        .foregroundColor(.tertiaryLabel)
+                                        + Text(prefix)
+                                        .foregroundColor(.primary)
+                                        + Text(".instructure.com/")
+                                        .foregroundColor(.tertiaryLabel)
+                                }
+                            }
+                            .onDelete(perform: delete)
+                        } else {
+                            Text("Please add at least one prefix.")
+                                .font(.callout)
+                                .italic()
+                                .foregroundColor(.red)
                         }
                     }
-                    .onDelete(perform: delete)
-                }
-                .listStyle(InsetGroupedListStyle())
-                .navigationTitle("Prefixes")
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationBarItems(trailing: Button(action: {
-                    addNew = true
-                }) {
-                    Image(systemName: "plus")
-                }.padding([.vertical, .leading]))
-                .sheet(isPresented: $addNew) {
-                    AddPrefix(prefixes: $prefixes)
+                    .listStyle(InsetGroupedListStyle())
+                    .navigationTitle("Prefixes")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationBarItems(leading: Button(action: {
+                        presentationMode.wrappedValue.dismiss()
+                    }) { Image(systemName: "chevron.down") }.padding([.vertical, .trailing]), trailing: Button(action: {
+                        addNew = true
+                    }) {
+                        Image(systemName: "plus")
+                    }.padding([.vertical, .leading]))
+                    .fullScreenCover(isPresented: $addNew) {
+                        AddPrefix(prefixes: $prefixes)
+                    }
                 }
             }
             
@@ -194,11 +366,12 @@ struct Settings: View {
                                 .bold()
                                 .multilineTextAlignment(.center)
                                 .padding(.top, 30)
-                                .padding(.bottom, 1)
                                 .padding(.horizontal)
                             
+                            Spacer().frame(height: 12)
+                            
                             Text("Prefixes tell the app which institutions to load.")
-                                .font(.headline)
+                                .font(.system(size: 14, weight: .semibold))
                                 .foregroundColor(.secondary)
                                 .multilineTextAlignment(.center)
                                 .padding(.horizontal)
@@ -229,23 +402,25 @@ struct Settings: View {
                                 TextField("hsccsd", text: $prefix)
                                     .disableAutocorrection(true)
                                     .autocapitalization(.none)
-                                    .foregroundColor(Color.primary)
-                                    .padding(.vertical, 10)
-                                    .overlay(Rectangle().frame(height: 2).padding(.top, 35).padding(.trailing,10))
-                                    .foregroundColor(Color.blue)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    //.foregroundColor(Color.primary)
+                                    //.padding(.vertical, 10)
+                                    //.overlay(Rectangle().frame(height: 2).padding(.top, 35).padding(.trailing,10))
+                                    //.foregroundColor(Color.blue)
                             }
                             .padding(20)
                             
                             Spacer()
                         }
+                        .background(Color(.secondarySystemBackground).ignoresSafeArea(.all))
                         .navigationBarTitle("New Prefix")
                         .navigationBarTitleDisplayMode(.inline)
                         .navigationBarItems(leading: Button("Cancel") {
                             presentationMode.wrappedValue.dismiss()
-                        }.padding([.trailing]), trailing: Button("Add") {
+                        }.padding([.vertical, .trailing]), trailing: Button("Add") {
                             prefixes.append(prefix)
                             presentationMode.wrappedValue.dismiss()
-                        }.padding([.leading]).disabled(prefix == ""))
+                        }.padding([.vertical, .leading]).disabled(prefix == ""))
                     }
                 }
             }

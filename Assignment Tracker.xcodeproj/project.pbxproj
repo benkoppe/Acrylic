@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -28,7 +28,9 @@
 		B507F04826E41EBA00861CEE /* Course.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04626E413A600861CEE /* Course.swift */; };
 		B507F04D26E9EAAB00861CEE /* ReadSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04C26E9EAAB00861CEE /* ReadSize.swift */; };
 		B507F04F26E9EFDD00861CEE /* ReadSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04C26E9EAAB00861CEE /* ReadSize.swift */; };
+		B507F05126EA929900861CEE /* MeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F05026EA929900861CEE /* MeView.swift */; };
 		B52F2D4526E13F6100AAEDC0 /* Date-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */; };
+		B54E5EB126EBE07A0076C55C /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = B54E5EB026EBE07A0076C55C /* Introspect */; };
 		B57A2C5126D6B37F0047C6E2 /* Assignment_TrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5026D6B37F0047C6E2 /* Assignment_TrackerApp.swift */; };
 		B57A2C5326D6B37F0047C6E2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5226D6B37F0047C6E2 /* ContentView.swift */; };
 		B57A2C5526D6B3800047C6E2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B57A2C5426D6B3800047C6E2 /* Assets.xcassets */; };
@@ -102,6 +104,7 @@
 		B507F04326E409D000861CEE /* URL-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL-Extensions.swift"; sourceTree = "<group>"; };
 		B507F04626E413A600861CEE /* Course.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Course.swift; sourceTree = "<group>"; };
 		B507F04C26E9EAAB00861CEE /* ReadSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadSize.swift; sourceTree = "<group>"; };
+		B507F05026EA929900861CEE /* MeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeView.swift; sourceTree = "<group>"; };
 		B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date-Extensions.swift"; sourceTree = "<group>"; };
 		B57A2C4D26D6B37F0047C6E2 /* Assignment Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Assignment Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B57A2C5026D6B37F0047C6E2 /* Assignment_TrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment_TrackerApp.swift; sourceTree = "<group>"; };
@@ -140,6 +143,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B54E5EB126EBE07A0076C55C /* Introspect in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,6 +207,7 @@
 			isa = PBXGroup;
 			children = (
 				B57A2C9726DD7B650047C6E2 /* AssignmentList.swift */,
+				B507F05026EA929900861CEE /* MeView.swift */,
 			);
 			path = Assignments;
 			sourceTree = "<group>";
@@ -345,6 +350,7 @@
 			);
 			name = "Assignment Tracker";
 			packageProductDependencies = (
+				B54E5EB026EBE07A0076C55C /* Introspect */,
 			);
 			productName = "Assignment Tracker";
 			productReference = B57A2C4D26D6B37F0047C6E2 /* Assignment Tracker.app */;
@@ -421,6 +427,7 @@
 			);
 			mainGroup = B57A2C4426D6B37F0047C6E2;
 			packageReferences = (
+				B54E5EAF26EBE07A0076C55C /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 			);
 			productRefGroup = B57A2C4E26D6B37F0047C6E2 /* Products */;
 			projectDirPath = "";
@@ -494,6 +501,7 @@
 				B57A2C9E26DE8A450047C6E2 /* GetCourses.swift in Sources */,
 				B507F01A26E2D5B100861CEE /* Assignment_Widget.swift in Sources */,
 				B507F04426E409D000861CEE /* URL-Extensions.swift in Sources */,
+				B507F05126EA929900861CEE /* MeView.swift in Sources */,
 				B57A2C9026D9712A0047C6E2 /* AddCourse.swift in Sources */,
 				B507EFFF26E2B6DE00861CEE /* Assignment_Widget.intentdefinition in Sources */,
 				B57A2C5326D6B37F0047C6E2 /* ContentView.swift in Sources */,
@@ -892,6 +900,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B54E5EAF26EBE07A0076C55C /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B54E5EB026EBE07A0076C55C /* Introspect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B54E5EAF26EBE07A0076C55C /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = Introspect;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B57A2C4526D6B37F0047C6E2 /* Project object */;
 }

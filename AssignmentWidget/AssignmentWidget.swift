@@ -157,6 +157,7 @@ struct Assignment_WidgetEntryView: View {
     
     struct successView: View {
         
+        @State private var hasStopped = false
         let assignments: [Assignment]
         
         var splitAssignments: [[Assignment]] {
@@ -181,35 +182,41 @@ struct Assignment_WidgetEntryView: View {
         }
         
         var body: some View {
-            GeometryReader { geo in
-                VStack {
-                    ZStack {
-                        Color("WidgetBackground")
-                        
-                        ForEach(splitAssignments, id: \.self) { assignmentArray in
-                            
-                            HStack {
-                                VStack(alignment: .leading, spacing: 0) {
-                                    
-                                }
-                                
-                                Spacer()
-                            }
-                            
-                        }
-                        
+            VStack {
+                ZStack {
+                    Color("WidgetBackground")
+                    
+                    GeometryReader { geo in
                         VStack(alignment: .leading, spacing: 0) {
-                            ForEach(0 ..< assignments.count) { index in
-                                if index < assignments.count && assignments[index].due > Date() {
-                                    assignmentItem(assignments: assignments, index: index)
+                            let sizeFittedAssignments = sizeFittedAssignments(proxy: geo)
+                            
+                            ForEach(0 ..< sizeFittedAssignments.count) { index in
+                                
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        Text(createTitleText(for: sizeFittedAssignments[index][0].due))
+                                            .font(.system(size: 20, weight: .semibold, design: .rounded))
+                                            .foregroundColor(.gray)
+                                            .brightness(0.5)
+                                            .frame(height: 30)
+                                        
+                                        ForEach(0 ..< sizeFittedAssignments[index].count, id: \.self) { smallIndex in
+                                            assignmentItem(assignment: sizeFittedAssignments[index][smallIndex])
+                                        }
+                                    }
+                                    Spacer()
                                 }
                             }
+                            
+                            let count = sizeFittedAssignments.count
+                            if sizeFittedAssignments[count].last != splitAssignments[count].last {
+                                leftItem(totalAssignments: splitAssignments[count].count, index: sizeFittedAssignments[count].count)
+                            }
                         }
-                        .padding()
-                        .padding(.top, 3)
                     }
+                    .padding()
+                    .padding(.top, 3)
                 }
-                //.frame(width: geo.size.width, height: geo.size.height, alignment: .topLeading)
             }
         }
         
@@ -237,16 +244,83 @@ struct Assignment_WidgetEntryView: View {
             }
         }
         
-        struct assignmentItem: View {
-            init(assignments: [Assignment], index: Int) {
-                self.assignment = assignments[index]
-                self.includeHeader = index == 0 || assignments[index].due.getYearDay() != assignments[index-1].due.getYearDay()
-                self.spaceTop = index != 0
+        func sizeFittedAssignments(proxy: GeometryProxy) -> [[Assignment]] {
+            var sizeFittedArray: [[Assignment]] = []
+            var sizeUsed = 0
+            let totalSize = Int(proxy.size.height)
+            
+            for assignmentArray in splitAssignments {
+                sizeUsed += ItemType.title.rawValue
+                if sizeUsed + ItemType.more.rawValue > totalSize {
+                    break
+                }
+                
+                var addArray: [Assignment] = []
+                for assignment in assignmentArray {
+                    sizeUsed += ItemType.item.rawValue
+                    if sizeUsed + ItemType.more.rawValue > totalSize {
+                        if assignment == assignmentArray.last && sizeUsed < totalSize {
+                            addArray.append(assignment)
+                        }
+                        break
+                    }
+                    addArray.append(assignment)
+                }
+                sizeFittedArray.append(addArray)
             }
             
+            return sizeFittedArray
+        }
+        
+        enum ItemType: Int {
+            case title = 30
+            case item = 40
+            case more = 20
+        }
+        
+        func checkTitleRoom(index: Int, proxy: GeometryProxy) -> Bool {
+            var sizeUsed = ItemType.title.rawValue
+            
+            if index == 0 { return true }
+            
+            for i in 0...(index-1) {
+                sizeUsed += ItemType.title.rawValue
+                for _ in 0..<splitAssignments[i].count {
+                    sizeUsed += ItemType.item.rawValue
+                }
+            }
+            
+            if (sizeUsed + ItemType.more.rawValue) >= Int(proxy.size.height) {
+                return false
+            } else {
+                return true
+            }
+        }
+        
+        func checkItemRoom(bigIndex: Int, smallIndex: Int, proxy: GeometryProxy) -> Bool {
+            var sizeUsed = 0
+            for i in 0...bigIndex {
+                sizeUsed += ItemType.title.rawValue
+                if i != bigIndex {
+                    for _ in 0..<splitAssignments[i].count {
+                        sizeUsed += ItemType.item.rawValue
+                    }
+                } else {
+                    for _ in 0...smallIndex {
+                        sizeUsed += ItemType.item.rawValue
+                    }
+                }
+            }
+            
+            if (sizeUsed + ItemType.more.rawValue) >= Int(proxy.size.height) {
+                return false
+            } else {
+                return true
+            }
+        }
+        
+        struct assignmentItem: View {
             let assignment: Assignment
-            let includeHeader: Bool
-            let spaceTop: Bool
             
             var timeFormatter: DateFormatter {
                 let formatter = DateFormatter()
@@ -256,21 +330,6 @@ struct Assignment_WidgetEntryView: View {
             }
             
             var body: some View {
-                
-                if includeHeader {
-                    HStack(alignment: .center, spacing: 0) {
-                        Text(createTitleText(for: assignment.due))
-                            //.font(.system(.title, design: .rounded))
-                            .font(.system(size: 20, weight: .semibold, design: .rounded))
-                            .foregroundColor(.gray)
-                            .brightness(0.5)
-                            .frame(height: 30)
-                        //.padding(.bottom, 7)
-                        
-                        Spacer()
-                    }
-                }
-                
                 
                 HStack(alignment: .center, spacing: 0) {
                     Spacer().frame(width: 7)
@@ -316,6 +375,44 @@ struct Assignment_WidgetEntryView: View {
                 .offset(x: 1)
                 .frame(height: 40)
                 
+            }
+        }
+        
+        struct leftItem: View {
+            @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
+            let assignmentsLeft: Int
+            
+            init(totalAssignments: Int, index: Int) {
+                assignmentsLeft = totalAssignments - (index + 1)
+            }
+            
+            var body: some View {
+                HStack(alignment: .center, spacing: 0) {
+                    Spacer().frame(width: 7)
+                    
+                    Link(destination: URL(string: "widget://\(prefixes[0]).instructure.com")!) {
+                        
+                        HStack(alignment: .center, spacing: 0) {
+                            
+                            Text(String("\u{007C}"))
+                                .font(.system(size: 23, weight: .semibold, design: .rounded))
+                                .offset(y: -2)
+                                //.padding(.leading, 5)
+                            
+                            Text("\(assignmentsLeft) more assignment\(assignmentsLeft == 1 ? "" : "s")")
+                                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                                .lineLimit(1)
+                                .padding(.vertical, 1)
+                            
+                        }
+                        .foregroundColor(.secondary)
+                        
+                    }
+                    
+                    Spacer()
+                }
+                .offset(x: 1)
+                .frame(height: 20)
             }
         }
     }

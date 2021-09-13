@@ -68,22 +68,25 @@ struct AssignmentList: View {
                     
                 }
             }
-            //.navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Assignments")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                /*ToolbarItemGroup(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .navigationBarLeading) {
                     //Text("\(Image(systemName: "paintbrush")) Assignments")
                     Text("Assignments")
-                        .font(.title2)
+                        .font(.title)
                         .bold()
                         .padding(.vertical)
-                    Button(action: {
-                        fetchAssignments()
-                    }) {
-                        Image(systemName: "arrow.clockwise")
-                            .font(.callout)
-                    }.disabled(fetchState == .loading)
-                }*/
+                        .gradientForeground(colors: [.red, .orange, .yellow, .green, .blue, .purple])
+                   /* LinearGradient(gradient: Gradient(colors: [.red, .orange, .yellow, .green, .blue, .purple]), startPoint: .leading, endPoint: .trailing)
+                        .mask(
+                            Text("Assignments")
+                                .font(.title2)
+                                .bold()
+                                .padding(.vertical)
+                                .frame(width: 200, height: 100, alignment: .leading)
+                        )
+                        .frame(width: 200, height: 100, alignment: .leading)*/
+                }
                 /*ToolbarItem(placement: .navigationBarLeading) {
                     Picker("Sort Mode", selection: $sortMode) {
                         ForEach(sortModes, id: \.self) {
@@ -92,7 +95,15 @@ struct AssignmentList: View {
                     }
                     .labelsHidden()
                 }*/
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    Picker("Sort Mode", selection: $sortMode) {
+                        ForEach(sortModes, id: \.self) {
+                            Text($0)
+                        }
+                    }
+                    .labelsHidden()
+                    .scaleEffect(0.8)
+                    
                     Button(action: {
                         showingMeView = true
                     }) {
@@ -154,19 +165,15 @@ struct AssignmentList: View {
         }
         
         var body: some View {
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack {
-                    //Spacer().frame(height: 12)
-                    
-                    ForEach(splitAssignments, id: \.self) { assignmentArray in
+            List {
+                ForEach(splitAssignments, id: \.self) { assignmentArray in
+                    Section {
                         ZStack {
                             Color("WidgetBackground")
                                 .clipShape(
                                     RoundedRectangle(cornerRadius: 15)
                                 )
                                 .padding(.vertical, 7)
-                                .padding(3)
-                            
                             
                             HStack {
                                 VStack(alignment: .leading, spacing: 0) {
@@ -187,20 +194,24 @@ struct AssignmentList: View {
                             .padding(.vertical, 7)
                             .padding(.leading, 4)
                         }
-                        
-                        Spacer().frame(height: 0.1)
+                        .introspectTableViewCell { cell in
+                            cell.backgroundColor = .clear
+                            cell.separatorInset = .zero
+                            cell.clipsToBounds = true
+                            cell.layer.borderWidth = 0
+                        }
                     }
-                    
-                    Spacer()
                 }
-                
-                Spacer()
+            }
+            .listStyle(PlainListStyle())
+            .introspectTableView { tableView in
+                tableView.refreshControl = refreshController.controller
+                tableView.separatorStyle = .none
+                tableView.separatorColor = .clear
+                tableView.separatorInset = .zero
             }
             .onChange(of: refreshController.shouldReload) { value in
                 print(value)
-            }
-            .introspectScrollView { scrollView in
-                scrollView.refreshControl = refreshController.controller
             }
         }
         
@@ -270,8 +281,8 @@ struct AssignmentList: View {
                     }
                     .foregroundColor(.primary)
                     .offset(x: 10, y: 0)
-                    
                 }
+                .buttonStyle(PlainButtonStyle())
                 
             }
         }

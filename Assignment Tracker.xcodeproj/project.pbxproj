@@ -46,6 +46,7 @@
 		B57A2C9E26DE8A450047C6E2 /* GetCourses.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C9D26DE8A450047C6E2 /* GetCourses.swift */; };
 		B5A0987026DEFA9500411DCC /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A0986F26DEFA9500411DCC /* Settings.swift */; };
 		B5A0987726E00E3300411DCC /* Array-AppStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A0987626E00E3300411DCC /* Array-AppStorage.swift */; };
+		B5A920E126EF3F3300A71336 /* Gradient-Foreground.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A920E026EF3F3300A71336 /* Gradient-Foreground.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -127,6 +128,7 @@
 		B57A2C9D26DE8A450047C6E2 /* GetCourses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetCourses.swift; sourceTree = "<group>"; };
 		B5A0986F26DEFA9500411DCC /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		B5A0987626E00E3300411DCC /* Array-AppStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array-AppStorage.swift"; sourceTree = "<group>"; };
+		B5A920E026EF3F3300A71336 /* Gradient-Foreground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Gradient-Foreground.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -286,6 +288,7 @@
 			children = (
 				B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */,
 				B57A2C8D26D96E280047C6E2 /* Color-Extensions.swift */,
+				B5A920E026EF3F3300A71336 /* Gradient-Foreground.swift */,
 				B5A0987626E00E3300411DCC /* Array-AppStorage.swift */,
 				B507F04C26E9EAAB00861CEE /* ReadSize.swift */,
 				B507F04326E409D000861CEE /* URL-Extensions.swift */,
@@ -506,6 +509,7 @@
 				B507EFFF26E2B6DE00861CEE /* Assignment_Widget.intentdefinition in Sources */,
 				B57A2C5326D6B37F0047C6E2 /* ContentView.swift in Sources */,
 				B52F2D4526E13F6100AAEDC0 /* Date-Extensions.swift in Sources */,
+				B5A920E126EF3F3300A71336 /* Gradient-Foreground.swift in Sources */,
 				B507F00B26E2C50000861CEE /* AssignmentWidgetView.swift in Sources */,
 				B57A2C5126D6B37F0047C6E2 /* Assignment_TrackerApp.swift in Sources */,
 				B507F04D26E9EAAB00861CEE /* ReadSize.swift in Sources */,

@@ -48,7 +48,7 @@ struct MeView: View {
                             Circle()
                         )
                         .offset(y: 20)
-                        .shadow(radius: 30)
+                        .shadow(color: .black, radius: 15)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if showingSettings {

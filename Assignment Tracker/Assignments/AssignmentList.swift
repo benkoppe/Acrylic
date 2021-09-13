@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Introspect
 
 struct AssignmentList: View {
     @State private var showingMeView = false
@@ -20,6 +21,9 @@ struct AssignmentList: View {
     @State private var errorType: ErrorType = .none
     
     @EnvironmentObject var courseArray: CourseArray
+    
+    var sortModes = ["Date", "Course"]
+    @State private var sortMode = "Date"
     
     enum FetchState {
         case success, loading, failure
@@ -64,11 +68,12 @@ struct AssignmentList: View {
                     
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
+            //.navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Assignments")
             .toolbar {
-                ToolbarItemGroup(placement: .navigationBarLeading) {
+                /*ToolbarItemGroup(placement: .navigationBarLeading) {
                     //Text("\(Image(systemName: "paintbrush")) Assignments")
-                    Text("Acrylic")
+                    Text("Assignments")
                         .font(.title2)
                         .bold()
                         .padding(.vertical)
@@ -76,8 +81,17 @@ struct AssignmentList: View {
                         fetchAssignments()
                     }) {
                         Image(systemName: "arrow.clockwise")
+                            .font(.callout)
+                    }.disabled(fetchState == .loading)
+                }*/
+                /*ToolbarItem(placement: .navigationBarLeading) {
+                    Picker("Sort Mode", selection: $sortMode) {
+                        ForEach(sortModes, id: \.self) {
+                            Text($0)
+                        }
                     }
-                }
+                    .labelsHidden()
+                }*/
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         showingMeView = true
@@ -97,6 +111,26 @@ struct AssignmentList: View {
     
     struct successView: View {
         @Binding var assignments: [Assignment]
+        
+        @ObservedObject private var refreshController = AssignmentRefresh()
+        
+        class AssignmentRefresh: ObservableObject {
+            @Published var controller: UIRefreshControl
+            @Published var shouldReload = false
+            
+            init() {
+                controller = UIRefreshControl()
+                controller.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+            }
+            
+            @objc func handleRefresh() {
+                print("refreshing now...")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.controller.endRefreshing()
+                    self.shouldReload = true
+                }
+            }
+        }
         
         var splitAssignments: [[Assignment]] {
             if assignments.count > 0 {
@@ -122,7 +156,7 @@ struct AssignmentList: View {
         var body: some View {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack {
-                    Spacer().frame(height: 12)
+                    //Spacer().frame(height: 12)
                     
                     ForEach(splitAssignments, id: \.self) { assignmentArray in
                         ZStack {
@@ -159,6 +193,14 @@ struct AssignmentList: View {
                     
                     Spacer()
                 }
+                
+                Spacer()
+            }
+            .onChange(of: refreshController.shouldReload) { value in
+                print(value)
+            }
+            .introspectScrollView { scrollView in
+                scrollView.refreshControl = refreshController.controller
             }
         }
         

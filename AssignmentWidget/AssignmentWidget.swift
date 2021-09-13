@@ -144,7 +144,6 @@ struct Assignment_WidgetEntryView: View {
         case .success(let assignments):
             if assignments.count > 0 {
                 successView(assignments: assignments)
-                    .frame(alignment: .topLeading)
             } else {
                 Text("No assignments")
             }
@@ -182,43 +181,46 @@ struct Assignment_WidgetEntryView: View {
         }
         
         var body: some View {
-            VStack {
-                ZStack {
-                    Color("WidgetBackground")
-                    
-                    GeometryReader { geo in
-                        VStack(alignment: .leading, spacing: 0) {
-                            let sizeFittedAssignments = sizeFittedAssignments(proxy: geo)
+            ZStack {
+                Color("WidgetBackground")
+                
+                pfp()
+                .padding(25)
+                .padding(.trailing, 2)
+                
+                GeometryReader { geo in
+                    VStack(alignment: .leading, spacing: 0) {
+                        let sizeFittedAssignments = sizeFittedAssignments(proxy: geo)
+                        
+                        ForEach(0 ..< sizeFittedAssignments.count) { index in
                             
-                            ForEach(0 ..< sizeFittedAssignments.count) { index in
-                                
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 0) {
-                                        Text(createTitleText(for: sizeFittedAssignments[index][0].due))
-                                            .font(.system(size: 20, weight: .semibold, design: .rounded))
-                                            .foregroundColor(.gray)
-                                            .brightness(0.5)
-                                            .frame(height: 30)
-                                        
-                                        ForEach(0 ..< sizeFittedAssignments[index].count, id: \.self) { smallIndex in
-                                            assignmentItem(assignment: sizeFittedAssignments[index][smallIndex])
-                                        }
+                            HStack {
+                                VStack(alignment: .leading, spacing: 0) {
+                                    Text(createTitleText(for: splitAssignments[index][0].due))
+                                        .font(.system(size: 20, weight: .semibold, design: .rounded))
+                                        .foregroundColor(.gray)
+                                        .brightness(0.5)
+                                        .frame(height: 30)
+                                    
+                                    ForEach(0 ..< sizeFittedAssignments[index].count, id: \.self) { smallIndex in
+                                        assignmentItem(assignment: sizeFittedAssignments[index][smallIndex])
                                     }
-                                    Spacer()
                                 }
-                            }
-                            
-                            let count = sizeFittedAssignments.count
-                            if sizeFittedAssignments[count].last != splitAssignments[count].last {
-                                leftItem(totalAssignments: splitAssignments[count].count, index: sizeFittedAssignments[count].count)
+                                Spacer()
                             }
                         }
+                        
+                        let count = sizeFittedAssignments.count - 1
+                        if sizeFittedAssignments[count].last != splitAssignments[count].last {
+                            leftItem(assignmentsLeft: splitAssignments[count].count - sizeFittedAssignments[count].count)
+                        }
                     }
-                    .padding()
-                    .padding(.top, 3)
                 }
+                .padding()
+                .padding(.top, 3)
             }
         }
+        
         
         func createTitleText(for date: Date) -> String {
             let day = date.getYearDay()
@@ -278,44 +280,32 @@ struct Assignment_WidgetEntryView: View {
             case more = 20
         }
         
-        func checkTitleRoom(index: Int, proxy: GeometryProxy) -> Bool {
-            var sizeUsed = ItemType.title.rawValue
+        struct pfp: View {
+            @AppStorage("pfp", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var pfp: Data?
             
-            if index == 0 { return true }
-            
-            for i in 0...(index-1) {
-                sizeUsed += ItemType.title.rawValue
-                for _ in 0..<splitAssignments[i].count {
-                    sizeUsed += ItemType.item.rawValue
-                }
-            }
-            
-            if (sizeUsed + ItemType.more.rawValue) >= Int(proxy.size.height) {
-                return false
-            } else {
-                return true
-            }
-        }
-        
-        func checkItemRoom(bigIndex: Int, smallIndex: Int, proxy: GeometryProxy) -> Bool {
-            var sizeUsed = 0
-            for i in 0...bigIndex {
-                sizeUsed += ItemType.title.rawValue
-                if i != bigIndex {
-                    for _ in 0..<splitAssignments[i].count {
-                        sizeUsed += ItemType.item.rawValue
-                    }
+            var pfpImage: Image {
+                let defaults = UserDefaults.init(suiteName: "group.com.benk.assytrack")
+                if let data = defaults?.data(forKey: "pfp"), let image = UIImage(data: data) {
+                    return Image(uiImage: image)
                 } else {
-                    for _ in 0...smallIndex {
-                        sizeUsed += ItemType.item.rawValue
-                    }
+                    return Image(systemName: "person.crop.circle")
                 }
             }
             
-            if (sizeUsed + ItemType.more.rawValue) >= Int(proxy.size.height) {
-                return false
-            } else {
-                return true
+            var body: some View {
+                VStack {
+                    HStack {
+                        Spacer()
+                        Link(destination: URL(string: "widget://https://www.google.com")!) {
+                            pfpImage
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 28, height: 28)
+                                .clipShape(Circle())
+                        }
+                    }
+                    Spacer()
+                }
             }
         }
         
@@ -379,18 +369,13 @@ struct Assignment_WidgetEntryView: View {
         }
         
         struct leftItem: View {
-            @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
             let assignmentsLeft: Int
-            
-            init(totalAssignments: Int, index: Int) {
-                assignmentsLeft = totalAssignments - (index + 1)
-            }
             
             var body: some View {
                 HStack(alignment: .center, spacing: 0) {
                     Spacer().frame(width: 7)
                     
-                    Link(destination: URL(string: "widget://\(prefixes[0]).instructure.com")!) {
+                    Link(destination: URL(string: "widget://")!) {
                         
                         HStack(alignment: .center, spacing: 0) {
                             
@@ -403,15 +388,17 @@ struct Assignment_WidgetEntryView: View {
                                 .font(.system(size: 14, weight: .semibold, design: .rounded))
                                 .lineLimit(1)
                                 .padding(.vertical, 1)
+                                .padding(.leading, 2)
                             
                         }
+                        .padding(.top, 10)
                         .foregroundColor(.secondary)
                         
                     }
                     
                     Spacer()
                 }
-                .offset(x: 1)
+                .offset(x: 4)
                 .frame(height: 20)
             }
         }

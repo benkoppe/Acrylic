@@ -14,6 +14,8 @@ struct Assignment_TrackerApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .preferredColorScheme(.dark)
+                .colorScheme(.dark)
                 .onOpenURL { url in
                     var str = url.absoluteString
                     str.removeFirst(9)

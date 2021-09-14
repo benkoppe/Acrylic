@@ -9,7 +9,7 @@ import SwiftUI
 
 
 enum FetchError: Error {
-    case badURL, noAuth, badLoad
+    case badURL, noAuth, badLoad, noPrefixes, badPrefix
 }
 
 typealias TodoList = [TodoItem]

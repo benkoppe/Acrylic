@@ -8,8 +8,11 @@
 import SwiftUI
 import UIKit
 import Introspect
+import SwiftUIMailView
 
 struct Settings: View {
+    @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
+    
     init() {
         
     }
@@ -18,6 +21,12 @@ struct Settings: View {
         //NavigationView {
             Form {
                 CanvasSettings()
+                
+                Contact()
+                
+                if prefixes.contains("devtools") {
+                    DevTools()
+                }
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
@@ -64,7 +73,7 @@ struct Settings: View {
                     }
                 }
                 .foregroundColor(.primary)
-                .sheet(isPresented: $showingPrefixes) {
+                .sheet(isPresented: $showingPrefixes, onDismiss: loadUser) {
                     PrefixView(prefixes: $prefixes)
                 }
                 
@@ -94,12 +103,18 @@ struct Settings: View {
                         }
                     }
                     .foregroundColor(.primary)
-                    .fullScreenCover(isPresented: $showingAuth) {
+                    .fullScreenCover(isPresented: $showingAuth, onDismiss: loadUser) {
                         AuthView(authCode: $authCode)
                     }
                 }
                 .onAppear() { loadUser() }
-                .onChange(of: authCode) { _ in loadUser() }
+                .onChange(of: authCode) { _ in
+                    loadUser()
+                }
+                .onChange(of: prefixes) { _ in
+                    print("running")
+                    loadUser()
+                }
             }
         }
         
@@ -124,6 +139,11 @@ struct Settings: View {
                             defaults?.setValue(nil, forKey: "pfp")
                             return
                         }
+                        if httpResponse.statusCode == 404 {
+                            userFetchState = .failure
+                            defaults?.setValue(nil, forKey: "pfp")
+                            return
+                        }
                     }
                     if let data = data {
                         let decoder = JSONDecoder()
@@ -141,6 +161,10 @@ struct Settings: View {
                     }
                 }.resume()
             }
+            if prefixes.isEmpty {
+                defaults?.setValue(nil, forKey: "pfp")
+                userFetchState = .failure
+            }
             return
         }
         
@@ -157,14 +181,6 @@ struct Settings: View {
                     self.pfp = pfp
                 }
             }.resume()
-        }
-        
-        struct AuthInfo: View {
-            var body: some View {
-                NavigationView {
-                    
-                }
-            }
         }
         
         struct AuthView: View {
@@ -422,6 +438,37 @@ struct Settings: View {
                             presentationMode.wrappedValue.dismiss()
                         }.padding([.vertical, .leading]).disabled(prefix == ""))
                     }
+                }
+            }
+        }
+    }
+    
+    struct Contact: View {
+        @State private var contactMailData = ComposeMailData(subject: "", recipients: ["mot8ocqib@relay.firefox.com"], message: "", attachments: [])
+        @State private var showContactMail = false
+        
+        var body: some View {
+            Section {
+                Button("Contact") {
+                    showContactMail = true
+                }
+                .sheet(isPresented: $showContactMail) {
+                    MailView(data: $contactMailData) { result in
+                        print(result)
+                    }
+                }
+            }
+        }
+    }
+    
+    struct DevTools: View {
+        @AppStorage("firstLaunch", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var showLanding: Bool = true
+        @Environment(\.presentationMode) var presentationMode
+        
+        var body: some View {
+            Section {
+                Button("Reset first launch") {
+                    self.presentationMode.wrappedValue.dismiss()
                 }
             }
         }

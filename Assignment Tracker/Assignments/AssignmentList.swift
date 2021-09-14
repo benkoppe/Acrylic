@@ -9,6 +9,9 @@ import SwiftUI
 import Introspect
 
 struct AssignmentList: View {
+    @AppStorage("firstLaunch", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var showLanding: Bool = true
+    //@State private var showLanding = false
+    
     @State private var showingMeView = false
     @State private var showingSettingsView = false
     
@@ -18,12 +21,18 @@ struct AssignmentList: View {
     @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
     @State private var assignments: [Assignment] = []
     @State private var fetchState: FetchState = .loading
-    @State private var errorType: ErrorType = .none
     
     @EnvironmentObject var courseArray: CourseArray
     
+    enum SortMode: String, CaseIterable, Equatable {
+        case date
+        case course
+        
+        var id: String { self.rawValue.capitalized }
+    }
     var sortModes = ["Date", "Course"]
-    @State private var sortMode = "Date"
+    @State private var sortMode: SortMode = .date
+    @State private var sortedMode: SortMode = .date
     
     enum FetchState {
         case success, loading, failure
@@ -44,7 +53,39 @@ struct AssignmentList: View {
                 switch fetchState {
                 
                 case .success:
-                    successView(assignments: $assignments)
+                    if !assignments.isEmpty && !courseArray.courses.isEmpty {
+                        successView(assignments: $assignments, fetchState: $fetchState, sortMode: $sortedMode)
+                    } else if assignments.isEmpty && !courseArray.courses.isEmpty {
+                        VStack {
+                            Text("You don't have any assignments due!")
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(.secondary)
+                            Button(action: {
+                                load()
+                            }) {
+                                Text("\(Image(systemName: "arrow.clockwise")) Refresh")
+                                    .foregroundColor(.blue)
+                                    .font(.caption)
+                                    .padding()
+                            }
+                        }
+                        .padding()
+                    } else {
+                        VStack {
+                            Text("You don't have any courses added yet.\n\nPlease add some with the button on the top left.")
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(.secondary)
+                            Button(action: {
+                                load()
+                            }) {
+                                Text("\(Image(systemName: "arrow.clockwise")) Refresh")
+                                    .foregroundColor(.blue)
+                                    .font(.caption)
+                                    .padding()
+                            }
+                        }
+                        .padding()
+                    }
                     
                 case .loading:
                     ProgressView("Loading Assignments...")
@@ -62,11 +103,23 @@ struct AssignmentList: View {
                             .font(.caption)
                             .multilineTextAlignment(.center)
                             .frame(width: 300)
+                        Spacer()
+                            .frame(height: 10)
+                        Button(action: {
+                            load()
+                        }) {
+                            Text("\(Image(systemName: "arrow.clockwise")) Refresh")
+                                .foregroundColor(.blue)
+                                .font(.caption)
+                        }
                     }
                     .offset(y: -40)
                     .foregroundColor(.secondary)
                     
                 }
+            }
+            .fullScreenCover(isPresented: $showLanding, onDismiss: { load() }) {
+                BoardingView()
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -77,32 +130,17 @@ struct AssignmentList: View {
                         .bold()
                         .padding(.vertical)
                         .gradientForeground(colors: [.red, .orange, .yellow, .green, .blue, .purple])
-                   /* LinearGradient(gradient: Gradient(colors: [.red, .orange, .yellow, .green, .blue, .purple]), startPoint: .leading, endPoint: .trailing)
-                        .mask(
-                            Text("Assignments")
-                                .font(.title2)
-                                .bold()
-                                .padding(.vertical)
-                                .frame(width: 200, height: 100, alignment: .leading)
-                        )
-                        .frame(width: 200, height: 100, alignment: .leading)*/
                 }
-                /*ToolbarItem(placement: .navigationBarLeading) {
-                    Picker("Sort Mode", selection: $sortMode) {
-                        ForEach(sortModes, id: \.self) {
-                            Text($0)
-                        }
-                    }
-                    .labelsHidden()
-                }*/
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Picker("Sort Mode", selection: $sortMode) {
-                        ForEach(sortModes, id: \.self) {
-                            Text($0)
+                        ForEach(SortMode.allCases, id: \.self) {
+                            Text($0.id)
                         }
                     }
                     .labelsHidden()
                     .scaleEffect(0.8)
+                    .offset(x: 05, y: 0)
+                    .disabled(fetchState != .success)
                     
                     Button(action: {
                         showingMeView = true
@@ -112,18 +150,77 @@ struct AssignmentList: View {
                     }
                 }
             }
-            .sheet(isPresented: $showingMeView) {
+            .sheet(isPresented: $showingMeView, onDismiss: {
+                if fetchState == .loading { load() }
+            }) {
                 MeView()
                     .environmentObject(courseArray)
             }
+            .onChange(of: sortMode) { value in
+                var arr = assignments
+                switch sortMode {
+                case .date:
+                    arr.sort()
+                case .course:
+                    arr.sort {
+                        if $0.courseOrder == $1.courseOrder {
+                            return $0.due < $1.due
+                        } else {
+                            return $0.courseOrder < $1.courseOrder
+                        }
+                    }
+                }
+                assignments = arr
+                sortedMode = sortMode
+            }
         }
-        .onAppear(perform: fetchAssignments)
+        .onAppear { load() }
+    }
+    
+    func load() {
+        fetchState = .loading
+        fetchAssignments(auth: auth, prefixes: prefixes) { result in
+            switch result {
+            case .success(let assignments):
+                var arr: [Assignment] = []
+                for assignment in assignments {
+                    if let newAssignment = createAssignment(courseArray: courseArray, assignment) {
+                        arr.append(newAssignment)
+                    }
+                }
+                switch sortMode {
+                case .date:
+                    arr.sort()
+                case .course:
+                    arr.sort {
+                        if $0.courseOrder == $1.courseOrder {
+                            return $0.due < $1.due
+                        } else {
+                            return $0.courseOrder < $1.courseOrder
+                        }
+                    }
+                }
+                self.assignments = arr
+                self.fetchState = .success
+                
+            case .failure(let error):
+                self.fetchState = .failure
+                print("Error: \(error.localizedDescription)")
+            }
+        }
     }
     
     struct successView: View {
         @Binding var assignments: [Assignment]
+        @Binding var fetchState: FetchState
+        @Binding var sortMode: SortMode
         
         @ObservedObject private var refreshController = AssignmentRefresh()
+        
+        @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var auth: String = ""
+        @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
+        
+        @EnvironmentObject var courseArray: CourseArray
         
         class AssignmentRefresh: ObservableObject {
             @Published var controller: UIRefreshControl
@@ -135,33 +232,50 @@ struct AssignmentList: View {
             }
             
             @objc func handleRefresh() {
-                print("refreshing now...")
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self.controller.endRefreshing()
-                    self.shouldReload = true
-                }
+                self.shouldReload = true
             }
         }
         
         var splitAssignments: [[Assignment]] {
-            if assignments.count > 0 {
-                var assy: [[Assignment]] = []
-                var shortAssy: [Assignment] = []
-                var lastDate = assignments[0].due
-                
-                for assignment in assignments {
-                    if assignment.due.getYearDay() != lastDate.getYearDay() {
-                        assy.append(shortAssy)
-                        shortAssy = []
+            if sortMode == .date {
+                if assignments.count > 0 {
+                    var assy: [[Assignment]] = []
+                    var shortAssy: [Assignment] = []
+                    var lastDate = assignments[0].due
+                    
+                    for assignment in assignments {
+                        if assignment.due.getYearDay() != lastDate.getYearDay() {
+                            assy.append(shortAssy)
+                            shortAssy = []
+                        }
+                        shortAssy.append(assignment)
+                        lastDate = assignment.due
                     }
-                    shortAssy.append(assignment)
-                    lastDate = assignment.due
-                }
-                assy.append(shortAssy)
-                
-                return assy
-                
-            } else { return [] }
+                    assy.append(shortAssy)
+                    
+                    return assy
+                    
+                } else { return [] }
+            } else {
+                if assignments.count > 0 {
+                    var assy: [[Assignment]] = []
+                    var shortAssy: [Assignment] = []
+                    var lastOrder = assignments[0].courseOrder
+                    
+                    for assignment in assignments {
+                        if assignment.courseOrder != lastOrder {
+                            assy.append(shortAssy)
+                            shortAssy = []
+                        }
+                        shortAssy.append(assignment)
+                        lastOrder = assignment.courseOrder
+                    }
+                    assy.append(shortAssy)
+                    
+                    return assy
+                    
+                } else { return [] }
+            }
         }
         
         var body: some View {
@@ -177,7 +291,7 @@ struct AssignmentList: View {
                             
                             HStack {
                                 VStack(alignment: .leading, spacing: 0) {
-                                    Text(createTitleText(for: assignmentArray[0].due))
+                                    Text(sortMode == .date ? createDateTitleText(for: assignmentArray[0].due) : courseArray.courses[assignmentArray[0].courseOrder].name)
                                         //.font(.system(.title, design: .rounded))
                                         .font(.system(size: 25, weight: .semibold, design: .rounded))
                                         .foregroundColor(.gray)
@@ -185,7 +299,7 @@ struct AssignmentList: View {
                                         .padding(.bottom, 7)
                                     
                                     ForEach(assignmentArray, id: \.self) { assignment in
-                                        assignmentItem(assignment: assignment)
+                                        assignmentItem(assignment: assignment, sortMode: $sortMode)
                                     }
                                 }
                                 Spacer()
@@ -211,11 +325,41 @@ struct AssignmentList: View {
                 tableView.separatorInset = .zero
             }
             .onChange(of: refreshController.shouldReload) { value in
-                print(value)
+                fetchAssignments(auth: auth, prefixes: prefixes) { result in
+                    switch result {
+                    case .success(let assignments):
+                        var arr: [Assignment] = []
+                        for assignment in assignments {
+                            if let newAssignment = createAssignment(courseArray: courseArray, assignment) {
+                                arr.append(newAssignment)
+                            }
+                        }
+                        switch sortMode {
+                        case .date:
+                            arr.sort()
+                        case .course:
+                            arr.sort {
+                                if $0.courseOrder == $1.courseOrder {
+                                    return $0.due < $1.due
+                                } else {
+                                    return $0.courseOrder < $1.courseOrder
+                                }
+                            }
+                        }
+                        self.assignments = arr
+                        endRefresh()
+                        
+                    case .failure(let error):
+                        endRefresh()
+                        fetchState = .failure
+                        print("Error: \(error.localizedDescription)")
+                        
+                    }
+                }
             }
         }
         
-        func createTitleText(for date: Date) -> String {
+        func createDateTitleText(for date: Date) -> String {
             let day = date.getYearDay()
             var shortFormatter: DateFormatter {
                 let formatter = DateFormatter()
@@ -239,8 +383,16 @@ struct AssignmentList: View {
             }
         }
         
+        func endRefresh() {
+            DispatchQueue.main.async {
+                refreshController.shouldReload = false
+                refreshController.controller.endRefreshing()
+            }
+        }
+        
         struct assignmentItem: View {
             let assignment: Assignment
+            @Binding var sortMode: SortMode
             
             var timeFormatter: DateFormatter {
                 let formatter = DateFormatter()
@@ -266,12 +418,12 @@ struct AssignmentList: View {
                                 .padding(.bottom, 1)
                             
                             HStack(spacing: 0) {
-                                Text(timeFormatter.string(from: assignment.due))
+                                Text(sortMode == .date ? timeFormatter.string(from: assignment.due) : createDateText(for: assignment.due))
                                     .contrast(0.5)
                                 
                                 Text(" • ")
                                 
-                                Text(assignment.courseName)
+                                Text(sortMode == .date ? assignment.courseName : timeFormatter.string(from: assignment.due))
                                     .foregroundColor(assignment.color)
                             }
                             .font(.system(size: 8, weight: .semibold, design: .default))
@@ -285,94 +437,61 @@ struct AssignmentList: View {
                 .buttonStyle(PlainButtonStyle())
                 
             }
-        }
-    }
-    
-    func fetchAssignments() {
-        fetchState = .loading
-        assignments = []
-        var loadedPrefixes: [String] = []
-        errorType = .none
-        
-        for prefix in prefixes {
-            fetchState = .loading
             
-            let urlString = "https://\(prefix).instructure.com/api/v1/users/self/todo?per_page=100"
-            guard let url = URL(string: urlString) else {
-                print("Bad URL: \(urlString)")
-                fetchState = .failure
-                errorType = .badURL
-                return
-            }
-            var request = URLRequest(url: url)
-            let auth = auth
-            request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
-            
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                loadedPrefixes.append(prefix)
-                var isLastPrefix: Bool {
-                    for prefix in prefixes {
-                        if !loadedPrefixes.contains(prefix) {
-                            return false
-                        }
-                    }
-                    return true
+            func createDateText(for date: Date) -> String {
+                let day = date.getYearDay()
+                var shortFormatter: DateFormatter {
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "EEEE"
+                    return formatter
+                }
+                var formatter: DateFormatter {
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "EEEE, MMM d"
+                    return formatter
                 }
                 
-                if let response = response, let httpResponse = response as? HTTPURLResponse {
-                    if httpResponse.statusCode == 401 {
-                        fetchState = .failure
-                        errorType = .badAuth
-                        return
-                    }
-                }
-                
-                if let data = data {
-                    let decoder = JSONDecoder()
-                    if let list = try? decoder.decode(TodoList.self, from: data) {
-                        for item in list {
-                            if let assignment = item.assignment, let courseAssignment = createAssignment(assignment) {
-                                self.assignments.append(courseAssignment)
-                            }
-                        }
-                        
-                        if isLastPrefix {
-                            assignments.sort()
-                            fetchState = .success
-                        }
-                    }
+                if day == Date().getYearDay() {
+                    return "Today"
+                } else if day == (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() {
+                    return "Tomorrow"
+                } else if (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() - day < 7 {
+                    return shortFormatter.string(from: date)
                 } else {
-                    fetchState = .failure
-                    errorType = .badLoad
-                    return
+                    return formatter.string(from: date)
                 }
-            }.resume()
-        }
-        if prefixes.isEmpty {
-            fetchState = .failure
-            return
+            }
         }
     }
     
-    func createAssignment(_ todoAssignment: TodoAssignment) -> Assignment? {
-        var id: Int?
-        var name: String?
-        var order: Int?
-        var color: Color?
-        for course in courseArray.courses {
-            if course.code == todoAssignment.courseID {
-                id = course.code
-                name = course.name
-                order = course.order
-                color = course.color
-                break
-            }
-        }
-        guard let courseID = id, let courseName = name, let courseOrder = order, let courseColor = color else { return nil }
-        guard let url = URL(string: todoAssignment.htmlURL) else { return nil }
-        guard let due = ISO8601DateFormatter().date(from: todoAssignment.dueAt) else { return nil }
+    struct failureView: View {
         
-        return Assignment(name: todoAssignment.name, due: due, courseID: courseID, courseName: courseName, courseOrder: courseOrder, url: url, color: courseColor)
+        
+        var body: some View {
+            VStack {
+                Image(systemName: "xmark.circle")
+                    .font(.system(size: 40))
+                    .padding(.horizontal, 5)
+                    .foregroundColor(.red)
+                Spacer()
+                    .frame(height: 10)
+                Text("An error occured. Please check your settings and internet connection, and try again.")
+                    .font(.caption)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 300)
+                Spacer()
+                    .frame(height: 10)
+                Button(action: {
+                    
+                }) {
+                    Text("\(Image(systemName: "arrow.clockwise")) Refresh")
+                        .foregroundColor(.blue)
+                        .font(.caption)
+                }
+            }
+            .offset(y: -40)
+            .foregroundColor(.secondary)
+        }
     }
 }
 

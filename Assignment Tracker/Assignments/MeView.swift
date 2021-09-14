@@ -13,6 +13,7 @@ struct MeView: View {
     @State private var showingSettings = false
     
     @AppStorage("pfp", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var pfp: Data?
+    @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
     
     @State private var toggle = false
     
@@ -40,15 +41,22 @@ struct MeView: View {
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    pfpImage
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 70, height: 70)
-                        .clipShape(
-                            Circle()
-                        )
-                        .offset(y: 20)
-                        .shadow(color: .black, radius: 15)
+                    Button(action: {
+                        if !prefixes.isEmpty, let url = URL(string: "https://\(prefixes[0]).instructure.com/") {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
+                        pfpImage
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 70, height: 70)
+                            .clipShape(
+                                Circle()
+                            )
+                            .offset(y: 20)
+                            .shadow(color: .black, radius: 15)
+                            .foregroundColor(.primary)
+                    }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if showingSettings {

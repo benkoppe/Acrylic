@@ -47,6 +47,9 @@
 		B5A0987026DEFA9500411DCC /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A0986F26DEFA9500411DCC /* Settings.swift */; };
 		B5A0987726E00E3300411DCC /* Array-AppStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A0987626E00E3300411DCC /* Array-AppStorage.swift */; };
 		B5A920E126EF3F3300A71336 /* Gradient-Foreground.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A920E026EF3F3300A71336 /* Gradient-Foreground.swift */; };
+		B5A920E326EF439200A71336 /* CanvasAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A920E226EF439200A71336 /* CanvasAPI.swift */; };
+		B5A920E626EFB03E00A71336 /* SwiftUIMailView in Frameworks */ = {isa = PBXBuildFile; productRef = B5A920E526EFB03E00A71336 /* SwiftUIMailView */; };
+		B5A920E826EFB4FC00A71336 /* BoardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A920E726EFB4FC00A71336 /* BoardingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -129,6 +132,8 @@
 		B5A0986F26DEFA9500411DCC /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		B5A0987626E00E3300411DCC /* Array-AppStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array-AppStorage.swift"; sourceTree = "<group>"; };
 		B5A920E026EF3F3300A71336 /* Gradient-Foreground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Gradient-Foreground.swift"; sourceTree = "<group>"; };
+		B5A920E226EF439200A71336 /* CanvasAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasAPI.swift; sourceTree = "<group>"; };
+		B5A920E726EFB4FC00A71336 /* BoardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +150,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5A920E626EFB03E00A71336 /* SwiftUIMailView in Frameworks */,
 				B54E5EB126EBE07A0076C55C /* Introspect in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -245,6 +251,7 @@
 				B507F03F26E4038900861CEE /* Assignment Tracker.entitlements */,
 				B57A2C5026D6B37F0047C6E2 /* Assignment_TrackerApp.swift */,
 				B57A2C5226D6B37F0047C6E2 /* ContentView.swift */,
+				B5A920E926EFB4FF00A71336 /* Boarding */,
 				B5A0986D26DEFA4500411DCC /* Courses */,
 				B52F2D4326E120DE00AAEDC0 /* Assignments */,
 				B52F2D4226E11DEE00AAEDC0 /* Settings */,
@@ -312,9 +319,18 @@
 			isa = PBXGroup;
 			children = (
 				B507F00726E2C0F600861CEE /* CanvasStructs.swift */,
+				B5A920E226EF439200A71336 /* CanvasAPI.swift */,
 				B507F04626E413A600861CEE /* Course.swift */,
 			);
 			path = Data;
+			sourceTree = "<group>";
+		};
+		B5A920E926EFB4FF00A71336 /* Boarding */ = {
+			isa = PBXGroup;
+			children = (
+				B5A920E726EFB4FC00A71336 /* BoardingView.swift */,
+			);
+			path = Boarding;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -354,6 +370,7 @@
 			name = "Assignment Tracker";
 			packageProductDependencies = (
 				B54E5EB026EBE07A0076C55C /* Introspect */,
+				B5A920E526EFB03E00A71336 /* SwiftUIMailView */,
 			);
 			productName = "Assignment Tracker";
 			productReference = B57A2C4D26D6B37F0047C6E2 /* Assignment Tracker.app */;
@@ -431,6 +448,7 @@
 			mainGroup = B57A2C4426D6B37F0047C6E2;
 			packageReferences = (
 				B54E5EAF26EBE07A0076C55C /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
+				B5A920E426EFB03E00A71336 /* XCRemoteSwiftPackageReference "swiftui-mail-view" */,
 			);
 			productRefGroup = B57A2C4E26D6B37F0047C6E2 /* Products */;
 			projectDirPath = "";
@@ -515,9 +533,11 @@
 				B507F04D26E9EAAB00861CEE /* ReadSize.swift in Sources */,
 				B507F04726E413A600861CEE /* Course.swift in Sources */,
 				B5A0987726E00E3300411DCC /* Array-AppStorage.swift in Sources */,
+				B5A920E826EFB4FC00A71336 /* BoardingView.swift in Sources */,
 				B57A2C9826DD7B650047C6E2 /* AssignmentList.swift in Sources */,
 				B5A0987026DEFA9500411DCC /* Settings.swift in Sources */,
 				B57A2C8E26D96E280047C6E2 /* Color-Extensions.swift in Sources */,
+				B5A920E326EF439200A71336 /* CanvasAPI.swift in Sources */,
 				B57A2C9626DB3CEB0047C6E2 /* View-Extensions.swift in Sources */,
 				B507F00826E2C0F700861CEE /* CanvasStructs.swift in Sources */,
 				B57A2C8B26D967250047C6E2 /* CourseList.swift in Sources */,
@@ -742,7 +762,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.assytrack.Assignment-Tracker";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -767,7 +787,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.assytrack.Assignment-Tracker";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -914,6 +934,14 @@
 				minimumVersion = 0.1.3;
 			};
 		};
+		B5A920E426EFB03E00A71336 /* XCRemoteSwiftPackageReference "swiftui-mail-view" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/globulus/swiftui-mail-view";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -921,6 +949,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B54E5EAF26EBE07A0076C55C /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
 			productName = Introspect;
+		};
+		B5A920E526EFB03E00A71336 /* SwiftUIMailView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B5A920E426EFB03E00A71336 /* XCRemoteSwiftPackageReference "swiftui-mail-view" */;
+			productName = SwiftUIMailView;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

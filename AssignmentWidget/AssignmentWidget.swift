@@ -79,6 +79,9 @@ struct Provider: TimelineProvider {
                     if httpResponse.statusCode == 401 {
                         completion(.failure(.noAuth))
                     }
+                    if httpResponse.statusCode == 404 {
+                        completion(.failure(.badPrefix))
+                    }
                 }
                 
                 if let data = data {
@@ -145,11 +148,24 @@ struct Assignment_WidgetEntryView: View {
             if assignments.count > 0 {
                 successView(assignments: assignments)
             } else {
-                Text("No assignments")
+                Text("No assignments!")
             }
             
-        case .failure(let error):
-            Text("Error: \(error.localizedDescription)")
+        case .failure:
+            VStack {
+                Image(systemName: "xmark.circle")
+                    .font(.system(size: 40))
+                    .padding(.horizontal, 5)
+                    .foregroundColor(.red)
+                Spacer()
+                    .frame(height: 10)
+                Text("An error occured. Please check your settings and internet connection, and try again.")
+                    .font(.caption)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 300)
+            }
+            .offset(y: -40)
+            .foregroundColor(.secondary)
             
         }
     }
@@ -185,8 +201,8 @@ struct Assignment_WidgetEntryView: View {
                 Color("WidgetBackground")
                 
                 pfp()
-                .padding(25)
-                .padding(.trailing, 2)
+                    .padding(.trailing, 20)
+                    .padding(.top, 20)
                 
                 GeometryReader { geo in
                     VStack(alignment: .leading, spacing: 0) {
@@ -212,7 +228,7 @@ struct Assignment_WidgetEntryView: View {
                         
                         let count = sizeFittedAssignments.count - 1
                         if sizeFittedAssignments[count].last != splitAssignments[count].last {
-                            leftItem(assignmentsLeft: splitAssignments[count].count - sizeFittedAssignments[count].count)
+                            moreItem(assignmentsLeft: splitAssignments[count].count - sizeFittedAssignments[count].count)
                         }
                     }
                 }
@@ -282,6 +298,7 @@ struct Assignment_WidgetEntryView: View {
         
         struct pfp: View {
             @AppStorage("pfp", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var pfp: Data?
+            @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
             
             var pfpImage: Image {
                 let defaults = UserDefaults.init(suiteName: "group.com.benk.assytrack")
@@ -296,7 +313,15 @@ struct Assignment_WidgetEntryView: View {
                 VStack {
                     HStack {
                         Spacer()
-                        Link(destination: URL(string: "widget://https://www.google.com")!) {
+                        if !prefixes.isEmpty {
+                            Link(destination: URL(string: "widget://https://\(prefixes[0]).instructure.com/")!) {
+                                pfpImage
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 28, height: 28)
+                                    .clipShape(Circle())
+                            }
+                        } else {
                             pfpImage
                                 .resizable()
                                 .scaledToFit()
@@ -368,14 +393,14 @@ struct Assignment_WidgetEntryView: View {
             }
         }
         
-        struct leftItem: View {
+        struct moreItem: View {
             let assignmentsLeft: Int
             
             var body: some View {
                 HStack(alignment: .center, spacing: 0) {
                     Spacer().frame(width: 7)
                     
-                    Link(destination: URL(string: "widget://")!) {
+                    Link(destination: URL(string: "widget://FRONTPAGE")!) {
                         
                         HStack(alignment: .center, spacing: 0) {
                             
@@ -399,7 +424,7 @@ struct Assignment_WidgetEntryView: View {
                     Spacer()
                 }
                 .offset(x: 4)
-                .frame(height: 20)
+                .frame(height: 17)
             }
         }
     }
@@ -416,6 +441,8 @@ struct AssignmentWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: provider) { entry in
             Assignment_WidgetEntryView(entry: entry)
+                .preferredColorScheme(.dark)
+                .colorScheme(.dark)
         }
         .configurationDisplayName("Assignments")
         .description("View your upcoming assignments")

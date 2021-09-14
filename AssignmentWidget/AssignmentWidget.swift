@@ -149,6 +149,7 @@ struct Assignment_WidgetEntryView: View {
                 successView(assignments: assignments)
             } else {
                 Text("No assignments!")
+                    .foregroundColor(.primary)
             }
             
         case .failure:

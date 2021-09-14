@@ -109,6 +109,7 @@ struct AddCourse: View {
                             }
                         }
                     }
+                    .padding(.vertical, 10)
                 }
             }
         }

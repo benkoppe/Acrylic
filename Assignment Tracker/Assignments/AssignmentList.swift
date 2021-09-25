@@ -9,7 +9,7 @@ import SwiftUI
 import Introspect
 
 struct AssignmentList: View {
-    @AppStorage("firstLaunch", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var showLanding: Bool = true
+    @AppStorage("firstLaunch", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLanding: Bool = true
     //@State private var showLanding = false
     
     @State private var showingMeView = false
@@ -17,8 +17,9 @@ struct AssignmentList: View {
     
     @State private var doneFetching = false
     
-    @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var auth: String = ""
-    @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
+    @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var auth: String = ""
+    @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
+    @AppStorage("showLate", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLate: Bool = true
     @State private var assignments: [Assignment] = []
     @State private var fetchState: FetchState = .loading
     
@@ -129,7 +130,8 @@ struct AssignmentList: View {
                         .font(.title)
                         .bold()
                         .padding(.vertical)
-                        .gradientForeground(colors: [.red, .orange, .yellow, .green, .blue, .purple])
+                        //.gradientForeground(colors: [.red, .orange, .yellow, .green, .blue, .purple])
+                        .foregroundColor(.white)
                 }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Picker("Sort Mode", selection: $sortMode) {
@@ -141,12 +143,13 @@ struct AssignmentList: View {
                     .scaleEffect(0.8)
                     .offset(x: 05, y: 0)
                     .disabled(fetchState != .success)
+                    .pickerStyle(InlinePickerStyle())
                     
                     Button(action: {
                         showingMeView = true
                     }) {
                         Image(systemName: "person.crop.circle")
-                            .font(.callout)
+                            .font(.body)
                     }
                 }
             }
@@ -177,6 +180,17 @@ struct AssignmentList: View {
         .onAppear { load() }
     }
     
+    func getCourseColors() -> [Color] {
+        var arr: [Color] = []
+        for course in courseArray.courses {
+            arr.append(course.color)
+        }
+        if arr.isEmpty {
+            return [.primary]
+        }
+        return arr
+    }
+    
     func load() {
         fetchState = .loading
         fetchAssignments(auth: auth, prefixes: prefixes) { result in
@@ -185,7 +199,11 @@ struct AssignmentList: View {
                 var arr: [Assignment] = []
                 for assignment in assignments {
                     if let newAssignment = createAssignment(courseArray: courseArray, assignment) {
-                        arr.append(newAssignment)
+                        if showLate {
+                            arr.append(newAssignment)
+                        } else if newAssignment.due > Date() {
+                            arr.append(newAssignment)
+                        }
                     }
                 }
                 switch sortMode {
@@ -217,8 +235,9 @@ struct AssignmentList: View {
         
         @ObservedObject private var refreshController = AssignmentRefresh()
         
-        @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var auth: String = ""
-        @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
+        @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var auth: String = ""
+        @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
+        @AppStorage("showLate", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLate: Bool = true
         
         @EnvironmentObject var courseArray: CourseArray
         
@@ -248,7 +267,9 @@ struct AssignmentList: View {
                             assy.append(shortAssy)
                             shortAssy = []
                         }
+                        
                         shortAssy.append(assignment)
+                        
                         lastDate = assignment.due
                     }
                     assy.append(shortAssy)
@@ -267,7 +288,9 @@ struct AssignmentList: View {
                             assy.append(shortAssy)
                             shortAssy = []
                         }
+                        
                         shortAssy.append(assignment)
+                        
                         lastOrder = assignment.courseOrder
                     }
                     assy.append(shortAssy)
@@ -293,9 +316,8 @@ struct AssignmentList: View {
                                 VStack(alignment: .leading, spacing: 0) {
                                     Text(sortMode == .date ? createDateTitleText(for: assignmentArray[0].due) : courseArray.courses[assignmentArray[0].courseOrder].name)
                                         //.font(.system(.title, design: .rounded))
+                                        .foregroundColor(sortMode == .date ? .primary : assignmentArray[0].color)
                                         .font(.system(size: 25, weight: .semibold, design: .rounded))
-                                        .foregroundColor(.gray)
-                                        .brightness(0.5)
                                         .padding(.bottom, 7)
                                     
                                     ForEach(assignmentArray, id: \.self) { assignment in
@@ -331,7 +353,11 @@ struct AssignmentList: View {
                         var arr: [Assignment] = []
                         for assignment in assignments {
                             if let newAssignment = createAssignment(courseArray: courseArray, assignment) {
-                                arr.append(newAssignment)
+                                if showLate {
+                                    arr.append(newAssignment)
+                                } else if newAssignment.due > Date() {
+                                    arr.append(newAssignment)
+                                }
                             }
                         }
                         switch sortMode {
@@ -372,7 +398,9 @@ struct AssignmentList: View {
                 return formatter
             }
             
-            if day == Date().getYearDay() {
+            if date < Date() {
+                return formatter.string(from: date)
+            } else if day == Date().getYearDay() {
                 return "Today"
             } else if day == (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() {
                 return "Tomorrow"
@@ -451,7 +479,9 @@ struct AssignmentList: View {
                     return formatter
                 }
                 
-                if day == Date().getYearDay() {
+                if date < Date() {
+                    return formatter.string(from: date)
+                }else if day == Date().getYearDay() {
                     return "Today"
                 } else if day == (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() {
                     return "Tomorrow"

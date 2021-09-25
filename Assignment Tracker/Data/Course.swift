@@ -15,7 +15,7 @@ class CourseArray: ObservableObject {
     }
     
     init() {
-        let defaults = UserDefaults.init(suiteName: "group.com.benk.assytrack")
+        let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
         let coursesData: [Data] = defaults?.array(forKey: "courses") as? [Data] ?? []
         
         var arr: [Course] = []
@@ -29,7 +29,7 @@ class CourseArray: ObservableObject {
     }
     
     func save() {
-        let defaults = UserDefaults.init(suiteName: "group.com.benk.assytrack")
+        let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
         defaults?.setValue(Course.getData(array: courses), forKey: "courses")
     }
 }

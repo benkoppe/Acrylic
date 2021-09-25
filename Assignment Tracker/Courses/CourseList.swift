@@ -30,31 +30,33 @@ struct CourseList: View {
     var body: some View {
         List {
             Section(header:
-                HStack {
-                    EditButton()
-                        .disabled(activeEditButton)
-                        .environment(\.editMode, self.$editMode)
-                    Spacer()
-                    Button(action: {
-                        if editMode == .active {
-                            deleteAllAlert = true
-                        } else {
-                            showingAddSheet = true
-                        }
-                    }) {
-                        Image(systemName: editMode == .active ? "trash" : "plus")
-                    }.foregroundColor(editMode == .active ? .red : .accentColor)
-                }
-                .padding([.horizontal, .top])
+                        HStack {
+                EditButton()
+                    .disabled(activeEditButton)
+                    .environment(\.editMode, self.$editMode)
+                Spacer()
+                Button(action: {
+                    if editMode == .active {
+                        deleteAllAlert = true
+                    } else {
+                        showingAddSheet = true
+                    }
+                }) {
+                    Image(systemName: editMode == .active ? "trash" : "plus")
+                }.foregroundColor(editMode == .active ? .red : .accentColor)
+            }.padding([.horizontal])
             ) {
                 if courseArray.courses.count > 0 {
                     ForEach(courseArray.courses, id: \.self.code) { course in
                         Button(action: {
+                            print("adljfakldjfklaj")
+                            print(course.name)
                             editCourse = course
                         }) {
                             listItem(course: course, editMode: editMode)
                                 .foregroundColor(.primary)
                         }
+                        .buttonStyle(.borderless)
                     }
                     .onDelete(perform: delete)
                     .onMove(perform: move)
@@ -77,24 +79,10 @@ struct CourseList: View {
         .onDisappear() {
             UITableView.appearance().backgroundColor = .systemBackground
         }
-        .listStyle(InsetGroupedListStyle())
-        /*.toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                EditButton()
-                    .disabled(courseArray.courses.count == 0)
-            }
+        .introspectTableView { tableView in
+            tableView.contentOffset = CGPoint(x: 0, y: -38)
         }
-        .navigationBarItems(trailing:
-            Button(action: {
-                if editMode == .active {
-                    deleteAllAlert = true
-                } else {
-                    showingAddSheet = true
-                }
-            }) {
-                Image(systemName: editMode == .active ? "trash" : "plus")
-            }.foregroundColor(editMode == .active ? .red : .accentColor).padding([.vertical, .leading])
-        )*/
+        .listStyle(.insetGrouped)
         .environment(\.editMode, self.$editMode)
         .actionSheet(isPresented: $showingAddSheet) {
             ActionSheet(title: Text("How would you like to add your course(s)?"), buttons: [

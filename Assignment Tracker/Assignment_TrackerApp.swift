@@ -11,6 +11,11 @@ import WidgetKit
 
 @main
 struct Assignment_TrackerApp: App {
+    init () {
+        UINavigationBar.appearance().scrollEdgeAppearance = UINavigationBar().standardAppearance
+        UINavigationBar.appearance().isTranslucent = true
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

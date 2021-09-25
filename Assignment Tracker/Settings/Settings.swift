@@ -11,31 +11,38 @@ import Introspect
 import SwiftUIMailView
 
 struct Settings: View {
-    @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
+    @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
     
     init() {
         
     }
     
     var body: some View {
-        //NavigationView {
-            Form {
-                CanvasSettings()
-                
-                Contact()
-                
-                if prefixes.contains("devtools") {
-                    DevTools()
-                }
+        Form {
+            CanvasSettings()
+            
+            Preferences()
+            
+            Contact()
+            
+            License()
+            
+            if prefixes.contains("devtools") {
+                DevTools()
             }
-            .navigationTitle("Settings")
-            .navigationBarTitleDisplayMode(.inline)
-        //}
+            
+            
+        }
+        .introspectTableView { tableView in
+            tableView.contentOffset = CGPoint(x: 0, y: -40)
+        }
+        .navigationTitle("Settings")
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     struct CanvasSettings: View {
-        @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var authCode: String = ""
-        @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
+        @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var authCode: String = ""
+        @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
         
         @State private var showingPrefixes = false
         @State private var showingAuth = false
@@ -120,7 +127,7 @@ struct Settings: View {
         
         func loadUser() {
             self.pfp = nil
-            let defaults = UserDefaults.init(suiteName: "group.com.benk.assytrack")
+            let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
             for prefix in prefixes {
                 userFetchState = .loading
                 let urlString = "https://\(prefix).instructure.com/api/v1/users/self/profile"
@@ -171,7 +178,7 @@ struct Settings: View {
         func fetchImage(url: URL) {
             URLSession.shared.dataTask(with: url) { data, response, error in
                 guard let data = data else { return }
-                let defaults = UserDefaults.init(suiteName: "group.com.benk.assytrack")
+                let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
                 if let pfp = UIImage(data: data) {
                     if let pngData = pfp.pngData() {
                         defaults?.setValue(pngData, forKey: "pfp")
@@ -443,13 +450,117 @@ struct Settings: View {
         }
     }
     
+    struct Preferences: View {
+        @AppStorage("showLate", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLate: Bool = true
+        @AppStorage("icon", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var currentIcon: String = "AppIcon"
+        @State private var showingAppIcon = false
+        
+        
+        var body: some View {
+            Section(header: Text("Preferences"), footer: Text("The Canvas API only delivers late assignments that are over one day late.").fixedSize(horizontal: false, vertical: true).padding(.bottom)) {
+                
+                Button(action: {
+                    showingAppIcon = true
+                }) {
+                    HStack {
+                        Text("App Icon")
+                        Spacer()
+                        Text(currentIcon == "AppIcon" ? "Default" : currentIcon)
+                            .lineLimit(1)
+                            .foregroundColor(.secondary)
+                            .frame(maxWidth: 200, alignment: .trailing)
+                        Spacer().frame(width: 5)
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundColor(.tertiaryLabel)
+                    }
+                }
+                .foregroundColor(.primary)
+                .sheet(isPresented: $showingAppIcon) {
+                    AppIconView()
+                }
+                
+                Toggle(isOn: $showLate) {
+                    Text("Show Late Assignments")
+                }
+            }
+        }
+        
+        struct AppIconView: View {
+            @Environment(\.presentationMode) var presentationMode
+            @AppStorage("icon", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var currentIcon: String = "AppIcon"
+            let iconNames = ["AppIcon", "Inverted"]
+            
+            var body: some View {
+                NavigationView {
+                    List {
+                        ForEach(iconNames, id: \.self) { iconName in
+                            IconItem(iconName: iconName, currentIcon: $currentIcon)
+                                .listRowBackground(Color(.systemGroupedBackground))
+                        }
+                    }
+                    .background(Color.black.edgesIgnoringSafeArea(.all))
+                    .introspectTableView { tableView in
+                        tableView.backgroundColor = .black
+                    }
+                    .navigationTitle("App Icon")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button(action: {
+                                presentationMode.wrappedValue.dismiss()
+                            }) {
+                                Image(systemName: "chevron.down")
+                            }
+                        }
+                    }
+                }
+                .background(Color.black)
+            }
+            
+            struct IconItem: View {
+                let iconName: String
+                @Binding var currentIcon: String
+                
+                var body: some View {
+                    Button(action: {
+                        UIApplication.shared.setAlternateIconName(iconName == "AppIcon" ? nil : iconName, completionHandler: { error in
+                            if let error = error {
+                                print(error)
+                            } else {
+                                currentIcon = iconName
+                            }
+                        })
+                    }) {
+                        HStack {
+                            Image(iconName + "Icon")
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .padding()
+                            Text(iconName == "AppIcon" ? "Default" : iconName)
+                                .foregroundColor(.primary)
+                            
+                            Spacer()
+                            
+                            if iconName == currentIcon {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(.blue)
+                                    .padding()
+                            }
+                        }
+                    }
+                    .buttonStyle(.borderless)
+                }
+            }
+        }
+    }
+    
     struct Contact: View {
         @State private var contactMailData = ComposeMailData(subject: "", recipients: ["mot8ocqib@relay.firefox.com"], message: "", attachments: [])
         @State private var showContactMail = false
         
         var body: some View {
-            Section {
-                Button("Contact") {
+            Section(header: Text("Contact")) {
+                Button("Email") {
                     showContactMail = true
                 }
                 .sheet(isPresented: $showContactMail) {
@@ -457,12 +568,39 @@ struct Settings: View {
                         print(result)
                     }
                 }
+                
+                Button("Instagram") {
+                    let screenName =  "ben.koppe"
+                    
+                    let appURL = URL(string:  "instagram://user?username=\(screenName)")
+                    let webURL = URL(string:  "https://instagram.com/\(screenName)")
+                    
+                    if let appURL = appURL, UIApplication.shared.canOpenURL(appURL) {
+                        UIApplication.shared.open(appURL, options: [:], completionHandler: nil)
+                    } else {
+                        if let webURL = webURL {
+                            UIApplication.shared.open(webURL, options: [:], completionHandler: nil)
+                        } else {
+                            print("Could not open instagram.")
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    struct License: View {
+        var body: some View {
+            Section {
+                Link(destination: URL(string: "https://github.com/instructure/canvas-lms/blob/master/LICENSE")!) {
+                    Text("Canvas LMS License")
+                }
             }
         }
     }
     
     struct DevTools: View {
-        @AppStorage("firstLaunch", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var showLanding: Bool = true
+        @AppStorage("firstLaunch", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLanding: Bool = true
         @Environment(\.presentationMode) var presentationMode
         
         var body: some View {

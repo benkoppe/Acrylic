@@ -10,9 +10,9 @@ import SwiftUI
 import CoreData
 
 struct Provider: TimelineProvider {
-    
-    @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var auth: String = ""
-    @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
+    @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var auth: String = ""
+    @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
+    @AppStorage("showLate", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLate: Bool = true
     @ObservedObject var courseArray = CourseArray()
     
     func placeholder(in context: Context) -> Entry {
@@ -89,7 +89,11 @@ struct Provider: TimelineProvider {
                     if let list = try? decoder.decode(TodoList.self, from: data) {
                         for item in list {
                             if let assignment = item.assignment, let courseAssignment = createAssignment(assignment) {
-                                assignments.append(courseAssignment)
+                                if showLate {
+                                    assignments.append(courseAssignment)
+                                } else if courseAssignment.due > Date() {
+                                    assignments.append(courseAssignment)
+                                }
                             }
                         }
                         
@@ -153,21 +157,24 @@ struct Assignment_WidgetEntryView: View {
             }
             
         case .failure:
-            VStack {
-                Image(systemName: "xmark.circle")
-                    .font(.system(size: 40))
-                    .padding(.horizontal, 5)
-                    .foregroundColor(.red)
-                Spacer()
-                    .frame(height: 10)
-                Text("An error occured. Please check your settings and internet connection, and try again.")
-                    .font(.caption)
-                    .multilineTextAlignment(.center)
-                    .frame(width: 300)
+            ZStack {
+                Color.black
+                
+                VStack {
+                    Image(systemName: "xmark.circle")
+                        .font(.system(size: 40))
+                        .padding(.horizontal, 5)
+                        .foregroundColor(.red)
+                    Spacer()
+                        .frame(height: 10)
+                    Text("An error occured. Please check your settings and internet connection, and try again.")
+                        .font(.caption)
+                        .multilineTextAlignment(.center)
+                        .frame(width: 300)
+                }
+                .offset(y: -40)
+                .foregroundColor(.secondary)
             }
-            .offset(y: -40)
-            .foregroundColor(.secondary)
-            
         }
     }
     
@@ -252,7 +259,9 @@ struct Assignment_WidgetEntryView: View {
                 return formatter
             }
             
-            if day == Date().getYearDay() {
+            if date < Date() {
+                return formatter.string(from: date)
+            } else if day == Date().getYearDay() {
                 return "Today"
             } else if day == (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() {
                 return "Tomorrow"
@@ -298,11 +307,11 @@ struct Assignment_WidgetEntryView: View {
         }
         
         struct pfp: View {
-            @AppStorage("pfp", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var pfp: Data?
-            @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
+            @AppStorage("pfp", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var pfp: Data?
+            @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
             
             var pfpImage: Image {
-                let defaults = UserDefaults.init(suiteName: "group.com.benk.assytrack")
+                let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
                 if let data = defaults?.data(forKey: "pfp"), let image = UIImage(data: data) {
                     return Image(uiImage: image)
                 } else {

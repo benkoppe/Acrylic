@@ -18,8 +18,10 @@ struct BoardingView: View {
             TabView(selection: $tab) {
                 WelcomeView(tab: $tab)
                     .tag(0)
-                SetupView()
+                WidgetView(tab: $tab)
                     .tag(1)
+                SetupView()
+                    .tag(2)
             }
             .tabViewStyle(PageTabViewStyle())
             .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .never))
@@ -63,15 +65,23 @@ struct BoardingView: View {
         
         var body: some View {
             VStack {
+                Spacer()
                 Text("Welcome to")
                     .font(.system(size: 60))
                     .foregroundColor(.primary)
                     .multilineTextAlignment(.center)
-                Text("APPNAME")
+                    .offset(y: 40)
+                Text("Acrylic")
                     .font(.system(size: 60))
                     .bold()
-                    .gradientForeground(colors: [.red, .orange, .yellow, .green, .blue, .purple])
-                Text("Easily track and view your assignments both in-app and in the included widget")
+                    .foregroundColor(.primary)
+                    .multilineTextAlignment(.center)
+                    .offset(y: 40)
+                Image("BoardingImage")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 300, height: 300)
+                Text("Easily track and view your assignments.")
                     .foregroundColor(.secondary)
                     .italic()
                     .padding()
@@ -83,12 +93,52 @@ struct BoardingView: View {
                         tab = 1
                     }
                 }) {
+                    Text("Next \(Image(systemName: "chevron.right"))")
+                        .foregroundColor(.primary)
+                        .padding()
+                        .background(Color.blue)
+                        .clipShape(Capsule())
+                }
+                Spacer()
+            }
+            .padding()
+            .offset(x: 0, y: -30)
+        }
+    }
+    
+    struct WidgetView: View {
+        @Binding var tab: Int
+        
+        var body: some View {
+            VStack {
+                Spacer()
+                Text("Widget Included")
+                    .font(.title)
+                    .bold()
+                    .padding(.vertical)
+                Image("WidgetImage")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 325, height: 325)
+                Text("Comes with a widget for anytime access.")
+                    .foregroundColor(.secondary)
+                    .italic()
+                    .padding()
+                    .padding(.bottom)
+                    .multilineTextAlignment(.center)
+                
+                Button(action: {
+                    withAnimation {
+                        tab = 2
+                    }
+                }) {
                     Text("Get Started \(Image(systemName: "chevron.right"))")
                         .foregroundColor(.primary)
                         .padding()
                         .background(Color.blue)
                         .clipShape(Capsule())
                 }
+                Spacer()
             }
             .padding()
             .offset(x: 0, y: -30)
@@ -98,8 +148,8 @@ struct BoardingView: View {
     struct SetupView: View {
         @Environment(\.presentationMode) var presentationMode
         
-        @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var authCode: String = ""
-        @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
+        @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var authCode: String = ""
+        @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
         
         @State private var editPrefix = false
         @State private var editAuth = false
@@ -119,7 +169,8 @@ struct BoardingView: View {
             VStack {
                 Text("Setup")
                     .font(.system(size: 40))
-                    .gradientForeground(colors: [.red, .orange, .yellow, .green, .blue, .purple])
+                    .bold()
+                    //.gradientForeground(colors: [.red, .orange, .yellow, .green, .blue, .purple])
                 
                 Text("A prefix and auth code are required to access Canvas")
                     .foregroundColor(.secondary)
@@ -142,9 +193,6 @@ struct BoardingView: View {
                                         .lineLimit(1)
                                         .foregroundColor(.secondary)
                                         .frame(maxWidth: 150, alignment: .trailing)
-                                } else {
-                                    Image(systemName: "exclamationmark.circle")
-                                        .foregroundColor(.red)
                                 }
                                 Spacer().frame(width: 5)
                                 Image(systemName: "chevron.right")
@@ -169,9 +217,6 @@ struct BoardingView: View {
                                         .lineLimit(1)
                                         .foregroundColor(.secondary)
                                         .frame(maxWidth: 150, alignment: .trailing)
-                                } else {
-                                    Image(systemName: "exclamationmark.circle")
-                                        .foregroundColor(.red)
                                 }
                                 Spacer().frame(width: 5)
                                 Image(systemName: "chevron.right")
@@ -213,11 +258,6 @@ struct BoardingView: View {
                                 .foregroundColor(.red)
                                 .padding(40)
                         }
-                    } else {
-                        Image(systemName: "exclamationmark.circle")
-                            .font(.system(size: 60))
-                            .foregroundColor(.red)
-                            .padding(40)
                     }
                 }
                 .frame(height: 50)
@@ -268,7 +308,7 @@ struct BoardingView: View {
         
         func loadUser() {
             self.pfp = nil
-            let defaults = UserDefaults.init(suiteName: "group.com.benk.assytrack")
+            let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
             for prefix in prefixes {
                 userFetchState = .loading
                 let urlString = "https://\(prefix).instructure.com/api/v1/users/self/profile"
@@ -315,7 +355,7 @@ struct BoardingView: View {
         func fetchImage(url: URL) {
             URLSession.shared.dataTask(with: url) { data, response, error in
                 guard let data = data else { return }
-                let defaults = UserDefaults.init(suiteName: "group.com.benk.assytrack")
+                let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
                 if let pfp = UIImage(data: data) {
                     if let pngData = pfp.pngData() {
                         defaults?.setValue(pngData, forKey: "pfp")

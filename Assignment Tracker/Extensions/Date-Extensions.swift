@@ -22,3 +22,12 @@ extension Date {
         return Int(formatter.string(from: self)) ?? -1
     }
 }
+
+// rounds to nearest minute
+extension Date {
+    func roundMinuteDown() -> Date {
+        let cal = Calendar.current
+        let startOfMinute = cal.dateInterval(of: .minute, for: self)!.start
+        return startOfMinute
+    }
+}

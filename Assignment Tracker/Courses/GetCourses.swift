@@ -10,8 +10,8 @@ import SwiftUI
 struct GetCourses: View {
     @Environment(\.presentationMode) private var presentationMode
     
-    @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var auth: String = ""
-    @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
+    @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var auth: String = ""
+    @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
     @State private var canvasCourses: [CanvasCourse] = []
     @State private var fetchState: FetchState = .loading
     @State private var errorType: ErrorType = .none

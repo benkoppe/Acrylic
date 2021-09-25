@@ -50,7 +50,7 @@ struct Assignment: Comparable, Equatable, Hashable, Identifiable {
     let color: Color
     
     static func < (lhs: Assignment, rhs: Assignment) -> Bool {
-        if lhs.due != rhs.due {
+        if lhs.due.roundMinuteDown() != rhs.due.roundMinuteDown() {
             return lhs.due < rhs.due
         } else {
             return lhs.courseOrder < rhs.courseOrder

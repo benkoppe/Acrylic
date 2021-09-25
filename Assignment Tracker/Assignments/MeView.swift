@@ -12,13 +12,13 @@ struct MeView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var showingSettings = false
     
-    @AppStorage("pfp", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var pfp: Data?
-    @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.assytrack")) var prefixes: [String] = []
+    @AppStorage("pfp", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var pfp: Data?
+    @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
     
     @State private var toggle = false
     
     var pfpImage: Image {
-        let defaults = UserDefaults.init(suiteName: "group.com.benk.assytrack")
+        let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
         if let data = defaults?.data(forKey: "pfp"), let image = UIImage(data: data) {
             return Image(uiImage: image)
         } else {
@@ -30,7 +30,6 @@ struct MeView: View {
         NavigationView {
             VStack {
                 if showingSettings {
-                    Spacer().frame(height: 30)
                     Settings()
                 } else {
                     CourseList()

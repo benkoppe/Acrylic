@@ -35,10 +35,14 @@ struct AddCourse: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("")) {
-                    TextField("Name", text: $name)
-                    TextField("Teacher (Optional)", text: $teacher)
-                        .disableAutocorrection(true)
+                Section() {
+                    HStack {
+                        TextField("Name", text: $name)
+                    }
+                    HStack {
+                        TextField("Teacher (Optional)", text: $teacher)
+                            .disableAutocorrection(true)
+                    }
                     defaultsColorPicker(color: $color)
                 }
                 
@@ -47,7 +51,7 @@ struct AddCourse: View {
                 // TODO: add "Test" button that loads course info
             }
             .onAppear(perform: defaults)
-            .navigationTitle("New Course")
+            .navigationTitle(self.style == .edit ? "Edit Course" : "New Course")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(leading: Button("Cancel") {
                 presentationMode.wrappedValue.dismiss()
@@ -59,13 +63,14 @@ struct AddCourse: View {
     
     struct canvasInfo: View {
         @Binding var code: String
+        @State private var showingInfo = false
         
         var body: some View {
             Section(header:
                 HStack {
                     Text("Canvas Info")
                     Button(action: {
-                        print("Canvas Info button pressed")
+                        showingInfo = true
                     }) {
                         Image(systemName: "info.circle")
                     }
@@ -75,6 +80,9 @@ struct AddCourse: View {
                     TextField("Code", text: $code)
                         .keyboardType(.numberPad)
                 }
+            }
+            .alert(isPresented: $showingInfo) {
+                Alert(title: Text("Code Info"), message: Text("On Canvas, each course has its own unique code. You can find this code at the end of the course's home page.\n\nFor example, if the home url was instructure.com/courses/12345, the code would be 12345."), dismissButton: .cancel(Text("OK")))
             }
         }
     }
@@ -111,19 +119,6 @@ struct AddCourse: View {
                     }
                     .padding(.vertical, 10)
                 }
-            }
-        }
-        
-        func colorsEqual(_ lhs: Color, _ rhs: Color) -> Bool {
-            func roundrgba(_ color: Color) -> (red: Double, blue: Double, green: Double, alpha: Double) {
-                let rgba = UIColor(color).rgba
-                return (round(rgba.red * 1000), round(rgba.blue * 1000), round(rgba.green * 1000), round(rgba.alpha * 1000))
-            }
-            
-            if roundrgba(lhs) == roundrgba(rhs) {
-                return true
-            } else {
-                return false
             }
         }
     }

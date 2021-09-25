@@ -7,10 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B507EFFF26E2B6DE00861CEE /* Assignment_Widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B507EFFA26E2B6DD00861CEE /* Assignment_Widget.intentdefinition */; };
 		B507F00826E2C0F700861CEE /* CanvasStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F00726E2C0F600861CEE /* CanvasStructs.swift */; };
-		B507F00B26E2C50000861CEE /* AssignmentWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F00A26E2C50000861CEE /* AssignmentWidgetView.swift */; };
-		B507F01A26E2D5B100861CEE /* Assignment_Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507EFF826E2B6DD00861CEE /* Assignment_Widget.swift */; };
 		B507F02726E3E15500861CEE /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B507EFF326E2B6DD00861CEE /* WidgetKit.framework */; };
 		B507F02826E3E15500861CEE /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B507EFF526E2B6DD00861CEE /* SwiftUI.framework */; };
 		B507F02B26E3E15500861CEE /* AssignmentWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F02A26E3E15500861CEE /* AssignmentWidget.swift */; };
@@ -50,6 +47,7 @@
 		B5A920E326EF439200A71336 /* CanvasAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A920E226EF439200A71336 /* CanvasAPI.swift */; };
 		B5A920E626EFB03E00A71336 /* SwiftUIMailView in Frameworks */ = {isa = PBXBuildFile; productRef = B5A920E526EFB03E00A71336 /* SwiftUIMailView */; };
 		B5A920E826EFB4FC00A71336 /* BoardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A920E726EFB4FC00A71336 /* BoardingView.swift */; };
+		B5ACC11326FEE8C7009A8E69 /* ColorsEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5ACC11226FEE8C7009A8E69 /* ColorsEqual.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,12 +91,7 @@
 /* Begin PBXFileReference section */
 		B507EFF326E2B6DD00861CEE /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		B507EFF526E2B6DD00861CEE /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		B507EFF826E2B6DD00861CEE /* Assignment_Widget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment_Widget.swift; sourceTree = "<group>"; };
-		B507EFFA26E2B6DD00861CEE /* Assignment_Widget.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = Assignment_Widget.intentdefinition; sourceTree = "<group>"; };
-		B507EFFB26E2B6DE00861CEE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		B507EFFD26E2B6DE00861CEE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B507F00726E2C0F600861CEE /* CanvasStructs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CanvasStructs.swift; sourceTree = "<group>"; };
-		B507F00A26E2C50000861CEE /* AssignmentWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentWidgetView.swift; sourceTree = "<group>"; };
 		B507F02626E3E15500861CEE /* AssignmentWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AssignmentWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B507F02A26E3E15500861CEE /* AssignmentWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentWidget.swift; sourceTree = "<group>"; };
 		B507F02C26E3E15600861CEE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -134,6 +127,7 @@
 		B5A920E026EF3F3300A71336 /* Gradient-Foreground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Gradient-Foreground.swift"; sourceTree = "<group>"; };
 		B5A920E226EF439200A71336 /* CanvasAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasAPI.swift; sourceTree = "<group>"; };
 		B5A920E726EFB4FC00A71336 /* BoardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardingView.swift; sourceTree = "<group>"; };
+		B5ACC11226FEE8C7009A8E69 /* ColorsEqual.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorsEqual.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,18 +175,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		B507EFF726E2B6DD00861CEE /* Assignment Widget */ = {
-			isa = PBXGroup;
-			children = (
-				B507EFF826E2B6DD00861CEE /* Assignment_Widget.swift */,
-				B507F00A26E2C50000861CEE /* AssignmentWidgetView.swift */,
-				B507EFFA26E2B6DD00861CEE /* Assignment_Widget.intentdefinition */,
-				B507EFFB26E2B6DE00861CEE /* Assets.xcassets */,
-				B507EFFD26E2B6DE00861CEE /* Info.plist */,
-			);
-			path = "Assignment Widget";
-			sourceTree = "<group>";
-		};
 		B507F02926E3E15500861CEE /* AssignmentWidget */ = {
 			isa = PBXGroup;
 			children = (
@@ -227,7 +209,6 @@
 				B57A2C4F26D6B37F0047C6E2 /* Assignment Tracker */,
 				B57A2C6626D6B3800047C6E2 /* Assignment TrackerTests */,
 				B57A2C7126D6B3800047C6E2 /* Assignment TrackerUITests */,
-				B507EFF726E2B6DD00861CEE /* Assignment Widget */,
 				B507F02926E3E15500861CEE /* AssignmentWidget */,
 				B507EFF226E2B6DD00861CEE /* Frameworks */,
 				B57A2C4E26D6B37F0047C6E2 /* Products */,
@@ -255,10 +236,10 @@
 				B5A0986D26DEFA4500411DCC /* Courses */,
 				B52F2D4326E120DE00AAEDC0 /* Assignments */,
 				B52F2D4226E11DEE00AAEDC0 /* Settings */,
-				B57A2C5426D6B3800047C6E2 /* Assets.xcassets */,
 				B5A0986E26DEFA6E00411DCC /* Data */,
 				B57A2C8C26D96E170047C6E2 /* Extensions */,
 				B57A2C5E26D6B3800047C6E2 /* Info.plist */,
+				B57A2C5426D6B3800047C6E2 /* Assets.xcassets */,
 				B57A2C5626D6B3800047C6E2 /* Preview Content */,
 			);
 			path = "Assignment Tracker";
@@ -295,6 +276,7 @@
 			children = (
 				B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */,
 				B57A2C8D26D96E280047C6E2 /* Color-Extensions.swift */,
+				B5ACC11226FEE8C7009A8E69 /* ColorsEqual.swift */,
 				B5A920E026EF3F3300A71336 /* Gradient-Foreground.swift */,
 				B5A0987626E00E3300411DCC /* Array-AppStorage.swift */,
 				B507F04C26E9EAAB00861CEE /* ReadSize.swift */,
@@ -520,15 +502,12 @@
 			files = (
 				B57A2C9226DB37B00047C6E2 /* CourseColors.swift in Sources */,
 				B57A2C9E26DE8A450047C6E2 /* GetCourses.swift in Sources */,
-				B507F01A26E2D5B100861CEE /* Assignment_Widget.swift in Sources */,
 				B507F04426E409D000861CEE /* URL-Extensions.swift in Sources */,
 				B507F05126EA929900861CEE /* MeView.swift in Sources */,
 				B57A2C9026D9712A0047C6E2 /* AddCourse.swift in Sources */,
-				B507EFFF26E2B6DE00861CEE /* Assignment_Widget.intentdefinition in Sources */,
 				B57A2C5326D6B37F0047C6E2 /* ContentView.swift in Sources */,
 				B52F2D4526E13F6100AAEDC0 /* Date-Extensions.swift in Sources */,
 				B5A920E126EF3F3300A71336 /* Gradient-Foreground.swift in Sources */,
-				B507F00B26E2C50000861CEE /* AssignmentWidgetView.swift in Sources */,
 				B57A2C5126D6B37F0047C6E2 /* Assignment_TrackerApp.swift in Sources */,
 				B507F04D26E9EAAB00861CEE /* ReadSize.swift in Sources */,
 				B507F04726E413A600861CEE /* Course.swift in Sources */,
@@ -540,6 +519,7 @@
 				B5A920E326EF439200A71336 /* CanvasAPI.swift in Sources */,
 				B57A2C9626DB3CEB0047C6E2 /* View-Extensions.swift in Sources */,
 				B507F00826E2C0F700861CEE /* CanvasStructs.swift in Sources */,
+				B5ACC11326FEE8C7009A8E69 /* ColorsEqual.swift in Sources */,
 				B57A2C8B26D967250047C6E2 /* CourseList.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -595,7 +575,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.assytrack.Assignment-Tracker.AssignmentWidget";
+				PRODUCT_BUNDLE_IDENTIFIER = com.benk.acrylic.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -617,7 +597,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.assytrack.Assignment-Tracker.AssignmentWidget";
+				PRODUCT_BUNDLE_IDENTIFIER = com.benk.acrylic.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -745,8 +725,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = Inverted;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = "Assignment Tracker/Assignment Tracker.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Assignment Tracker/Preview Content\"";
@@ -754,12 +736,12 @@
 				ENABLE_PREVIEWS = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Assignment Tracker/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.assytrack.Assignment-Tracker";
+				PRODUCT_BUNDLE_IDENTIFIER = com.benk.acrylic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -770,8 +752,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = Inverted;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = "Assignment Tracker/Assignment Tracker.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"Assignment Tracker/Preview Content\"";
@@ -779,12 +763,12 @@
 				ENABLE_PREVIEWS = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Assignment Tracker/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.assytrack.Assignment-Tracker";
+				PRODUCT_BUNDLE_IDENTIFIER = com.benk.acrylic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -805,7 +789,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.assytrack.Assignment-TrackerTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.acrylic.Assignment-TrackerTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -827,7 +811,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.assytrack.Assignment-TrackerTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.acrylic.Assignment-TrackerTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -847,7 +831,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.assytrack.Assignment-TrackerUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.acrylic.Assignment-TrackerUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -867,7 +851,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.assytrack.Assignment-TrackerUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.benk.acrylic.Assignment-TrackerUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

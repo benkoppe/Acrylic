@@ -19,6 +19,24 @@ struct ContentView: View {
                 //Image(systemName: "list.bullet.rectangle")
                 Text("Assignments")
             }
+        
+        /*if #available(iOS 15.0, *) {
+            ZStack {
+                //Color.white
+                ZStack {
+                    LinearGradient(colors: [.cyan, .cyan, .pink, .white, .pink, .cyan, .cyan], startPoint: .topLeading, endPoint: .bottomTrailing)
+                    //Color("WidgetBackground")
+                    
+                    Image(systemName: "checkmark.circle")
+                        //.foregroundStyle(LinearGradient(colors: [.red, .red, .orange, .yellow, .green, .blue, .purple, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .foregroundColor(.black)
+                        .font(.system(size: 200))
+                }
+                .frame(width: 240, height: 240)
+            }
+        } else {
+            Text("My fault")
+        }*/
     }
 }
 

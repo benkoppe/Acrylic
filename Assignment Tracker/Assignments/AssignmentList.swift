@@ -89,8 +89,11 @@ struct AssignmentList: View {
                     }
                     
                 case .loading:
-                    ProgressView("Loading Assignments...")
-                        .offset(y: -40)
+                    VStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
+                    }
                     
                 default:
                     VStack {
@@ -130,6 +133,7 @@ struct AssignmentList: View {
                         .font(.title)
                         .bold()
                         .padding(.vertical)
+                        .fixedSize(horizontal: true, vertical: false)
                         //.gradientForeground(colors: [.red, .orange, .yellow, .green, .blue, .purple])
                         .foregroundColor(.white)
                 }
@@ -233,6 +237,8 @@ struct AssignmentList: View {
         @Binding var fetchState: FetchState
         @Binding var sortMode: SortMode
         
+        @State private var hasAnimated = false
+        
         @ObservedObject private var refreshController = AssignmentRefresh()
         
         @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var auth: String = ""
@@ -303,39 +309,9 @@ struct AssignmentList: View {
         
         var body: some View {
             List {
-                ForEach(splitAssignments, id: \.self) { assignmentArray in
+                ForEach(Array(zip(splitAssignments.indices, splitAssignments)), id: \.0) { index, assignmentArray in
                     Section {
-                        ZStack {
-                            Color("WidgetBackground")
-                                .clipShape(
-                                    RoundedRectangle(cornerRadius: 15)
-                                )
-                                .padding(.vertical, 7)
-                            
-                            HStack {
-                                VStack(alignment: .leading, spacing: 0) {
-                                    Text(sortMode == .date ? createDateTitleText(for: assignmentArray[0].due) : courseArray.courses[assignmentArray[0].courseOrder].name)
-                                        //.font(.system(.title, design: .rounded))
-                                        .foregroundColor(sortMode == .date ? .primary : assignmentArray[0].color)
-                                        .font(.system(size: 25, weight: .semibold, design: .rounded))
-                                        .padding(.bottom, 7)
-                                    
-                                    ForEach(assignmentArray, id: \.self) { assignment in
-                                        assignmentItem(assignment: assignment, sortMode: $sortMode)
-                                    }
-                                }
-                                Spacer()
-                            }
-                            .padding()
-                            .padding(.vertical, 7)
-                            .padding(.leading, 4)
-                        }
-                        .introspectTableViewCell { cell in
-                            cell.backgroundColor = .clear
-                            cell.separatorInset = .zero
-                            cell.clipsToBounds = true
-                            cell.layer.borderWidth = 0
-                        }
+                        assignmentGroup(hasAnimated: $hasAnimated, sortMode: $sortMode, assignmentArray: assignmentArray, index: index)
                     }
                 }
             }
@@ -385,32 +361,6 @@ struct AssignmentList: View {
             }
         }
         
-        func createDateTitleText(for date: Date) -> String {
-            let day = date.getYearDay()
-            var shortFormatter: DateFormatter {
-                let formatter = DateFormatter()
-                formatter.dateFormat = "EEEE"
-                return formatter
-            }
-            var formatter: DateFormatter {
-                let formatter = DateFormatter()
-                formatter.dateFormat = "EEEE, MMM d"
-                return formatter
-            }
-            
-            if date < Date() {
-                return formatter.string(from: date)
-            } else if day == Date().getYearDay() {
-                return "Today"
-            } else if day == (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() {
-                return "Tomorrow"
-            } else if (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() - day < 7 {
-                return shortFormatter.string(from: date)
-            } else {
-                return formatter.string(from: date)
-            }
-        }
-        
         func endRefresh() {
             DispatchQueue.main.async {
                 refreshController.shouldReload = false
@@ -418,55 +368,69 @@ struct AssignmentList: View {
             }
         }
         
-        struct assignmentItem: View {
-            let assignment: Assignment
+        struct assignmentGroup: View {
+            @Binding var hasAnimated: Bool
             @Binding var sortMode: SortMode
+            let assignmentArray: [Assignment]
+            let index: Int
+            @EnvironmentObject var courseArray: CourseArray
             
-            var timeFormatter: DateFormatter {
-                let formatter = DateFormatter()
-                formatter.dateStyle = .none
-                formatter.timeStyle = .short
-                return formatter
-            }
+            @State private var offset: CGFloat = 200
+            @State private var opacity: Double = 0
+            let delay: Double = 0.05
+            let speed: Double = 0.5
             
             var body: some View {
-                
-                Link(destination: assignment.url) {
+                ZStack {
+                    Color("WidgetBackground")
+                        .clipShape(
+                            RoundedRectangle(cornerRadius: 15)
+                        )
+                        .padding(.vertical, 7)
+                    
                     HStack {
-                        Text(String("\u{007C}"))
-                            .font(.system(size: 42, weight: .semibold, design: .rounded))
-                            .foregroundColor(assignment.color)
-                            .offset(x: 7, y: -3.5)
-                            .padding(.leading, 5)
-                        
                         VStack(alignment: .leading, spacing: 0) {
-                            Text(assignment.name)
-                                .font(.system(size: 17, weight: .semibold, design: .rounded))
-                                .lineLimit(1)
-                                .padding(.bottom, 1)
+                            Text(sortMode == .date ? createDateTitleText(for: assignmentArray[0].due) : courseArray.courses[assignmentArray[0].courseOrder].name)
+                                //.font(.system(.title, design: .rounded))
+                                .foregroundColor(sortMode == .date ? .primary : assignmentArray[0].color)
+                                .font(.system(size: 25, weight: .semibold, design: .rounded))
+                                .padding(.bottom, 7)
                             
-                            HStack(spacing: 0) {
-                                Text(sortMode == .date ? timeFormatter.string(from: assignment.due) : createDateText(for: assignment.due))
-                                    .contrast(0.5)
-                                
-                                Text(" • ")
-                                
-                                Text(sortMode == .date ? assignment.courseName : timeFormatter.string(from: assignment.due))
-                                    .foregroundColor(assignment.color)
+                            ForEach(assignmentArray, id: \.self) { assignment in
+                                assignmentItem(assignment: assignment, sortMode: $sortMode)
                             }
-                            .font(.system(size: 8, weight: .semibold, design: .default))
-                            .lineLimit(1)
-                            .offset(x: 2, y: 0)
                         }
+                        Spacer()
                     }
-                    .foregroundColor(.primary)
-                    .offset(x: 10, y: 0)
+                    .padding()
+                    .padding(.vertical, 7)
+                    .padding(.leading, 4)
                 }
-                .buttonStyle(PlainButtonStyle())
-                
+                .offset(x: 0, y: offset)
+                .opacity(opacity)
+                .onAppear {
+                    if !hasAnimated {
+                        withAnimation(.default.delay(delay * Double(index)).speed(speed)) {
+                            offset = 0
+                            opacity = 1
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            hasAnimated = true
+                        }
+                    } else {
+                        offset = 0
+                        opacity = 1
+                    }
+                }
+                .introspectTableViewCell { cell in
+                    cell.backgroundColor = .clear
+                    cell.separatorInset = .zero
+                    cell.clipsToBounds = false
+                    cell.layer.borderWidth = 0
+                }
             }
             
-            func createDateText(for date: Date) -> String {
+            func createDateTitleText(for date: Date) -> String {
                 let day = date.getYearDay()
                 var shortFormatter: DateFormatter {
                     let formatter = DateFormatter()
@@ -481,7 +445,7 @@ struct AssignmentList: View {
                 
                 if date < Date() {
                     return formatter.string(from: date)
-                }else if day == Date().getYearDay() {
+                } else if day == Date().getYearDay() {
                     return "Today"
                 } else if day == (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() {
                     return "Tomorrow"
@@ -489,6 +453,81 @@ struct AssignmentList: View {
                     return shortFormatter.string(from: date)
                 } else {
                     return formatter.string(from: date)
+                }
+            }
+            
+            struct assignmentItem: View {
+                let assignment: Assignment
+                @Binding var sortMode: SortMode
+                
+                var timeFormatter: DateFormatter {
+                    let formatter = DateFormatter()
+                    formatter.dateStyle = .none
+                    formatter.timeStyle = .short
+                    return formatter
+                }
+                
+                var body: some View {
+                    
+                    Link(destination: assignment.url) {
+                        HStack {
+                            Text(String("\u{007C}"))
+                                .font(.system(size: 42, weight: .semibold, design: .rounded))
+                                .foregroundColor(assignment.color)
+                                .offset(x: 7, y: -3.5)
+                                .padding(.leading, 5)
+                            
+                            VStack(alignment: .leading, spacing: 0) {
+                                Text(assignment.name)
+                                    .font(.system(size: 17, weight: .semibold, design: .rounded))
+                                    .lineLimit(1)
+                                    .padding(.bottom, 1)
+                                
+                                HStack(spacing: 0) {
+                                    Text(sortMode == .date ? timeFormatter.string(from: assignment.due) : createDateText(for: assignment.due))
+                                        .contrast(0.5)
+                                    
+                                    Text(" • ")
+                                    
+                                    Text(sortMode == .date ? assignment.courseName : timeFormatter.string(from: assignment.due))
+                                        .foregroundColor(assignment.color)
+                                }
+                                .font(.system(size: 8, weight: .semibold, design: .default))
+                                .lineLimit(1)
+                                .offset(x: 2, y: 0)
+                            }
+                        }
+                        .foregroundColor(.primary)
+                        .offset(x: 10, y: 0)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    
+                }
+                
+                func createDateText(for date: Date) -> String {
+                    let day = date.getYearDay()
+                    var shortFormatter: DateFormatter {
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "EEEE"
+                        return formatter
+                    }
+                    var formatter: DateFormatter {
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "EEEE, MMM d"
+                        return formatter
+                    }
+                    
+                    if date < Date() {
+                        return formatter.string(from: date)
+                    }else if day == Date().getYearDay() {
+                        return "Today"
+                    } else if day == (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() {
+                        return "Tomorrow"
+                    } else if (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() - day < 7 {
+                        return shortFormatter.string(from: date)
+                    } else {
+                        return formatter.string(from: date)
+                    }
                 }
             }
         }

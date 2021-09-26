@@ -49,7 +49,7 @@ func fetchAssignments(auth: String, prefixes: [String], completion: @escaping (R
                 let decoder = JSONDecoder()
                 if let list = try? decoder.decode(TodoList.self, from: data) {
                     for item in list {
-                        if let assignment = item.assignment {
+                        if let assignment = item.assignment, !fetchedAssignments.contains(where: { assignment.name == $0.name } ) {
                             fetchedAssignments.append(assignment)
                         }
                     }

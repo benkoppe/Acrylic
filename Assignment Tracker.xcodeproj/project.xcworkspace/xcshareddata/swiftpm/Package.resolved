@@ -18,6 +18,15 @@
           "revision": "dad1d289cb904d477f2fbabcca5ba82bfcfb2ea6",
           "version": "1.0.1"
         }
+      },
+      {
+        "package": "WhatsNewKit",
+        "repositoryURL": "https://github.com/SvenTiigi/WhatsNewKit",
+        "state": {
+          "branch": "feature/swift-ui",
+          "revision": "fe04fa4191ec34ea2ff60a612567c10a1f483390",
+          "version": null
+        }
       }
     ]
   },

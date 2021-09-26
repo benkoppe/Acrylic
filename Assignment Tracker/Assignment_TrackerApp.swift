@@ -18,15 +18,28 @@ struct Assignment_TrackerApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .preferredColorScheme(.dark)
-                .colorScheme(.dark)
-                .onOpenURL { url in
-                    var str = url.absoluteString
-                    str.removeFirst(9)
-                    let pageURL = URL(string: str)!
-                    UIApplication.shared.open(pageURL)
-                }
+            if #available(iOS 15.0, *) {
+                ContentView()
+                    .preferredColorScheme(.dark)
+                    .colorScheme(.dark)
+                    .dynamicTypeSize(.medium)
+                    .onOpenURL { url in
+                        var str = url.absoluteString
+                        str.removeFirst(9)
+                        let pageURL = URL(string: str)!
+                        UIApplication.shared.open(pageURL)
+                    }
+            } else {
+                ContentView()
+                    .preferredColorScheme(.dark)
+                    .colorScheme(.dark)
+                    .onOpenURL { url in
+                        var str = url.absoluteString
+                        str.removeFirst(9)
+                        let pageURL = URL(string: str)!
+                        UIApplication.shared.open(pageURL)
+                    }
+            }
         }
     }
 }

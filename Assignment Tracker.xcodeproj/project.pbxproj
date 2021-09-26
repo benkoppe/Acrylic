@@ -26,6 +26,10 @@
 		B507F04D26E9EAAB00861CEE /* ReadSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04C26E9EAAB00861CEE /* ReadSize.swift */; };
 		B507F04F26E9EFDD00861CEE /* ReadSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04C26E9EAAB00861CEE /* ReadSize.swift */; };
 		B507F05126EA929900861CEE /* MeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F05026EA929900861CEE /* MeView.swift */; };
+		B51D0B2E27002A8F0098A3FD /* AssignmentWidgetIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B5ACC118270026AD009A8E69 /* AssignmentWidgetIntent.intentdefinition */; };
+		B51D0B2F2700342D0098A3FD /* AssignmentWidgetIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B5ACC118270026AD009A8E69 /* AssignmentWidgetIntent.intentdefinition */; };
+		B51D0B3A27004A0A0098A3FD /* WhatsNewKit in Frameworks */ = {isa = PBXBuildFile; productRef = B51D0B3927004A0A0098A3FD /* WhatsNewKit */; };
+		B51D0B3C27004A0A0098A3FD /* WhatsNewKitSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B51D0B3B27004A0A0098A3FD /* WhatsNewKitSwiftUI */; };
 		B52F2D4526E13F6100AAEDC0 /* Date-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */; };
 		B54E5EB126EBE07A0076C55C /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = B54E5EB026EBE07A0076C55C /* Introspect */; };
 		B57A2C5126D6B37F0047C6E2 /* Assignment_TrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5026D6B37F0047C6E2 /* Assignment_TrackerApp.swift */; };
@@ -50,7 +54,6 @@
 		B5ACC11326FEE8C7009A8E69 /* ColorsEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5ACC11226FEE8C7009A8E69 /* ColorsEqual.swift */; };
 		B5ACC11526FFF6CA009A8E69 /* Bundle-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5ACC11426FFF6CA009A8E69 /* Bundle-Extensions.swift */; };
 		B5ACC11727001550009A8E69 /* AppIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5ACC11627001550009A8E69 /* AppIcons.swift */; };
-		B5ACC119270026AD009A8E69 /* AssignmentWidgetIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B5ACC118270026AD009A8E69 /* AssignmentWidgetIntent.intentdefinition */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -152,6 +155,8 @@
 			files = (
 				B5A920E626EFB03E00A71336 /* SwiftUIMailView in Frameworks */,
 				B54E5EB126EBE07A0076C55C /* Introspect in Frameworks */,
+				B51D0B3C27004A0A0098A3FD /* WhatsNewKitSwiftUI in Frameworks */,
+				B51D0B3A27004A0A0098A3FD /* WhatsNewKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,6 +367,8 @@
 			packageProductDependencies = (
 				B54E5EB026EBE07A0076C55C /* Introspect */,
 				B5A920E526EFB03E00A71336 /* SwiftUIMailView */,
+				B51D0B3927004A0A0098A3FD /* WhatsNewKit */,
+				B51D0B3B27004A0A0098A3FD /* WhatsNewKitSwiftUI */,
 			);
 			productName = "Assignment Tracker";
 			productReference = B57A2C4D26D6B37F0047C6E2 /* Assignment Tracker.app */;
@@ -440,6 +447,7 @@
 			packageReferences = (
 				B54E5EAF26EBE07A0076C55C /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 				B5A920E426EFB03E00A71336 /* XCRemoteSwiftPackageReference "swiftui-mail-view" */,
+				B51D0B3827004A0A0098A3FD /* XCRemoteSwiftPackageReference "WhatsNewKit" */,
 			);
 			productRefGroup = B57A2C4E26D6B37F0047C6E2 /* Products */;
 			projectDirPath = "";
@@ -498,6 +506,7 @@
 				B507F03D26E3E26800861CEE /* CourseColors.swift in Sources */,
 				B507F04F26E9EFDD00861CEE /* ReadSize.swift in Sources */,
 				B507F03526E3E23100861CEE /* CanvasStructs.swift in Sources */,
+				B51D0B2E27002A8F0098A3FD /* AssignmentWidgetIntent.intentdefinition in Sources */,
 				B507F02B26E3E15500861CEE /* AssignmentWidget.swift in Sources */,
 				B507F03B26E3E26400861CEE /* Color-Extensions.swift in Sources */,
 				B507F03E26E3E26A00861CEE /* View-Extensions.swift in Sources */,
@@ -532,7 +541,7 @@
 				B5ACC11326FEE8C7009A8E69 /* ColorsEqual.swift in Sources */,
 				B5ACC11727001550009A8E69 /* AppIcons.swift in Sources */,
 				B57A2C8B26D967250047C6E2 /* CourseList.swift in Sources */,
-				B5ACC119270026AD009A8E69 /* AssignmentWidgetIntent.intentdefinition in Sources */,
+				B51D0B2F2700342D0098A3FD /* AssignmentWidgetIntent.intentdefinition in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -580,14 +589,16 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = AssignmentWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = T8PATWK92J;
 				INFOPLIST_FILE = AssignmentWidget/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.benk.acrylic.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -603,14 +614,16 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = AssignmentWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = T8PATWK92J;
 				INFOPLIST_FILE = AssignmentWidget/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.benk.acrylic.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -739,22 +752,24 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = Inverted;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "Inverted Wavy Snake Royal Deep Blood NotPlaying Musical Superspreader LimitReached IsTyping... Influencer Helms Baker";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = "Assignment Tracker/Assignment Tracker.entitlements";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Assignment Tracker/Preview Content\"";
 				DEVELOPMENT_TEAM = T8PATWK92J;
 				ENABLE_PREVIEWS = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Assignment Tracker/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.benk.acrylic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -766,22 +781,24 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = Inverted;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "Inverted Wavy Snake Royal Deep Blood NotPlaying Musical Superspreader LimitReached IsTyping... Influencer Helms Baker";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = "Assignment Tracker/Assignment Tracker.entitlements";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Assignment Tracker/Preview Content\"";
 				DEVELOPMENT_TEAM = T8PATWK92J;
 				ENABLE_PREVIEWS = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Assignment Tracker/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.benk.acrylic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -797,7 +814,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T8PATWK92J;
 				INFOPLIST_FILE = "Assignment TrackerTests/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -819,7 +836,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T8PATWK92J;
 				INFOPLIST_FILE = "Assignment TrackerTests/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -924,6 +941,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		B51D0B3827004A0A0098A3FD /* XCRemoteSwiftPackageReference "WhatsNewKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SvenTiigi/WhatsNewKit";
+			requirement = {
+				branch = "feature/swift-ui";
+				kind = branch;
+			};
+		};
 		B54E5EAF26EBE07A0076C55C /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect";
@@ -943,6 +968,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B51D0B3927004A0A0098A3FD /* WhatsNewKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B51D0B3827004A0A0098A3FD /* XCRemoteSwiftPackageReference "WhatsNewKit" */;
+			productName = WhatsNewKit;
+		};
+		B51D0B3B27004A0A0098A3FD /* WhatsNewKitSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B51D0B3827004A0A0098A3FD /* XCRemoteSwiftPackageReference "WhatsNewKit" */;
+			productName = WhatsNewKitSwiftUI;
+		};
 		B54E5EB026EBE07A0076C55C /* Introspect */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B54E5EAF26EBE07A0076C55C /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;

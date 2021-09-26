@@ -8,20 +8,20 @@
 import WidgetKit
 import SwiftUI
 import CoreData
+import Intents
 
-struct Provider: TimelineProvider {
+struct Provider: IntentTimelineProvider {
     @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var auth: String = ""
     @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
-    @AppStorage("showLate", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLate: Bool = true
     @ObservedObject var courseArray = CourseArray()
     
     func placeholder(in context: Context) -> Entry {
         return Entry(date: Date(), result: .success(Assignment.sampleAssignments()))
     }
     
-    func getSnapshot(in context: Context, completion: @escaping (Entry) -> Void) {
+    func getSnapshot(for configuration: AssignmentWidgetConfigurationIntent, in context: Context, completion: @escaping (Entry) -> Void) {
         if !context.isPreview {
-            fetchAssignments() { result in
+            fetchAssignments(showLate: configuration.showLate?.boolValue ?? false) { result in
                 let entry = Entry(date: Date(), result: result)
                 completion(entry)
             }
@@ -31,11 +31,11 @@ struct Provider: TimelineProvider {
         }
     }
     
-    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
+    func getTimeline(for configuration: AssignmentWidgetConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
         let nextUpdateDate = Calendar.current.date(byAdding: .second, value: 1, to: Date())!
         
         if !context.isPreview {
-            fetchAssignments() { result in
+            fetchAssignments(showLate: configuration.showLate?.boolValue ?? false) { result in
                 let entry = Entry(date: Date(), result: result)
                 let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
                 completion(timeline)
@@ -48,7 +48,7 @@ struct Provider: TimelineProvider {
         
     }
     
-    func fetchAssignments(completion: @escaping (Result<[Assignment], FetchError>) -> Void) {
+    func fetchAssignments(showLate: Bool, completion: @escaping (Result<[Assignment], FetchError>) -> Void) {
         var assignments: [Assignment] = []
         var loadedPrefixes: [String] = []
         
@@ -88,7 +88,7 @@ struct Provider: TimelineProvider {
                     let decoder = JSONDecoder()
                     if let list = try? decoder.decode(TodoList.self, from: data) {
                         for item in list {
-                            if let assignment = item.assignment, let courseAssignment = createAssignment(assignment) {
+                            if let assignment = item.assignment, let courseAssignment = createAssignment(assignment), !assignments.contains(where: { courseAssignment.name == $0.name }) {
                                 if showLate {
                                     assignments.append(courseAssignment)
                                 } else if courseAssignment.due > Date() {
@@ -158,8 +158,6 @@ struct Assignment_WidgetEntryView: View {
             
         case .failure:
             ZStack {
-                Color.black
-                
                 VStack {
                     Image(systemName: "xmark.circle")
                         .font(.system(size: 40))
@@ -449,7 +447,7 @@ struct AssignmentWidget: Widget {
     let provider = Provider()
     
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: provider) { entry in
+        IntentConfiguration(kind: kind, intent: AssignmentWidgetConfigurationIntent.self, provider: provider) { entry in
             Assignment_WidgetEntryView(entry: entry)
                 .preferredColorScheme(.dark)
                 .colorScheme(.dark)

@@ -207,7 +207,6 @@ struct Settings: View {
                                 .bold()
                                 .multilineTextAlignment(.center)
                                 .padding(.top, 30)
-                                .padding(.bottom)
                                 .padding(.horizontal)
                                 .fixedSize(horizontal: false, vertical: true)
                             
@@ -219,6 +218,10 @@ struct Settings: View {
                             Spacer()
                             
                             Group {
+                                Text("Access from your browser Canvas")
+                                    .font(.callout)
+                                    .italic()
+                                    .foregroundColor(.secondary)
                                 Image("Settings")
                                     .resizable()
                                     .scaledToFit()
@@ -236,35 +239,14 @@ struct Settings: View {
                                     .scaledToFit()
                                     .frame(width: 150)
                                     .padding(3)
+                                Text("You may type anything for the purpose.")
+                                    .italic()
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .padding(.top, 5)
                             }
                             
                             HStack(spacing: 0) {
-                                
-                                /*if !isSecure {
-                                    
-                                    TextField("Authentication Code", text: $editCode)
-                                        .lineLimit(1)
-                                        .disableAutocorrection(true)
-                                        .autocapitalization(.none)
-                                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    
-                                } else {
-                                    
-                                    SecureField("Authentication Code", text: $editCode)
-                                        .lineLimit(1)
-                                        .disableAutocorrection(true)
-                                        .autocapitalization(.none)
-                                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                                        .disabled(true)
-                                        .contrast(0.9)
-                                    
-                                    Button("Clear") {
-                                        withAnimation { isSecure.toggle() }
-                                        editCode = ""
-                                    }
-                                    .padding(.horizontal)
-                                    
-                                }*/
                                 
                                 TextField("Authentication Code", text: $editCode)
                                     .lineLimit(1)
@@ -345,10 +327,17 @@ struct Settings: View {
                             }
                             .onDelete(perform: delete)
                         } else {
-                            Text("Please add at least one prefix.")
-                                .font(.callout)
-                                .italic()
-                                .foregroundColor(.red)
+                            VStack(alignment: .leading) {
+                                Text("Please add at least one prefix.")
+                                    .font(.callout)
+                                    .italic()
+                                    .foregroundColor(.red)
+                                Spacer().frame(height: 1)
+                                Text("Press the plus button on the top right to add a prefix.")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding(.vertical, 5)
                         }
                     }
                     .listStyle(InsetGroupedListStyle())
@@ -536,7 +525,7 @@ struct Settings: View {
                 
                 var body: some View {
                     Button(action: {
-                        UIApplication.shared.setAlternateIconName(iconName == "AppIcon" ? nil : iconName, completionHandler: { error in
+                        UIApplication.shared.setAlternateIconName(iconName == "AppIcon" ? nil : iconName.replacingOccurrences(of: " ", with: ""), completionHandler: { error in
                             if let error = error {
                                 print(error)
                             } else {

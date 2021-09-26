@@ -63,12 +63,14 @@ struct MeView: View {
                             withAnimation { showingSettings = false }
                         }) {
                             Image(systemName: "list.bullet.rectangle")
+                                .padding([.vertical, .leading])
                         }
                     } else {
                         Button(action: {
                             withAnimation { showingSettings = true }
                         }) {
                             Image(systemName: "gearshape")
+                                .padding([.vertical, .leading])
                         }
                     }
                 }

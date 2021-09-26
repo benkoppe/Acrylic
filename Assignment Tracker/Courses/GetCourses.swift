@@ -86,13 +86,11 @@ struct GetCourses: View {
                     .font(.title2)
                     .padding(.top, 30)
                     .padding(.horizontal)
-                Text("You can always edit them later.")
+                Text("You can edit thier names and colors later.")
                     .font(.callout)
                     .italic()
                     .padding([.horizontal, .bottom])
                     .foregroundColor(.secondary)
-                
-                Divider()
                 
                 List {
                     ForEach(courses, id: \.self) { course in

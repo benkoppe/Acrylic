@@ -29,6 +29,7 @@
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>ConfigurationIntent</string>
+		<string>ShowLateIntent</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

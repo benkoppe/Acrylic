@@ -48,6 +48,9 @@
 		B5A920E626EFB03E00A71336 /* SwiftUIMailView in Frameworks */ = {isa = PBXBuildFile; productRef = B5A920E526EFB03E00A71336 /* SwiftUIMailView */; };
 		B5A920E826EFB4FC00A71336 /* BoardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A920E726EFB4FC00A71336 /* BoardingView.swift */; };
 		B5ACC11326FEE8C7009A8E69 /* ColorsEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5ACC11226FEE8C7009A8E69 /* ColorsEqual.swift */; };
+		B5ACC11526FFF6CA009A8E69 /* Bundle-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5ACC11426FFF6CA009A8E69 /* Bundle-Extensions.swift */; };
+		B5ACC11727001550009A8E69 /* AppIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5ACC11627001550009A8E69 /* AppIcons.swift */; };
+		B5ACC119270026AD009A8E69 /* AssignmentWidgetIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B5ACC118270026AD009A8E69 /* AssignmentWidgetIntent.intentdefinition */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -128,6 +131,9 @@
 		B5A920E226EF439200A71336 /* CanvasAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasAPI.swift; sourceTree = "<group>"; };
 		B5A920E726EFB4FC00A71336 /* BoardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardingView.swift; sourceTree = "<group>"; };
 		B5ACC11226FEE8C7009A8E69 /* ColorsEqual.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorsEqual.swift; sourceTree = "<group>"; };
+		B5ACC11426FFF6CA009A8E69 /* Bundle-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle-Extensions.swift"; sourceTree = "<group>"; };
+		B5ACC11627001550009A8E69 /* AppIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcons.swift; sourceTree = "<group>"; };
+		B5ACC118270026AD009A8E69 /* AssignmentWidgetIntent.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = AssignmentWidgetIntent.intentdefinition; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				B507F02A26E3E15500861CEE /* AssignmentWidget.swift */,
+				B5ACC118270026AD009A8E69 /* AssignmentWidgetIntent.intentdefinition */,
 				B507F02C26E3E15600861CEE /* Assets.xcassets */,
 				B507F02E26E3E15600861CEE /* Info.plist */,
 			);
@@ -232,6 +239,7 @@
 				B507F03F26E4038900861CEE /* Assignment Tracker.entitlements */,
 				B57A2C5026D6B37F0047C6E2 /* Assignment_TrackerApp.swift */,
 				B57A2C5226D6B37F0047C6E2 /* ContentView.swift */,
+				B5ACC11627001550009A8E69 /* AppIcons.swift */,
 				B5A920E926EFB4FF00A71336 /* Boarding */,
 				B5A0986D26DEFA4500411DCC /* Courses */,
 				B52F2D4326E120DE00AAEDC0 /* Assignments */,
@@ -277,6 +285,7 @@
 				B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */,
 				B57A2C8D26D96E280047C6E2 /* Color-Extensions.swift */,
 				B5ACC11226FEE8C7009A8E69 /* ColorsEqual.swift */,
+				B5ACC11426FFF6CA009A8E69 /* Bundle-Extensions.swift */,
 				B5A920E026EF3F3300A71336 /* Gradient-Foreground.swift */,
 				B5A0987626E00E3300411DCC /* Array-AppStorage.swift */,
 				B507F04C26E9EAAB00861CEE /* ReadSize.swift */,
@@ -509,6 +518,7 @@
 				B52F2D4526E13F6100AAEDC0 /* Date-Extensions.swift in Sources */,
 				B5A920E126EF3F3300A71336 /* Gradient-Foreground.swift in Sources */,
 				B57A2C5126D6B37F0047C6E2 /* Assignment_TrackerApp.swift in Sources */,
+				B5ACC11526FFF6CA009A8E69 /* Bundle-Extensions.swift in Sources */,
 				B507F04D26E9EAAB00861CEE /* ReadSize.swift in Sources */,
 				B507F04726E413A600861CEE /* Course.swift in Sources */,
 				B5A0987726E00E3300411DCC /* Array-AppStorage.swift in Sources */,
@@ -520,7 +530,9 @@
 				B57A2C9626DB3CEB0047C6E2 /* View-Extensions.swift in Sources */,
 				B507F00826E2C0F700861CEE /* CanvasStructs.swift in Sources */,
 				B5ACC11326FEE8C7009A8E69 /* ColorsEqual.swift in Sources */,
+				B5ACC11727001550009A8E69 /* AppIcons.swift in Sources */,
 				B57A2C8B26D967250047C6E2 /* CourseList.swift in Sources */,
+				B5ACC119270026AD009A8E69 /* AssignmentWidgetIntent.intentdefinition in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -570,6 +582,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T8PATWK92J;
 				INFOPLIST_FILE = AssignmentWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -592,6 +605,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T8PATWK92J;
 				INFOPLIST_FILE = AssignmentWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

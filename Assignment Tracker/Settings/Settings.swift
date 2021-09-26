@@ -489,14 +489,26 @@ struct Settings: View {
         struct AppIconView: View {
             @Environment(\.presentationMode) var presentationMode
             @AppStorage("icon", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var currentIcon: String = "AppIcon"
-            let iconNames = ["AppIcon", "Inverted"]
             
             var body: some View {
                 NavigationView {
                     List {
-                        ForEach(iconNames, id: \.self) { iconName in
-                            IconItem(iconName: iconName, currentIcon: $currentIcon)
-                                .listRowBackground(Color(.systemGroupedBackground))
+                        ForEach(iconGroups, id: \.self) { group in
+                            if let name = group.name {
+                                Section(header: Text(name)) {
+                                    ForEach(group.icons, id: \.self) { iconName in
+                                        IconItem(iconName: iconName, currentIcon: $currentIcon)
+                                            .listRowBackground(Color(.systemGroupedBackground))
+                                    }
+                                }
+                            } else {
+                                Section {
+                                    ForEach(group.icons, id: \.self) { iconName in
+                                        IconItem(iconName: iconName, currentIcon: $currentIcon)
+                                            .listRowBackground(Color(.systemGroupedBackground))
+                                    }
+                                }
+                            }
                         }
                     }
                     .background(Color.black.edgesIgnoringSafeArea(.all))
@@ -555,7 +567,7 @@ struct Settings: View {
     }
     
     struct Contact: View {
-        @State private var contactMailData = ComposeMailData(subject: "", recipients: ["mot8ocqib@relay.firefox.com"], message: "", attachments: [])
+        @State private var contactMailData = ComposeMailData(subject: "[Acrylic \(Bundle.main.releaseVersionNumber ?? "VERSION NOT FOUND") (\(Bundle.main.buildVersionNumber ?? "BUILD NOT FOUND"))]", recipients: ["Koppe.Development@gmail.com"], message: "", attachments: [])
         @State private var showContactMail = false
         
         var body: some View {

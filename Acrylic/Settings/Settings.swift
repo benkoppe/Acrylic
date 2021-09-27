@@ -591,10 +591,76 @@ struct Settings: View {
     }
     
     struct License: View {
+        @State private var showingLicenses = false
+        
         var body: some View {
             Section {
-                Link(destination: URL(string: "https://github.com/instructure/canvas-lms/blob/master/LICENSE")!) {
-                    Text("Canvas LMS License")
+                Button(action: {
+                    showingLicenses = true
+                }) {
+                    HStack {
+                        Text("Licenses")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundColor(.tertiaryLabel)
+                    }
+                    .foregroundColor(.primary)
+                }
+            }
+            .sheet(isPresented: $showingLicenses) {
+                LicenseSheet()
+            }
+        }
+        
+        struct LicenseSheet: View {
+            @Environment(\.presentationMode) var presentationMode
+            
+            var body: some View {
+                NavigationView {
+                    Form {
+                        Link(destination: URL(string: "https://github.com/instructure/canvas-lms/blob/master/LICENSE")!) {
+                            HStack {
+                                Text("Canvas LMS")
+                                    .foregroundColor(.primary)
+                                Spacer()
+                                Text("License")
+                                    .font(.callout)
+                            }
+                        }
+                        
+                        Section {
+                            Link(destination: URL(string: "https://github.com/siteline/SwiftUI-Introspect/blob/master/LICENSE")!) {
+                                HStack {
+                                    Text("SwiftUI Introspect")
+                                        .foregroundColor(.primary)
+                                    Spacer()
+                                    Text("License")
+                                        .font(.callout)
+                                }
+                            }
+                            Link(destination: URL(string: "https://github.com/SvenTiigi/WhatsNewKit/blob/master/LICENSE")!) {
+                                HStack {
+                                    Text("WhatsNewKit")
+                                        .foregroundColor(.primary)
+                                    Spacer()
+                                    Text("License")
+                                        .font(.callout)
+                                }
+                            }
+                            Link(destination: URL(string: "https://github.com/globulus/swiftui-mail-view/blob/main/LICENSE")!) {
+                                HStack {
+                                    Text("SwiftUI Mail View")
+                                        .foregroundColor(.primary)
+                                    Spacer()
+                                    Text("License")
+                                        .font(.callout)
+                                }
+                            }
+                        }
+                    }
+                    .navigationTitle("Licenses")
+                    .navigationBarTitleDisplayMode(.inline)
                 }
             }
         }

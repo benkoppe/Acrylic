@@ -32,6 +32,7 @@ struct AssignmentList: View {
     
     @EnvironmentObject var courseArray: CourseArray
     
+    @AppStorage("invertSortSwipe", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var invertSwipe: Bool = false
     @AppStorage("defaultSort", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var defaultSortMode: SortMode = .date
     @State private var sortMode: SortMode = .date
     @State private var sortedMode: SortMode = .date
@@ -49,6 +50,9 @@ struct AssignmentList: View {
         return formatter
     }
     
+    @State private var xOffset: CGFloat = 0
+    @State private var opacity: Double = 1
+    
     var body: some View {
         NavigationView {
             Group {
@@ -56,16 +60,18 @@ struct AssignmentList: View {
                 
                 case .success:
                     if !assignments.isEmpty && !courseArray.courses.isEmpty {
-                        successView(assignments: $assignments, fetchState: $fetchState, sortMode: $sortedMode)
+                        successView(assignments: $assignments, fetchState: $fetchState, sortMode: $sortedMode, animateRefresh: refreshSuccess)
                             .gesture(DragGesture(minimumDistance: 10, coordinateSpace: .local).onEnded({ value in
-                                if value.translation.width < 0 {
+                                if (!invertSwipe && value.translation.width > 0) || (invertSwipe && value.translation.width < 0) {
                                     sortMode = .date
                                 }
                                 
-                                if value.translation.width > 0 {
+                                if (!invertSwipe && value.translation.width < 0) || (invertSwipe && value.translation.width > 0) {
                                     sortMode = .course
                                 }
                             }))
+                            .opacity(opacity)
+                            .offset(x: xOffset, y: 0)
                     } else if assignments.isEmpty && !courseArray.courses.isEmpty {
                         VStack {
                             Text("You don't have any assignments due!")
@@ -172,7 +178,42 @@ struct AssignmentList: View {
                 MeView()
                     .environmentObject(courseArray)
             }
-            .onChange(of: sortMode) { value in
+            .onChange(of: sortMode) { sort in
+                //let nc = NotificationCenter.default
+                //nc.post(name: Notification.Name("SortAnimation"), object: sortMode)
+                //let sort = sort.object as? SortMode ?? SortMode.date
+                let duration = 0.25
+                let offset: CGFloat = 50
+                switch sort {
+                case .date:
+                    withAnimation(.easeIn(duration: duration)) {
+                        xOffset = offset
+                        opacity = 0
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + duration + 0.03) {
+                        NotificationCenter.default.post(name: Notification.Name("StartSort"), object: nil)
+                        xOffset = -offset
+                        withAnimation(.easeOut(duration: duration)) {
+                            xOffset = 0
+                            opacity = 1
+                        }
+                    }
+                case .course:
+                    withAnimation(.easeIn(duration: duration)) {
+                        xOffset = -offset
+                        opacity = 0
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + duration + 0.03) {
+                        NotificationCenter.default.post(name: Notification.Name("StartSort"), object: nil)
+                        xOffset = offset
+                        withAnimation(.easeOut(duration: duration)) {
+                            xOffset = 0
+                            opacity = 1
+                        }
+                    }
+                }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: Notification.Name("StartSort"))) { _ in
                 var arr = assignments
                 switch sortMode {
                 case .date:
@@ -244,6 +285,13 @@ struct AssignmentList: View {
         }
     }
     
+    func refreshSuccess() {
+        withAnimation { self.fetchState = .loading }
+        if fetchState == .loading {
+            fetchState = .success
+        }
+    }
+    
     struct successView: View {
         @Binding var assignments: [Assignment]
         @Binding var fetchState: FetchState
@@ -258,6 +306,8 @@ struct AssignmentList: View {
         @AppStorage("showLate", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLate: Bool = true
         
         @EnvironmentObject var courseArray: CourseArray
+        
+        var animateRefresh: () -> Void
         
         class AssignmentRefresh: ObservableObject {
             @Published var controller: UIRefreshControl
@@ -380,6 +430,9 @@ struct AssignmentList: View {
         
         func endRefresh() {
             DispatchQueue.main.async {
+                if refreshController.shouldReload {
+                    animateRefresh()
+                }
                 refreshController.shouldReload = false
                 refreshController.controller.endRefreshing()
             }
@@ -392,7 +445,8 @@ struct AssignmentList: View {
             let index: Int
             @EnvironmentObject var courseArray: CourseArray
             
-            @State private var offset: CGFloat = 200
+            @State private var yOffset: CGFloat = 200
+            @State private var xOffset: CGFloat = 0
             @State private var opacity: Double = 0
             let delay: Double = 0.05
             let speed: Double = 0.5
@@ -423,19 +477,19 @@ struct AssignmentList: View {
                     .padding(.vertical, 7)
                     .padding(.leading, 4)
                 }
-                .offset(x: 0, y: offset)
+                .offset(x: xOffset, y: yOffset)
                 .opacity(opacity)
                 .onAppear {
                     if !hasAnimated {
                         withAnimation(.default.delay(delay * Double(index)).speed(speed)) {
-                            offset = 0
+                            yOffset = 0
                             opacity = 1
                         }
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             hasAnimated = true
                         }
                     } else {
-                        offset = 0
+                        yOffset = 0
                         opacity = 1
                     }
                 }

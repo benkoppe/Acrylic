@@ -24,9 +24,8 @@ struct Settings: View {
             Contact()
             
             License()
-            
-            
         }
+        .listStyle(.insetGrouped)
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -436,12 +435,12 @@ struct Settings: View {
         @AppStorage("showLate", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLate: Bool = true
         @AppStorage("icon", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var currentIcon: String = "AppIcon"
         @AppStorage("defaultSort", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var defaultSortMode: SortMode = .date
+        @AppStorage("invertSortSwipe", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var invertSwipe: Bool = false
         @State private var showingAppIcon = false
         
         
         var body: some View {
             Section {
-                
                 Button(action: {
                     showingAppIcon = true
                 }) {
@@ -479,15 +478,23 @@ struct Settings: View {
                     
                 }
                 
-                Toggle(isOn: $showLate) {
-                    Text("Show Late Assignments")
+                Toggle(isOn: $invertSwipe) {
+                    Text("Invert Swipe Gesture")
                 }
             } header: {
                 Text("Preferences")
             } footer: {
+                Text("Inverts left/right swipe gestures to swap sort modes.")
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            
+            Section {
+                Toggle(isOn: $showLate) {
+                    Text("Show Late Assignments")
+                }
+            } footer: {
                 Text("The Canvas API only delivers late assignments that are over one day late.")
                     .fixedSize(horizontal: false, vertical: true)
-                    .frame(height: 0)
             }
         }
         
@@ -599,6 +606,8 @@ struct Settings: View {
                         }
                     }
                 }
+            } header: {
+                Text("Contact")
             }
         }
     }
@@ -620,6 +629,8 @@ struct Settings: View {
                     }
                     .foregroundColor(.primary)
                 }
+            } header: {
+                Text("Attributions")
             }
             .sheet(isPresented: $showingLicenses) {
                 LicenseSheet()

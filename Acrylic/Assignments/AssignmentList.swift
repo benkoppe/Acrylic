@@ -8,6 +8,13 @@
 import SwiftUI
 import Introspect
 
+enum SortMode: String, CaseIterable, Equatable {
+    case date
+    case course
+    
+    var id: String { self.rawValue.capitalized }
+}
+
 struct AssignmentList: View {
     @AppStorage("firstLaunch", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLanding: Bool = true
     //@State private var showLanding = false
@@ -25,13 +32,7 @@ struct AssignmentList: View {
     
     @EnvironmentObject var courseArray: CourseArray
     
-    enum SortMode: String, CaseIterable, Equatable {
-        case date
-        case course
-        
-        var id: String { self.rawValue.capitalized }
-    }
-    var sortModes = ["Date", "Course"]
+    @AppStorage("defaultSort", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var defaultSortMode: SortMode = .date
     @State private var sortMode: SortMode = .date
     @State private var sortedMode: SortMode = .date
     
@@ -56,6 +57,15 @@ struct AssignmentList: View {
                 case .success:
                     if !assignments.isEmpty && !courseArray.courses.isEmpty {
                         successView(assignments: $assignments, fetchState: $fetchState, sortMode: $sortedMode)
+                            .gesture(DragGesture(minimumDistance: 10, coordinateSpace: .local).onEnded({ value in
+                                if value.translation.width < 0 {
+                                    sortMode = .date
+                                }
+                                
+                                if value.translation.width > 0 {
+                                    sortMode = .course
+                                }
+                            }))
                     } else if assignments.isEmpty && !courseArray.courses.isEmpty {
                         VStack {
                             Text("You don't have any assignments due!")
@@ -144,8 +154,7 @@ struct AssignmentList: View {
                         }
                     }
                     .labelsHidden()
-                    .scaleEffect(0.8)
-                    .offset(x: 05, y: 0)
+                    .scaleEffect(0.8, anchor: .trailing)
                     .disabled(fetchState != .success)
                     .pickerStyle(InlinePickerStyle())
                     
@@ -181,7 +190,10 @@ struct AssignmentList: View {
                 sortedMode = sortMode
             }
         }
-        .onAppear { load() }
+        .onAppear {
+            load()
+            sortMode = defaultSortMode
+        }
     }
     
     func getCourseColors() -> [Color] {
@@ -311,7 +323,12 @@ struct AssignmentList: View {
             List {
                 ForEach(Array(zip(splitAssignments.indices, splitAssignments)), id: \.0) { index, assignmentArray in
                     Section {
-                        assignmentGroup(hasAnimated: $hasAnimated, sortMode: $sortMode, assignmentArray: assignmentArray, index: index)
+                        if #available(iOS 15.0, *) {
+                            assignmentGroup(hasAnimated: $hasAnimated, sortMode: $sortMode, assignmentArray: assignmentArray, index: index)
+                                .listRowSeparator(.hidden)
+                        } else {
+                            assignmentGroup(hasAnimated: $hasAnimated, sortMode: $sortMode, assignmentArray: assignmentArray, index: index)
+                        }
                     }
                 }
             }

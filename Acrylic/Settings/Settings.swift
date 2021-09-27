@@ -19,7 +19,7 @@ struct Settings: View {
             
             Preferences()
             
-            TipJarButton()
+            //TipJarButton()
             
             Contact()
             
@@ -435,6 +435,7 @@ struct Settings: View {
     struct Preferences: View {
         @AppStorage("showLate", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLate: Bool = true
         @AppStorage("icon", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var currentIcon: String = "AppIcon"
+        @AppStorage("defaultSort", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var defaultSortMode: SortMode = .date
         @State private var showingAppIcon = false
         
         
@@ -460,6 +461,22 @@ struct Settings: View {
                 .foregroundColor(.primary)
                 .sheet(isPresented: $showingAppIcon) {
                     AppIconView()
+                }
+                
+                HStack {
+                    Text("Default Sort Mode")
+                    
+                    Spacer()
+                    
+                    Picker("Default Sort Mode", selection: $defaultSortMode) {
+                        ForEach(SortMode.allCases, id: \.self) {
+                            Text($0.id)
+                        }
+                    }
+                    .labelsHidden()
+                    .pickerStyle(SegmentedPickerStyle())
+                    .scaleEffect(0.8, anchor: .trailing)
+                    
                 }
                 
                 Toggle(isOn: $showLate) {

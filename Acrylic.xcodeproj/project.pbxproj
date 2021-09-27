@@ -31,7 +31,6 @@
 		B51D0B3A27004A0A0098A3FD /* WhatsNewKit in Frameworks */ = {isa = PBXBuildFile; productRef = B51D0B3927004A0A0098A3FD /* WhatsNewKit */; };
 		B51D0B3C27004A0A0098A3FD /* WhatsNewKitSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B51D0B3B27004A0A0098A3FD /* WhatsNewKitSwiftUI */; };
 		B51D0B3E27016F920098A3FD /* TipJarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51D0B3D27016F920098A3FD /* TipJarView.swift */; };
-		B51D0B402701911F0098A3FD /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51D0B3F2701911F0098A3FD /* IAPManager.swift */; };
 		B52F2D4526E13F6100AAEDC0 /* Date-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */; };
 		B54E5EB126EBE07A0076C55C /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = B54E5EB026EBE07A0076C55C /* Introspect */; };
 		B57A2C5126D6B37F0047C6E2 /* AcrylicApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5026D6B37F0047C6E2 /* AcrylicApp.swift */; };
@@ -111,7 +110,6 @@
 		B507F04C26E9EAAB00861CEE /* ReadSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadSize.swift; sourceTree = "<group>"; };
 		B507F05026EA929900861CEE /* MeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeView.swift; sourceTree = "<group>"; };
 		B51D0B3D27016F920098A3FD /* TipJarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarView.swift; sourceTree = "<group>"; };
-		B51D0B3F2701911F0098A3FD /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
 		B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date-Extensions.swift"; sourceTree = "<group>"; };
 		B57A2C4D26D6B37F0047C6E2 /* Acrylic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Acrylic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B57A2C5026D6B37F0047C6E2 /* AcrylicApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcrylicApp.swift; sourceTree = "<group>"; };
@@ -206,7 +204,6 @@
 			children = (
 				B5A0986F26DEFA9500411DCC /* Settings.swift */,
 				B51D0B3D27016F920098A3FD /* TipJarView.swift */,
-				B51D0B3F2701911F0098A3FD /* IAPManager.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -544,7 +541,6 @@
 				B57A2C8E26D96E280047C6E2 /* Color-Extensions.swift in Sources */,
 				B5A920E326EF439200A71336 /* CanvasAPI.swift in Sources */,
 				B57A2C9626DB3CEB0047C6E2 /* View-Extensions.swift in Sources */,
-				B51D0B402701911F0098A3FD /* IAPManager.swift in Sources */,
 				B507F00826E2C0F700861CEE /* CanvasStructs.swift in Sources */,
 				B5ACC11326FEE8C7009A8E69 /* ColorsEqual.swift in Sources */,
 				B5ACC11727001550009A8E69 /* AppIcons.swift in Sources */,

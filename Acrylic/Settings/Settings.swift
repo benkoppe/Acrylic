@@ -13,28 +13,19 @@ import SwiftUIMailView
 struct Settings: View {
     @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
     
-    init() {
-        
-    }
-    
     var body: some View {
-        Form {
+        List {
             CanvasSettings()
             
             Preferences()
+            
+            TipJarButton()
             
             Contact()
             
             License()
             
-            if prefixes.contains("devtools") {
-                DevTools()
-            }
             
-            
-        }
-        .introspectTableView { tableView in
-            tableView.contentOffset = CGPoint(x: 0, y: -40)
         }
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
@@ -57,7 +48,7 @@ struct Settings: View {
         }
         
         var body: some View {
-            Section(header: Text("Canvas Authentication")) {
+            Section {
                 Button(action: {
                     showingPrefixes = true
                 }) {
@@ -122,6 +113,8 @@ struct Settings: View {
                     print("running")
                     loadUser()
                 }
+            } header: {
+                Text("Canvas Authentication")
             }
         }
         
@@ -446,7 +439,7 @@ struct Settings: View {
         
         
         var body: some View {
-            Section(header: Text("Preferences"), footer: Text("The Canvas API only delivers late assignments that are over one day late.").fixedSize(horizontal: false, vertical: true).padding(.bottom)) {
+            Section {
                 
                 Button(action: {
                     showingAppIcon = true
@@ -472,6 +465,12 @@ struct Settings: View {
                 Toggle(isOn: $showLate) {
                     Text("Show Late Assignments")
                 }
+            } header: {
+                Text("Preferences")
+            } footer: {
+                Text("The Canvas API only delivers late assignments that are over one day late.")
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(height: 0)
             }
         }
         
@@ -501,9 +500,6 @@ struct Settings: View {
                         }
                     }
                     .background(Color.black.edgesIgnoringSafeArea(.all))
-                    .introspectTableView { tableView in
-                        tableView.backgroundColor = .black
-                    }
                     .navigationTitle("App Icon")
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
@@ -560,7 +556,7 @@ struct Settings: View {
         @State private var showContactMail = false
         
         var body: some View {
-            Section(header: Text("Contact")) {
+            Section {
                 Button("Email") {
                     showContactMail = true
                 }

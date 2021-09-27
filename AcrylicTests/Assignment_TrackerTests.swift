@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import Assignment_Tracker
+@testable import Acrylic
 
 class Assignment_TrackerTests: XCTestCase {
 

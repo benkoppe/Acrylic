@@ -10,7 +10,7 @@ import CoreData
 import WidgetKit
 
 @main
-struct Assignment_TrackerApp: App {
+struct AcrylicApp: App {
     init () {
         UINavigationBar.appearance().scrollEdgeAppearance = UINavigationBar().standardAppearance
         UINavigationBar.appearance().isTranslucent = true

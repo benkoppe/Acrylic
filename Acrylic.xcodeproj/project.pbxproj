@@ -12,7 +12,7 @@
 		B507F02826E3E15500861CEE /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B507EFF526E2B6DD00861CEE /* SwiftUI.framework */; };
 		B507F02B26E3E15500861CEE /* AssignmentWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F02A26E3E15500861CEE /* AssignmentWidget.swift */; };
 		B507F02D26E3E15600861CEE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B507F02C26E3E15600861CEE /* Assets.xcassets */; };
-		B507F03126E3E15600861CEE /* AssignmentWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B507F02626E3E15500861CEE /* AssignmentWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B507F03126E3E15600861CEE /* AssignmentWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = B507F02626E3E15500861CEE /* AssignmentWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B507F03526E3E23100861CEE /* CanvasStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F00726E2C0F600861CEE /* CanvasStructs.swift */; };
 		B507F03A26E3E26200861CEE /* Date-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */; };
 		B507F03B26E3E26400861CEE /* Color-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C8D26D96E280047C6E2 /* Color-Extensions.swift */; };
@@ -32,7 +32,7 @@
 		B51D0B3C27004A0A0098A3FD /* WhatsNewKitSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B51D0B3B27004A0A0098A3FD /* WhatsNewKitSwiftUI */; };
 		B52F2D4526E13F6100AAEDC0 /* Date-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */; };
 		B54E5EB126EBE07A0076C55C /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = B54E5EB026EBE07A0076C55C /* Introspect */; };
-		B57A2C5126D6B37F0047C6E2 /* Assignment_TrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5026D6B37F0047C6E2 /* Assignment_TrackerApp.swift */; };
+		B57A2C5126D6B37F0047C6E2 /* AcrylicApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5026D6B37F0047C6E2 /* AcrylicApp.swift */; };
 		B57A2C5326D6B37F0047C6E2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5226D6B37F0047C6E2 /* ContentView.swift */; };
 		B57A2C5526D6B3800047C6E2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B57A2C5426D6B3800047C6E2 /* Assets.xcassets */; };
 		B57A2C5826D6B3800047C6E2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B57A2C5726D6B3800047C6E2 /* Preview Assets.xcassets */; };
@@ -87,7 +87,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				B507F03126E3E15600861CEE /* AssignmentWidgetExtension.appex in Embed App Extensions */,
+				B507F03126E3E15600861CEE /* AssignmentWidget.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -98,27 +98,27 @@
 		B507EFF326E2B6DD00861CEE /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		B507EFF526E2B6DD00861CEE /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		B507F00726E2C0F600861CEE /* CanvasStructs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CanvasStructs.swift; sourceTree = "<group>"; };
-		B507F02626E3E15500861CEE /* AssignmentWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AssignmentWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B507F02626E3E15500861CEE /* AssignmentWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AssignmentWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B507F02A26E3E15500861CEE /* AssignmentWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssignmentWidget.swift; sourceTree = "<group>"; };
 		B507F02C26E3E15600861CEE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B507F02E26E3E15600861CEE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B507F03F26E4038900861CEE /* Assignment Tracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Assignment Tracker.entitlements"; sourceTree = "<group>"; };
-		B507F04226E407E100861CEE /* AssignmentWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AssignmentWidgetExtension.entitlements; sourceTree = "<group>"; };
+		B507F03F26E4038900861CEE /* Acrylic.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Acrylic.entitlements; sourceTree = "<group>"; };
+		B507F04226E407E100861CEE /* AssignmentWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AssignmentWidget.entitlements; sourceTree = "<group>"; };
 		B507F04326E409D000861CEE /* URL-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL-Extensions.swift"; sourceTree = "<group>"; };
 		B507F04626E413A600861CEE /* Course.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Course.swift; sourceTree = "<group>"; };
 		B507F04C26E9EAAB00861CEE /* ReadSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadSize.swift; sourceTree = "<group>"; };
 		B507F05026EA929900861CEE /* MeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeView.swift; sourceTree = "<group>"; };
 		B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date-Extensions.swift"; sourceTree = "<group>"; };
-		B57A2C4D26D6B37F0047C6E2 /* Assignment Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Assignment Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B57A2C5026D6B37F0047C6E2 /* Assignment_TrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment_TrackerApp.swift; sourceTree = "<group>"; };
+		B57A2C4D26D6B37F0047C6E2 /* Acrylic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Acrylic.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B57A2C5026D6B37F0047C6E2 /* AcrylicApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcrylicApp.swift; sourceTree = "<group>"; };
 		B57A2C5226D6B37F0047C6E2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B57A2C5426D6B3800047C6E2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B57A2C5726D6B3800047C6E2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		B57A2C5E26D6B3800047C6E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B57A2C6326D6B3800047C6E2 /* Assignment TrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Assignment TrackerTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B57A2C6326D6B3800047C6E2 /* AcrylicTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AcrylicTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B57A2C6726D6B3800047C6E2 /* Assignment_TrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment_TrackerTests.swift; sourceTree = "<group>"; };
 		B57A2C6926D6B3800047C6E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B57A2C6E26D6B3800047C6E2 /* Assignment TrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Assignment TrackerUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B57A2C6E26D6B3800047C6E2 /* AcrylicUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AcrylicUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B57A2C7226D6B3800047C6E2 /* Assignment_TrackerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment_TrackerUITests.swift; sourceTree = "<group>"; };
 		B57A2C7426D6B3800047C6E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B57A2C8A26D967250047C6E2 /* CourseList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseList.swift; sourceTree = "<group>"; };
@@ -217,10 +217,10 @@
 		B57A2C4426D6B37F0047C6E2 = {
 			isa = PBXGroup;
 			children = (
-				B507F04226E407E100861CEE /* AssignmentWidgetExtension.entitlements */,
-				B57A2C4F26D6B37F0047C6E2 /* Assignment Tracker */,
-				B57A2C6626D6B3800047C6E2 /* Assignment TrackerTests */,
-				B57A2C7126D6B3800047C6E2 /* Assignment TrackerUITests */,
+				B507F04226E407E100861CEE /* AssignmentWidget.entitlements */,
+				B57A2C4F26D6B37F0047C6E2 /* Acrylic */,
+				B57A2C6626D6B3800047C6E2 /* AcrylicTests */,
+				B57A2C7126D6B3800047C6E2 /* AcrylicUITests */,
 				B507F02926E3E15500861CEE /* AssignmentWidget */,
 				B507EFF226E2B6DD00861CEE /* Frameworks */,
 				B57A2C4E26D6B37F0047C6E2 /* Products */,
@@ -230,19 +230,19 @@
 		B57A2C4E26D6B37F0047C6E2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B57A2C4D26D6B37F0047C6E2 /* Assignment Tracker.app */,
-				B57A2C6326D6B3800047C6E2 /* Assignment TrackerTests.xctest */,
-				B57A2C6E26D6B3800047C6E2 /* Assignment TrackerUITests.xctest */,
-				B507F02626E3E15500861CEE /* AssignmentWidgetExtension.appex */,
+				B57A2C4D26D6B37F0047C6E2 /* Acrylic.app */,
+				B57A2C6326D6B3800047C6E2 /* AcrylicTests.xctest */,
+				B57A2C6E26D6B3800047C6E2 /* AcrylicUITests.xctest */,
+				B507F02626E3E15500861CEE /* AssignmentWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B57A2C4F26D6B37F0047C6E2 /* Assignment Tracker */ = {
+		B57A2C4F26D6B37F0047C6E2 /* Acrylic */ = {
 			isa = PBXGroup;
 			children = (
-				B507F03F26E4038900861CEE /* Assignment Tracker.entitlements */,
-				B57A2C5026D6B37F0047C6E2 /* Assignment_TrackerApp.swift */,
+				B507F03F26E4038900861CEE /* Acrylic.entitlements */,
+				B57A2C5026D6B37F0047C6E2 /* AcrylicApp.swift */,
 				B57A2C5226D6B37F0047C6E2 /* ContentView.swift */,
 				B5ACC11627001550009A8E69 /* AppIcons.swift */,
 				B5A920E926EFB4FF00A71336 /* Boarding */,
@@ -255,7 +255,7 @@
 				B57A2C5426D6B3800047C6E2 /* Assets.xcassets */,
 				B57A2C5626D6B3800047C6E2 /* Preview Content */,
 			);
-			path = "Assignment Tracker";
+			path = Acrylic;
 			sourceTree = "<group>";
 		};
 		B57A2C5626D6B3800047C6E2 /* Preview Content */ = {
@@ -266,22 +266,22 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		B57A2C6626D6B3800047C6E2 /* Assignment TrackerTests */ = {
+		B57A2C6626D6B3800047C6E2 /* AcrylicTests */ = {
 			isa = PBXGroup;
 			children = (
 				B57A2C6726D6B3800047C6E2 /* Assignment_TrackerTests.swift */,
 				B57A2C6926D6B3800047C6E2 /* Info.plist */,
 			);
-			path = "Assignment TrackerTests";
+			path = AcrylicTests;
 			sourceTree = "<group>";
 		};
-		B57A2C7126D6B3800047C6E2 /* Assignment TrackerUITests */ = {
+		B57A2C7126D6B3800047C6E2 /* AcrylicUITests */ = {
 			isa = PBXGroup;
 			children = (
 				B57A2C7226D6B3800047C6E2 /* Assignment_TrackerUITests.swift */,
 				B57A2C7426D6B3800047C6E2 /* Info.plist */,
 			);
-			path = "Assignment TrackerUITests";
+			path = AcrylicUITests;
 			sourceTree = "<group>";
 		};
 		B57A2C8C26D96E170047C6E2 /* Extensions */ = {
@@ -332,9 +332,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B507F02526E3E15500861CEE /* AssignmentWidgetExtension */ = {
+		B507F02526E3E15500861CEE /* AssignmentWidget */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B507F03226E3E15600861CEE /* Build configuration list for PBXNativeTarget "AssignmentWidgetExtension" */;
+			buildConfigurationList = B507F03226E3E15600861CEE /* Build configuration list for PBXNativeTarget "AssignmentWidget" */;
 			buildPhases = (
 				B507F02226E3E15500861CEE /* Sources */,
 				B507F02326E3E15500861CEE /* Frameworks */,
@@ -344,14 +344,14 @@
 			);
 			dependencies = (
 			);
-			name = AssignmentWidgetExtension;
+			name = AssignmentWidget;
 			productName = AssignmentWidgetExtension;
-			productReference = B507F02626E3E15500861CEE /* AssignmentWidgetExtension.appex */;
+			productReference = B507F02626E3E15500861CEE /* AssignmentWidget.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		B57A2C4C26D6B37F0047C6E2 /* Assignment Tracker */ = {
+		B57A2C4C26D6B37F0047C6E2 /* Acrylic */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B57A2C7726D6B3800047C6E2 /* Build configuration list for PBXNativeTarget "Assignment Tracker" */;
+			buildConfigurationList = B57A2C7726D6B3800047C6E2 /* Build configuration list for PBXNativeTarget "Acrylic" */;
 			buildPhases = (
 				B57A2C4926D6B37F0047C6E2 /* Sources */,
 				B57A2C4A26D6B37F0047C6E2 /* Frameworks */,
@@ -363,7 +363,7 @@
 			dependencies = (
 				B507F03026E3E15600861CEE /* PBXTargetDependency */,
 			);
-			name = "Assignment Tracker";
+			name = Acrylic;
 			packageProductDependencies = (
 				B54E5EB026EBE07A0076C55C /* Introspect */,
 				B5A920E526EFB03E00A71336 /* SwiftUIMailView */,
@@ -371,12 +371,12 @@
 				B51D0B3B27004A0A0098A3FD /* WhatsNewKitSwiftUI */,
 			);
 			productName = "Assignment Tracker";
-			productReference = B57A2C4D26D6B37F0047C6E2 /* Assignment Tracker.app */;
+			productReference = B57A2C4D26D6B37F0047C6E2 /* Acrylic.app */;
 			productType = "com.apple.product-type.application";
 		};
-		B57A2C6226D6B3800047C6E2 /* Assignment TrackerTests */ = {
+		B57A2C6226D6B3800047C6E2 /* AcrylicTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B57A2C7A26D6B3800047C6E2 /* Build configuration list for PBXNativeTarget "Assignment TrackerTests" */;
+			buildConfigurationList = B57A2C7A26D6B3800047C6E2 /* Build configuration list for PBXNativeTarget "AcrylicTests" */;
 			buildPhases = (
 				B57A2C5F26D6B3800047C6E2 /* Sources */,
 				B57A2C6026D6B3800047C6E2 /* Frameworks */,
@@ -387,14 +387,14 @@
 			dependencies = (
 				B57A2C6526D6B3800047C6E2 /* PBXTargetDependency */,
 			);
-			name = "Assignment TrackerTests";
+			name = AcrylicTests;
 			productName = "Assignment TrackerTests";
-			productReference = B57A2C6326D6B3800047C6E2 /* Assignment TrackerTests.xctest */;
+			productReference = B57A2C6326D6B3800047C6E2 /* AcrylicTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		B57A2C6D26D6B3800047C6E2 /* Assignment TrackerUITests */ = {
+		B57A2C6D26D6B3800047C6E2 /* AcrylicUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B57A2C7D26D6B3800047C6E2 /* Build configuration list for PBXNativeTarget "Assignment TrackerUITests" */;
+			buildConfigurationList = B57A2C7D26D6B3800047C6E2 /* Build configuration list for PBXNativeTarget "AcrylicUITests" */;
 			buildPhases = (
 				B57A2C6A26D6B3800047C6E2 /* Sources */,
 				B57A2C6B26D6B3800047C6E2 /* Frameworks */,
@@ -405,9 +405,9 @@
 			dependencies = (
 				B57A2C7026D6B3800047C6E2 /* PBXTargetDependency */,
 			);
-			name = "Assignment TrackerUITests";
+			name = AcrylicUITests;
 			productName = "Assignment TrackerUITests";
-			productReference = B57A2C6E26D6B3800047C6E2 /* Assignment TrackerUITests.xctest */;
+			productReference = B57A2C6E26D6B3800047C6E2 /* AcrylicUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -435,7 +435,7 @@
 					};
 				};
 			};
-			buildConfigurationList = B57A2C4826D6B37F0047C6E2 /* Build configuration list for PBXProject "Assignment Tracker" */;
+			buildConfigurationList = B57A2C4826D6B37F0047C6E2 /* Build configuration list for PBXProject "Acrylic" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -453,10 +453,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B57A2C4C26D6B37F0047C6E2 /* Assignment Tracker */,
-				B57A2C6226D6B3800047C6E2 /* Assignment TrackerTests */,
-				B57A2C6D26D6B3800047C6E2 /* Assignment TrackerUITests */,
-				B507F02526E3E15500861CEE /* AssignmentWidgetExtension */,
+				B57A2C4C26D6B37F0047C6E2 /* Acrylic */,
+				B57A2C6226D6B3800047C6E2 /* AcrylicTests */,
+				B57A2C6D26D6B3800047C6E2 /* AcrylicUITests */,
+				B507F02526E3E15500861CEE /* AssignmentWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -526,7 +526,7 @@
 				B57A2C5326D6B37F0047C6E2 /* ContentView.swift in Sources */,
 				B52F2D4526E13F6100AAEDC0 /* Date-Extensions.swift in Sources */,
 				B5A920E126EF3F3300A71336 /* Gradient-Foreground.swift in Sources */,
-				B57A2C5126D6B37F0047C6E2 /* Assignment_TrackerApp.swift in Sources */,
+				B57A2C5126D6B37F0047C6E2 /* AcrylicApp.swift in Sources */,
 				B5ACC11526FFF6CA009A8E69 /* Bundle-Extensions.swift in Sources */,
 				B507F04D26E9EAAB00861CEE /* ReadSize.swift in Sources */,
 				B507F04726E413A600861CEE /* Course.swift in Sources */,
@@ -566,17 +566,17 @@
 /* Begin PBXTargetDependency section */
 		B507F03026E3E15600861CEE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B507F02526E3E15500861CEE /* AssignmentWidgetExtension */;
+			target = B507F02526E3E15500861CEE /* AssignmentWidget */;
 			targetProxy = B507F02F26E3E15600861CEE /* PBXContainerItemProxy */;
 		};
 		B57A2C6526D6B3800047C6E2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B57A2C4C26D6B37F0047C6E2 /* Assignment Tracker */;
+			target = B57A2C4C26D6B37F0047C6E2 /* Acrylic */;
 			targetProxy = B57A2C6426D6B3800047C6E2 /* PBXContainerItemProxy */;
 		};
 		B57A2C7026D6B3800047C6E2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B57A2C4C26D6B37F0047C6E2 /* Assignment Tracker */;
+			target = B57A2C4C26D6B37F0047C6E2 /* Acrylic */;
 			targetProxy = B57A2C6F26D6B3800047C6E2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -587,7 +587,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = AssignmentWidgetExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = AssignmentWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = T8PATWK92J;
@@ -612,7 +612,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = AssignmentWidgetExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = AssignmentWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = T8PATWK92J;
@@ -756,14 +756,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = "Assignment Tracker/Assignment Tracker.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Acrylic/Acrylic.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Assignment Tracker/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Acrylic/Preview Content\"";
 				DEVELOPMENT_TEAM = T8PATWK92J;
 				ENABLE_PREVIEWS = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "Assignment Tracker/Info.plist";
+				INFOPLIST_FILE = Acrylic/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -785,14 +785,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = "Assignment Tracker/Assignment Tracker.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Acrylic/Acrylic.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Assignment Tracker/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Acrylic/Preview Content\"";
 				DEVELOPMENT_TEAM = T8PATWK92J;
 				ENABLE_PREVIEWS = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "Assignment Tracker/Info.plist";
+				INFOPLIST_FILE = Acrylic/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -893,7 +893,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B507F03226E3E15600861CEE /* Build configuration list for PBXNativeTarget "AssignmentWidgetExtension" */ = {
+		B507F03226E3E15600861CEE /* Build configuration list for PBXNativeTarget "AssignmentWidget" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B507F03326E3E15600861CEE /* Debug */,
@@ -902,7 +902,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B57A2C4826D6B37F0047C6E2 /* Build configuration list for PBXProject "Assignment Tracker" */ = {
+		B57A2C4826D6B37F0047C6E2 /* Build configuration list for PBXProject "Acrylic" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B57A2C7526D6B3800047C6E2 /* Debug */,
@@ -911,7 +911,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B57A2C7726D6B3800047C6E2 /* Build configuration list for PBXNativeTarget "Assignment Tracker" */ = {
+		B57A2C7726D6B3800047C6E2 /* Build configuration list for PBXNativeTarget "Acrylic" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B57A2C7826D6B3800047C6E2 /* Debug */,
@@ -920,7 +920,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B57A2C7A26D6B3800047C6E2 /* Build configuration list for PBXNativeTarget "Assignment TrackerTests" */ = {
+		B57A2C7A26D6B3800047C6E2 /* Build configuration list for PBXNativeTarget "AcrylicTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B57A2C7B26D6B3800047C6E2 /* Debug */,
@@ -929,7 +929,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B57A2C7D26D6B3800047C6E2 /* Build configuration list for PBXNativeTarget "Assignment TrackerUITests" */ = {
+		B57A2C7D26D6B3800047C6E2 /* Build configuration list for PBXNativeTarget "AcrylicUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B57A2C7E26D6B3800047C6E2 /* Debug */,

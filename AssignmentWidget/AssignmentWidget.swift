@@ -458,7 +458,7 @@ struct AssignmentWidget: Widget {
     }
 }
 
-struct Assignment_Widget_Previews: PreviewProvider {
+struct AssignmentWidget_Previews: PreviewProvider {
     static var previews: some View {
         Assignment_WidgetEntryView(entry: Entry(date: Date(), result: .success(Assignment.sampleAssignments())))
             .previewContext(WidgetPreviewContext(family: .systemLarge))

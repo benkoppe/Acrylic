@@ -16,17 +16,42 @@ struct Provider: IntentTimelineProvider {
     @ObservedObject var courseArray = CourseArray()
     
     func placeholder(in context: Context) -> Entry {
-        return Entry(date: Date(), result: .success(Assignment.sampleAssignments()))
+        return Entry(date: Date(), result: .success(Assignment.sampleAssignments()), exactHeaders: false)
     }
     
     func getSnapshot(for configuration: AssignmentWidgetConfigurationIntent, in context: Context, completion: @escaping (Entry) -> Void) {
         if !context.isPreview {
-            fetchAssignments(showLate: configuration.showLate?.boolValue ?? false) { result in
-                let entry = Entry(date: Date(), result: result)
-                completion(entry)
+            var fetchedPrefixes: [String] = []
+            var fetchedAssignments: [Assignment] = []
+            
+            fetchAssignments() { result in
+                switch result {
+                case .success((let prefix, let assignments)):
+                    fetchedPrefixes.append(prefix)
+                    
+                    for assignment in assignments {
+                        if let newAssignment = createAssignment(assignment) {
+                            if configuration.showLate?.boolValue ?? false {
+                                fetchedAssignments.append(newAssignment)
+                            } else if newAssignment.due > Date() {
+                                fetchedAssignments.append(newAssignment)
+                            }
+                        }
+                    }
+                    
+                    if fetchedPrefixes.sorted() == prefixes.sorted() {
+                        fetchedAssignments.sort()
+                        let entry = Entry(date: Date(), result: Result<[Assignment], FetchError>.success(fetchedAssignments), exactHeaders: configuration.exactHeaders?.boolValue ?? false)
+                        completion(entry)
+                    }
+                    
+                case .failure(let error):
+                    let entry = Entry(date: Date(), result: Result<[Assignment], FetchError>.failure(error), exactHeaders: configuration.exactHeaders?.boolValue ?? false)
+                    completion(entry)
+                }
             }
         } else {
-            let entry = Entry(date: Date(), result: .success(Assignment.sampleAssignments()))
+            let entry = Entry(date: Date(), result: .success(Assignment.sampleAssignments()), exactHeaders: configuration.exactHeaders?.boolValue ?? false)
             completion(entry)
         }
     }
@@ -35,23 +60,46 @@ struct Provider: IntentTimelineProvider {
         let nextUpdateDate = Calendar.current.date(byAdding: .second, value: 1, to: Date())!
         
         if !context.isPreview {
-            fetchAssignments(showLate: configuration.showLate?.boolValue ?? false) { result in
-                let entry = Entry(date: Date(), result: result)
-                let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
-                completion(timeline)
+            var fetchedPrefixes: [String] = []
+            var fetchedAssignments: [Assignment] = []
+            
+            fetchAssignments() { result in
+                switch result {
+                case .success((let prefix, let assignments)):
+                    fetchedPrefixes.append(prefix)
+                    
+                    for assignment in assignments {
+                        if let newAssignment = createAssignment(assignment) {
+                            if configuration.showLate?.boolValue ?? false {
+                                fetchedAssignments.append(newAssignment)
+                            } else if newAssignment.due > Date() {
+                                fetchedAssignments.append(newAssignment)
+                            }
+                        }
+                    }
+                    
+                    if fetchedPrefixes.sorted() == prefixes.sorted() {
+                        fetchedAssignments.sort()
+                        let entry = Entry(date: Date(), result: Result<[Assignment], FetchError>.success(fetchedAssignments), exactHeaders: configuration.exactHeaders?.boolValue ?? false)
+                        let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
+                        completion(timeline)
+                    }
+                    
+                case .failure(let error):
+                    let entry = Entry(date: Date(), result: Result<[Assignment], FetchError>.failure(error), exactHeaders: configuration.exactHeaders?.boolValue ?? false)
+                    let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
+                    completion(timeline)
+                }
             }
         } else {
-            let entry = Entry(date: Date(), result: .success(Assignment.sampleAssignments()))
+            let entry = Entry(date: Date(), result: .success(Assignment.sampleAssignments()), exactHeaders: configuration.exactHeaders?.boolValue ?? false)
             let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
             completion(timeline)
         }
         
     }
     
-    func fetchAssignments(showLate: Bool, completion: @escaping (Result<[Assignment], FetchError>) -> Void) {
-        var assignments: [Assignment] = []
-        var loadedPrefixes: [String] = []
-        
+    func fetchAssignments(completion: @escaping (Result<(prefix: String, assignments: [TodoAssignment]), FetchError>) -> Void) {
         for prefix in prefixes {
             let urlString = "https://\(prefix).instructure.com/api/v1/users/self/todo?per_page=100"
             guard let url = URL(string: urlString) else {
@@ -64,16 +112,7 @@ struct Provider: IntentTimelineProvider {
             request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
             
             URLSession.shared.dataTask(with: request) { data, response, error in
-                print("started session")
-                loadedPrefixes.append(prefix)
-                var isLastPrefix: Bool {
-                    for prefix in prefixes {
-                        if !loadedPrefixes.contains(prefix) {
-                            return false
-                        }
-                    }
-                    return true
-                }
+                var fetchedAssignments: [TodoAssignment] = []
                 
                 if let response = response, let httpResponse = response as? HTTPURLResponse {
                     if httpResponse.statusCode == 401 {
@@ -88,19 +127,12 @@ struct Provider: IntentTimelineProvider {
                     let decoder = JSONDecoder()
                     if let list = try? decoder.decode(TodoList.self, from: data) {
                         for item in list {
-                            if let assignment = item.assignment, let courseAssignment = createAssignment(assignment), !assignments.contains(where: { courseAssignment.name == $0.name }) {
-                                if showLate {
-                                    assignments.append(courseAssignment)
-                                } else if courseAssignment.due > Date() {
-                                    assignments.append(courseAssignment)
-                                }
+                            if let assignment = item.assignment {
+                                fetchedAssignments.append(assignment)
                             }
                         }
                         
-                        if isLastPrefix {
-                            assignments.sort()
-                            completion(.success(assignments))
-                        }
+                        completion(.success((prefix: prefix, assignments: fetchedAssignments)))
                     }
                 } else {
                     completion(.failure(.badLoad))
@@ -134,6 +166,7 @@ struct Provider: IntentTimelineProvider {
 struct Entry: TimelineEntry {
     let date: Date
     let result: Result<[Assignment], FetchError>
+    let exactHeaders: Bool
 }
 
 struct Assignment_WidgetEntryView: View {
@@ -150,7 +183,7 @@ struct Assignment_WidgetEntryView: View {
         
         case .success(let assignments):
             if assignments.count > 0 {
-                successView(assignments: assignments)
+                successView(assignments: assignments, exactHeaders: entry.exactHeaders)
             } else {
                 Text("No assignments!")
                     .foregroundColor(.primary)
@@ -177,9 +210,9 @@ struct Assignment_WidgetEntryView: View {
     }
     
     struct successView: View {
-        
         @State private var hasStopped = false
         let assignments: [Assignment]
+        let exactHeaders: Bool
         
         var splitAssignments: [[Assignment]] {
             if assignments.count > 0 {
@@ -244,8 +277,9 @@ struct Assignment_WidgetEntryView: View {
         }
         
         
-        func createTitleText(for date: Date) -> String {
-            let day = date.getYearDay()
+        func createTitleText(for date: Date, isSpecific: Bool = false) -> String {
+            let daysBetween = Calendar.current.numberOfDaysBetween(Date(), and: date)
+            
             var shortFormatter: DateFormatter {
                 let formatter = DateFormatter()
                 formatter.dateFormat = "EEEE"
@@ -257,14 +291,21 @@ struct Assignment_WidgetEntryView: View {
                 return formatter
             }
             
-            if date < Date() {
-                return formatter.string(from: date)
-            } else if day == Date().getYearDay() {
-                return "Today"
-            } else if day == (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() {
-                return "Tomorrow"
-            } else if (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() - day < 7 {
-                return shortFormatter.string(from: date)
+            if !(exactHeaders && (daysBetween < 0 || daysBetween >= 7)) ? !isSpecific : isSpecific {
+                switch daysBetween {
+                case ..<0:
+                    return "\(abs(daysBetween)) Days Ago"
+                case 0:
+                    return "Today"
+                case 1:
+                    return "Tomorrow"
+                case 2..<7:
+                    return shortFormatter.string(from: date)
+                case 7...:
+                    return "In \(daysBetween) Days"
+                default:
+                    return formatter.string(from: date)
+                }
             } else {
                 return formatter.string(from: date)
             }
@@ -460,7 +501,7 @@ struct AssignmentWidget: Widget {
 
 struct AssignmentWidget_Previews: PreviewProvider {
     static var previews: some View {
-        Assignment_WidgetEntryView(entry: Entry(date: Date(), result: .success(Assignment.sampleAssignments())))
+        Assignment_WidgetEntryView(entry: Entry(date: Date(), result: .success(Assignment.sampleAssignments()), exactHeaders: false))
             .previewContext(WidgetPreviewContext(family: .systemLarge))
             .preferredColorScheme(.dark)
     }

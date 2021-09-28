@@ -550,6 +550,7 @@ struct Settings: View {
         @AppStorage("showLate", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLate: Bool = true
         @AppStorage("icon", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var currentIcon: String = "AppIcon"
         @AppStorage("defaultSort", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var defaultSortMode: SortMode = .date
+        @AppStorage("hideScrollBar", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var hideScrollBar: Bool = true
         @AppStorage("invertSortSwipe", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var invertSwipe: Bool = false
         @AppStorage("exactHeaders", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var exactHeaders: Bool = false
         @State private var showingAppIcon = false
@@ -610,6 +611,10 @@ struct Settings: View {
             }
             
             Section {
+                Toggle(isOn: $hideScrollBar) {
+                    Text("Hide Scroll Bar")
+                }
+                
                 Toggle(isOn: $invertSwipe) {
                     Text("Invert Swipe Gesture")
                 }

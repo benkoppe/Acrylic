@@ -302,6 +302,8 @@ struct AssignmentList: View {
         
         @ObservedObject private var refreshController = AssignmentRefresh()
         
+        @AppStorage("hideScrollBar", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var hideScrollBar: Bool = true
+        
         @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var auth: String = ""
         @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
         @AppStorage("showLate", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLate: Bool = true
@@ -399,6 +401,7 @@ struct AssignmentList: View {
                     tableView.separatorStyle = .none
                     tableView.separatorColor = .clear
                     tableView.separatorInset = .zero
+                    tableView.showsVerticalScrollIndicator = !hideScrollBar
                 }
                 .onChange(of: sortMode) { _ in proxy.scrollTo(0) }
                 .onChange(of: refreshController.shouldReload) { value in
@@ -568,6 +571,8 @@ struct AssignmentList: View {
             }
             
             struct assignmentItem: View {
+                @AppStorage("exactHeaders", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var exactHeaders: Bool = false
+                
                 let assignment: Assignment
                 @Binding var sortMode: SortMode
                 
@@ -635,8 +640,9 @@ struct AssignmentList: View {
                     }
                 }
                 
-                func createDateText(for date: Date) -> String {
-                    let day = date.getYearDay()
+                func createDateText(for date: Date, isSpecific: Bool = false) -> String {
+                    let daysBetween = Calendar.current.numberOfDaysBetween(Date(), and: date)
+                    
                     var shortFormatter: DateFormatter {
                         let formatter = DateFormatter()
                         formatter.dateFormat = "EEEE"
@@ -648,14 +654,21 @@ struct AssignmentList: View {
                         return formatter
                     }
                     
-                    if date < Date() {
-                        return formatter.string(from: date)
-                    }else if day == Date().getYearDay() {
-                        return "Today"
-                    } else if day == (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() {
-                        return "Tomorrow"
-                    } else if (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() - day < 7 {
-                        return shortFormatter.string(from: date)
+                    if !(exactHeaders && (daysBetween < 0 || daysBetween >= 7)) ? !isSpecific : isSpecific {
+                        switch daysBetween {
+                        case ..<0:
+                            return "\(abs(daysBetween)) Days Ago"
+                        case 0:
+                            return "Today"
+                        case 1:
+                            return "Tomorrow"
+                        case 2..<7:
+                            return shortFormatter.string(from: date)
+                        case 7...:
+                            return "In \(daysBetween) Days"
+                        default:
+                            return formatter.string(from: date)
+                        }
                     } else {
                         return formatter.string(from: date)
                     }

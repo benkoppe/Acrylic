@@ -20,8 +20,6 @@ struct AcrylicApp: App {
         WindowGroup {
             if #available(iOS 15.0, *) {
                 ContentView()
-                    .preferredColorScheme(.dark)
-                    .colorScheme(.dark)
                     .dynamicTypeSize(.medium)
                     .onOpenURL { url in
                         var str = url.absoluteString

@@ -25,6 +25,12 @@ struct Settings: View {
             
             License()
         }
+        .introspectTableView { tableView in
+            if #available(iOS 15.0, *) {
+            } else {
+                tableView.contentInset.top += 40
+            }
+        }
         .listStyle(.insetGrouped)
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
@@ -450,8 +456,13 @@ struct Settings: View {
                         Text(currentIcon == "AppIcon" ? "Default" : currentIcon)
                             .lineLimit(1)
                             .foregroundColor(.secondary)
-                            .frame(maxWidth: 200, alignment: .trailing)
-                        Spacer().frame(width: 5)
+                            .fixedSize(horizontal: true, vertical: false)
+                        Image(currentIcon + "Icon")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 25, height: 25)
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                        Spacer().frame(width: 7)
                         Image(systemName: "chevron.right")
                             .font(.system(size: 13, weight: .bold))
                             .foregroundColor(.tertiaryLabel)
@@ -484,7 +495,7 @@ struct Settings: View {
             } header: {
                 Text("Preferences")
             } footer: {
-                Text("Inverts left/right swipe gestures to swap sort modes.")
+                Text("Swiping on the main page can change the sort mode. This setting inverts the swipe directions.")
                     .fixedSize(horizontal: false, vertical: true)
             }
             
@@ -522,6 +533,10 @@ struct Settings: View {
                                 }
                             }
                         }
+                    }
+                    .listStyle(.insetGrouped)
+                    .introspectTableView { tableView in
+                        tableView.backgroundColor = .black
                     }
                     .background(Color.black.edgesIgnoringSafeArea(.all))
                     .navigationTitle("App Icon")
@@ -616,7 +631,7 @@ struct Settings: View {
         @State private var showingLicenses = false
         
         var body: some View {
-            Section {
+            Section(header: Text("Attributions")) {
                 Button(action: {
                     showingLicenses = true
                 }) {
@@ -629,11 +644,9 @@ struct Settings: View {
                     }
                     .foregroundColor(.primary)
                 }
-            } header: {
-                Text("Attributions")
-            }
-            .sheet(isPresented: $showingLicenses) {
-                LicenseSheet()
+                .sheet(isPresented: $showingLicenses) {
+                    LicenseSheet()
+                }
             }
         }
         

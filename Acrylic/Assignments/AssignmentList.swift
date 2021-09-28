@@ -17,7 +17,6 @@ enum SortMode: String, CaseIterable, Equatable {
 
 struct AssignmentList: View {
     @AppStorage("firstLaunch", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLanding: Bool = true
-    //@State private var showLanding = false
     
     @State private var showingMeView = false
     @State private var showingSettingsView = false
@@ -28,6 +27,7 @@ struct AssignmentList: View {
     @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
     @AppStorage("showLate", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLate: Bool = true
     @State private var assignments: [Assignment] = []
+    @State private var sortedAssignments: [Assignment] = []
     @State private var fetchState: FetchState = .loading
     
     @EnvironmentObject var courseArray: CourseArray
@@ -57,13 +57,15 @@ struct AssignmentList: View {
         NavigationView {
             Group {
                 switch fetchState {
-                
+                    
                 case .success:
                     if !assignments.isEmpty && !courseArray.courses.isEmpty {
-                        successView(assignments: $assignments, fetchState: $fetchState, sortMode: $sortedMode, animateRefresh: refreshSuccess)
+                        successView(assignments: $sortedAssignments, fetchState: $fetchState, sortMode: $sortedMode, animateRefresh: refreshSuccess)
+                            .id(assignments)
                             .gesture(DragGesture(minimumDistance: 10, coordinateSpace: .local).onEnded({ value in
                                 if (!invertSwipe && value.translation.width > 0) || (invertSwipe && value.translation.width < 0) {
                                     sortMode = .date
+                                    
                                 }
                                 
                                 if (!invertSwipe && value.translation.width < 0) || (invertSwipe && value.translation.width > 0) {
@@ -144,13 +146,11 @@ struct AssignmentList: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    //Text("\(Image(systemName: "paintbrush")) Assignments")
                     Text("Assignments")
                         .font(.title)
                         .bold()
                         .padding(.vertical)
                         .fixedSize(horizontal: true, vertical: false)
-                        //.gradientForeground(colors: [.red, .orange, .yellow, .green, .blue, .purple])
                         .foregroundColor(.white)
                 }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -179,9 +179,6 @@ struct AssignmentList: View {
                     .environmentObject(courseArray)
             }
             .onChange(of: sortMode) { sort in
-                //let nc = NotificationCenter.default
-                //nc.post(name: Notification.Name("SortAnimation"), object: sortMode)
-                //let sort = sort.object as? SortMode ?? SortMode.date
                 let duration = 0.25
                 let offset: CGFloat = 50
                 switch sort {
@@ -227,7 +224,7 @@ struct AssignmentList: View {
                         }
                     }
                 }
-                assignments = arr
+                sortedAssignments = arr
                 sortedMode = sortMode
             }
         }
@@ -275,7 +272,9 @@ struct AssignmentList: View {
                         }
                     }
                 }
+                self.assignments = []
                 self.assignments = arr
+                self.sortedAssignments = arr
                 self.fetchState = .success
                 
             case .failure(let error):
@@ -370,59 +369,64 @@ struct AssignmentList: View {
         }
         
         var body: some View {
-            List {
-                ForEach(Array(zip(splitAssignments.indices, splitAssignments)), id: \.0) { index, assignmentArray in
-                    Section {
-                        if #available(iOS 15.0, *) {
-                            assignmentGroup(hasAnimated: $hasAnimated, sortMode: $sortMode, assignmentArray: assignmentArray, index: index)
-                                .listRowSeparator(.hidden)
-                        } else {
-                            assignmentGroup(hasAnimated: $hasAnimated, sortMode: $sortMode, assignmentArray: assignmentArray, index: index)
+            ScrollViewReader { proxy in
+                List {
+                    ForEach(Array(zip(splitAssignments.indices, splitAssignments)), id: \.0) { index, assignmentArray in
+                        Section {
+                            if #available(iOS 15.0, *) {
+                                assignmentGroup(hasAnimated: $hasAnimated, sortMode: $sortMode, assignmentArray: assignmentArray, index: index)
+                                    .listRowSeparator(.hidden)
+                                    .id(index)
+                            } else {
+                                assignmentGroup(hasAnimated: $hasAnimated, sortMode: $sortMode, assignmentArray: assignmentArray, index: index)
+                                    .id(index)
+                            }
                         }
                     }
                 }
-            }
-            .listStyle(PlainListStyle())
-            .introspectTableView { tableView in
-                tableView.refreshControl = refreshController.controller
-                tableView.separatorStyle = .none
-                tableView.separatorColor = .clear
-                tableView.separatorInset = .zero
-            }
-            .onChange(of: refreshController.shouldReload) { value in
-                fetchAssignments(auth: auth, prefixes: prefixes) { result in
-                    switch result {
-                    case .success(let assignments):
-                        var arr: [Assignment] = []
-                        for assignment in assignments {
-                            if let newAssignment = createAssignment(courseArray: courseArray, assignment) {
-                                if showLate {
-                                    arr.append(newAssignment)
-                                } else if newAssignment.due > Date() {
-                                    arr.append(newAssignment)
+                .listStyle(PlainListStyle())
+                .introspectTableView { tableView in
+                    tableView.refreshControl = refreshController.controller
+                    tableView.separatorStyle = .none
+                    tableView.separatorColor = .clear
+                    tableView.separatorInset = .zero
+                }
+                .onChange(of: sortMode) { _ in proxy.scrollTo(0) }
+                .onChange(of: refreshController.shouldReload) { value in
+                    fetchAssignments(auth: auth, prefixes: prefixes) { result in
+                        switch result {
+                        case .success(let assignments):
+                            var arr: [Assignment] = []
+                            for assignment in assignments {
+                                if let newAssignment = createAssignment(courseArray: courseArray, assignment) {
+                                    if showLate {
+                                        arr.append(newAssignment)
+                                    } else if newAssignment.due > Date() {
+                                        arr.append(newAssignment)
+                                    }
                                 }
                             }
-                        }
-                        switch sortMode {
-                        case .date:
-                            arr.sort()
-                        case .course:
-                            arr.sort {
-                                if $0.courseOrder == $1.courseOrder {
-                                    return $0.due < $1.due
-                                } else {
-                                    return $0.courseOrder < $1.courseOrder
+                            switch sortMode {
+                            case .date:
+                                arr.sort()
+                            case .course:
+                                arr.sort {
+                                    if $0.courseOrder == $1.courseOrder {
+                                        return $0.due < $1.due
+                                    } else {
+                                        return $0.courseOrder < $1.courseOrder
+                                    }
                                 }
                             }
+                            self.assignments = arr
+                            endRefresh()
+                            
+                        case .failure(let error):
+                            endRefresh()
+                            fetchState = .failure
+                            print("Error: \(error.localizedDescription)")
+                            
                         }
-                        self.assignments = arr
-                        endRefresh()
-                        
-                    case .failure(let error):
-                        endRefresh()
-                        fetchState = .failure
-                        print("Error: \(error.localizedDescription)")
-                        
                     }
                 }
             }
@@ -432,9 +436,9 @@ struct AssignmentList: View {
             DispatchQueue.main.async {
                 if refreshController.shouldReload {
                     animateRefresh()
+                    refreshController.shouldReload = false
+                    refreshController.controller.endRefreshing()
                 }
-                refreshController.shouldReload = false
-                refreshController.controller.endRefreshing()
             }
         }
         
@@ -446,7 +450,6 @@ struct AssignmentList: View {
             @EnvironmentObject var courseArray: CourseArray
             
             @State private var yOffset: CGFloat = 200
-            @State private var xOffset: CGFloat = 0
             @State private var opacity: Double = 0
             let delay: Double = 0.05
             let speed: Double = 0.5
@@ -462,7 +465,6 @@ struct AssignmentList: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 0) {
                             Text(sortMode == .date ? createDateTitleText(for: assignmentArray[0].due) : courseArray.courses[assignmentArray[0].courseOrder].name)
-                                //.font(.system(.title, design: .rounded))
                                 .foregroundColor(sortMode == .date ? .primary : assignmentArray[0].color)
                                 .font(.system(size: 25, weight: .semibold, design: .rounded))
                                 .padding(.bottom, 7)
@@ -477,7 +479,7 @@ struct AssignmentList: View {
                     .padding(.vertical, 7)
                     .padding(.leading, 4)
                 }
-                .offset(x: xOffset, y: yOffset)
+                .offset(x: 0, y: yOffset)
                 .opacity(opacity)
                 .onAppear {
                     if !hasAnimated {

@@ -80,7 +80,9 @@ struct CourseList: View {
             UITableView.appearance().backgroundColor = .systemBackground
         }
         .introspectTableView { tableView in
-            tableView.contentOffset = CGPoint(x: 0, y: -38)
+            if #available(iOS 15.0, *) {
+                tableView.contentOffset = CGPoint(x: 0, y: -38)
+            }
         }
         .listStyle(.insetGrouped)
         .environment(\.editMode, self.$editMode)

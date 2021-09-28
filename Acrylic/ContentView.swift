@@ -14,7 +14,7 @@ struct ContentView: View {
     @ObservedObject var courseArray = CourseArray()
     @ObservedObject var hiddenAssignments = AssignmentArray(key: "hiddenAssignments")
     
-    @AppStorage("1.2Sheet", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showUpdate: Bool = true
+    @AppStorage("1.2Sheet", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showUpdate: Bool = false
     @AppStorage("firstLaunch", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLanding: Bool = true
     
     @State private var updateSheet = false

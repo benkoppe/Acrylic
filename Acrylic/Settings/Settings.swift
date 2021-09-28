@@ -28,6 +28,9 @@ struct Settings: View {
                 
             } header: {
                 Text("Settings")
+            } footer: {
+                Text("Tip: Hold down the user button on the main page to access settings quickly!")
+                    .fixedSize(horizontal: false, vertical: true)
             }
             
             Section {
@@ -36,9 +39,6 @@ struct Settings: View {
                     CanvasSettings()
                 }
                 
-            } footer: {
-                Text("Tip: Hold down the user button on the main page to access settings quickly!")
-                    .fixedSize(horizontal: false, vertical: true)
             }
             
             Section {

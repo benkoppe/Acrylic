@@ -15,15 +15,42 @@ struct Settings: View {
     
     var body: some View {
         List {
-            CanvasSettings()
             
-            Preferences()
+            Section {
+                
+                SettingsGroup(name: "Preferences", systemName: "gear", background: .gray) {
+                    Preferences()
+                }
+                
+                SettingsGroup(name: "Hidden Assignments", systemName: "eye.slash", background: Color("indigo")) {
+                    HiddenView()
+                }
+                
+            } header: {
+                Text("Settings")
+            }
             
-            //TipJarButton()
+            Section {
+                
+                SettingsGroup(name: "Canvas Settings", systemName: "network", background: .red) {
+                    CanvasSettings()
+                }
+                
+            } footer: {
+                Text("Tip: Hold down the user button on the main page to access settings quickly!")
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             
-            Contact()
-            
-            License()
+            Section {
+                
+                SettingsGroup(name: "Contact", systemName: "at", background: .blue) {
+                    Contact()
+                }
+                
+                SettingsGroup(name: "Licenses", systemName: "text.justifyleft", background: Color("brown")) {
+                    Licenses()
+                }
+            }
         }
         .introspectTableView { tableView in
             if #available(iOS 15.0, *) {
@@ -34,6 +61,86 @@ struct Settings: View {
         .listStyle(.insetGrouped)
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    struct SettingsGroup<Content: View>: View {
+        let name: String
+        let image: Image
+        let foreground: Color
+        let background: Color
+        let sheet: Content
+        
+        init(name: String, systemName: String, foreground: Color = .primary, background: Color, @ViewBuilder content: () -> Content) {
+            self.name = name
+            self.image = Image(systemName: systemName)
+            self.foreground = foreground
+            self.background = background
+            self.sheet = content()
+        }
+        
+        @State private var showSheet = false
+        
+        var body: some View {
+            Button {
+                showSheet = true
+            } label: {
+                HStack {
+                    image
+                        .frame(width: 30, height: 30)
+                        .foregroundColor(foreground)
+                        .background(background)
+                        .clipShape(RoundedRectangle(cornerRadius: 7))
+                    Text(name)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundColor(.tertiaryLabel)
+                }
+                .foregroundColor(.primary)
+                .padding(.vertical, 5)
+            }
+            .sheet(isPresented: $showSheet) {
+                GroupSheet(name: name, image: image, foreground: foreground, background: background) {
+                    sheet
+                }
+            }
+        }
+        
+        struct GroupSheet: View {
+            @Environment(\.presentationMode) var presentationMode
+            
+            let name: String
+            let image: Image
+            let foreground: Color
+            let background: Color
+            let sheet: Content
+            
+            init(name: String, image: Image, foreground: Color, background: Color, @ViewBuilder content: () -> Content) {
+                self.name = name
+                self.image = image
+                self.foreground = foreground
+                self.background = background
+                self.sheet = content()
+            }
+            
+            var body: some View {
+                NavigationView {
+                    List {
+                        sheet
+                    }
+                    .listStyle(.insetGrouped)
+                    .navigationTitle(name)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button("Done") {
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     
     struct CanvasSettings: View {
@@ -120,6 +227,8 @@ struct Settings: View {
                 }
             } header: {
                 Text("Canvas Authentication")
+            } footer: {
+                Text("This is the configuration used to access your Canvas and fetch assignments.")
             }
         }
         
@@ -596,8 +705,17 @@ struct Settings: View {
         
         var body: some View {
             Section {
-                Button("Email") {
+                Button {
                     showContactMail = true
+                } label: {
+                    HStack {
+                        Text("Email")
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundColor(.tertiaryLabel)
+                    }
+                    .foregroundColor(.primary)
                 }
                 .sheet(isPresented: $showContactMail) {
                     MailView(data: $contactMailData) { result in
@@ -605,7 +723,7 @@ struct Settings: View {
                     }
                 }
                 
-                Button("Instagram") {
+                Button {
                     let screenName =  "ben.koppe"
                     
                     let appURL = URL(string:  "instagram://user?username=\(screenName)")
@@ -620,23 +738,9 @@ struct Settings: View {
                             print("Could not open instagram.")
                         }
                     }
-                }
-            } header: {
-                Text("Contact")
-            }
-        }
-    }
-    
-    struct License: View {
-        @State private var showingLicenses = false
-        
-        var body: some View {
-            Section(header: Text("Attributions")) {
-                Button(action: {
-                    showingLicenses = true
-                }) {
+                } label: {
                     HStack {
-                        Text("Licenses")
+                        Text("Instagram")
                         Spacer()
                         Image(systemName: "chevron.right")
                             .font(.system(size: 13, weight: .bold))
@@ -644,62 +748,68 @@ struct Settings: View {
                     }
                     .foregroundColor(.primary)
                 }
-                .sheet(isPresented: $showingLicenses) {
-                    LicenseSheet()
-                }
+            } header: {
+                Text("Contact")
             }
         }
+    }
+    
+    struct Licenses: View {
+        @Environment(\.presentationMode) var presentationMode
         
-        struct LicenseSheet: View {
-            @Environment(\.presentationMode) var presentationMode
-            
-            var body: some View {
-                NavigationView {
-                    Form {
-                        Link(destination: URL(string: "https://github.com/instructure/canvas-lms/blob/master/LICENSE")!) {
-                            HStack {
-                                Text("Canvas LMS")
-                                    .foregroundColor(.primary)
-                                Spacer()
-                                Text("License")
-                                    .font(.callout)
-                            }
-                        }
-                        
-                        Section {
-                            Link(destination: URL(string: "https://github.com/siteline/SwiftUI-Introspect/blob/master/LICENSE")!) {
-                                HStack {
-                                    Text("SwiftUI Introspect")
-                                        .foregroundColor(.primary)
-                                    Spacer()
-                                    Text("License")
-                                        .font(.callout)
-                                }
-                            }
-                            Link(destination: URL(string: "https://github.com/SvenTiigi/WhatsNewKit/blob/master/LICENSE")!) {
-                                HStack {
-                                    Text("WhatsNewKit")
-                                        .foregroundColor(.primary)
-                                    Spacer()
-                                    Text("License")
-                                        .font(.callout)
-                                }
-                            }
-                            Link(destination: URL(string: "https://github.com/globulus/swiftui-mail-view/blob/main/LICENSE")!) {
-                                HStack {
-                                    Text("SwiftUI Mail View")
-                                        .foregroundColor(.primary)
-                                    Spacer()
-                                    Text("License")
-                                        .font(.callout)
-                                }
-                            }
+        var body: some View {
+            Section {
+                Link(destination: URL(string: "https://github.com/instructure/canvas-lms/blob/master/LICENSE")!) {
+                    HStack {
+                        Text("Canvas LMS")
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Text("License")
+                            .font(.callout)
+                    }
+                }
+                
+                Section {
+                    Link(destination: URL(string: "https://github.com/siteline/SwiftUI-Introspect/blob/master/LICENSE")!) {
+                        HStack {
+                            Text("Introspect for SwiftUI")
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Text("License")
+                                .font(.callout)
                         }
                     }
-                    .navigationTitle("Licenses")
-                    .navigationBarTitleDisplayMode(.inline)
+                    Link(destination: URL(string: "https://github.com/onevcat/RandomColorSwift/blob/master/LICENSE")!) {
+                        HStack {
+                            Text("Random Color Swift")
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Text("License")
+                                .font(.callout)
+                        }
+                    }
+                    Link(destination: URL(string: "https://github.com/SvenTiigi/WhatsNewKit/blob/master/LICENSE")!) {
+                        HStack {
+                            Text("WhatsNewKit")
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Text("License")
+                                .font(.callout)
+                        }
+                    }
+                    Link(destination: URL(string: "https://github.com/globulus/swiftui-mail-view/blob/main/LICENSE")!) {
+                        HStack {
+                            Text("SwiftUIMailView")
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Text("License")
+                                .font(.callout)
+                        }
+                    }
                 }
             }
+            .navigationTitle("Licenses")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
     

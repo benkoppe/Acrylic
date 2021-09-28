@@ -74,3 +74,47 @@ func createAssignment(courseArray: CourseArray, _ todoAssignment: TodoAssignment
     
     return Assignment(name: todoAssignment.name, due: due, courseID: courseID, courseName: courseName, courseOrder: courseOrder, url: url, color: courseColor)
 }
+
+func fetchCourses(auth: String, prefixes: [String], completion: @escaping (Result<(prefix: String, courses: [CanvasCourse]), FetchError>) -> Void) {
+    for prefix in prefixes {
+        let urlString = "https://\(prefix).instructure.com/api/v1/courses?per_page=100&include[]=term&include[]=favorites&include[]=teachers"
+        guard let url = URL(string: urlString) else {
+            print("Bad URL: \(urlString)")
+            completion(.failure(.badURL))
+            return
+        }
+        var request = URLRequest(url: url)
+        let auth = auth
+        request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            var fetchedCourses: [CanvasCourse] = []
+            
+            if let response = response, let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 401 {
+                    completion(.failure(.noAuth))
+                }
+                if httpResponse.statusCode == 404 {
+                    completion(.failure(.badPrefix))
+                }
+            }
+            
+            if let data = data {
+                let decoder = JSONDecoder()
+                if let list = try? decoder.decode([CanvasCourse].self, from: data) {
+                    for course in list {
+                        fetchedCourses.append(course)
+                    }
+                    
+                    completion(.success((prefix: prefix, courses: fetchedCourses)))
+                }
+            } else {
+                completion(.failure(.badLoad))
+            }
+        }.resume()
+    }
+    if prefixes.isEmpty {
+        completion(.failure(.noPrefixes))
+        return
+    }
+}

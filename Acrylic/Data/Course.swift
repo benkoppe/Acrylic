@@ -8,15 +8,17 @@
 import SwiftUI
 
 class CourseArray: ObservableObject {
+    var key: String
+    
     @Published var courses: [Course] {
         didSet {
             save()
         }
     }
     
-    init() {
+    init(key: String = "courses") {
         let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
-        let coursesData: [Data] = defaults?.array(forKey: "courses") as? [Data] ?? []
+        let coursesData: [Data] = defaults?.array(forKey: key) as? [Data] ?? []
         
         var arr: [Course] = []
         for data in coursesData {
@@ -25,12 +27,13 @@ class CourseArray: ObservableObject {
             }
         }
         
-        courses = arr
+        self.key = key
+        self.courses = arr
     }
     
     func save() {
         let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
-        defaults?.setValue(Course.getData(array: courses), forKey: "courses")
+        defaults?.setValue(Course.getData(array: courses), forKey: key)
     }
 }
 

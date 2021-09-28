@@ -31,6 +31,17 @@
 		B51D0B3A27004A0A0098A3FD /* WhatsNewKit in Frameworks */ = {isa = PBXBuildFile; productRef = B51D0B3927004A0A0098A3FD /* WhatsNewKit */; };
 		B51D0B3C27004A0A0098A3FD /* WhatsNewKitSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = B51D0B3B27004A0A0098A3FD /* WhatsNewKitSwiftUI */; };
 		B51D0B3E27016F920098A3FD /* TipJarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51D0B3D27016F920098A3FD /* TipJarView.swift */; };
+		B51D0B582702D5520098A3FD /* Luminosity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51D0B522702D5520098A3FD /* Luminosity.swift */; };
+		B51D0B592702D5520098A3FD /* RandomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51D0B532702D5520098A3FD /* RandomColor.swift */; };
+		B51D0B5A2702D5520098A3FD /* ColorDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51D0B542702D5520098A3FD /* ColorDefinition.swift */; };
+		B51D0B5B2702D5520098A3FD /* Hue.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51D0B552702D5520098A3FD /* Hue.swift */; };
+		B51D0B5E270301F30098A3FD /* Assignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51D0B5D270301F30098A3FD /* Assignment.swift */; };
+		B51D0B5F2703024F0098A3FD /* Assignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51D0B5D270301F30098A3FD /* Assignment.swift */; };
+		B51D0B612703077E0098A3FD /* AcrylicWhatsNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51D0B602703077E0098A3FD /* AcrylicWhatsNew.swift */; };
+		B51D0B63270309360098A3FD /* SafariView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51D0B62270309360098A3FD /* SafariView.swift */; };
+		B51D0B65270316510098A3FD /* CellHeightAnimatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51D0B64270316510098A3FD /* CellHeightAnimatable.swift */; };
+		B51D0B67270318830098A3FD /* HiddenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51D0B66270318830098A3FD /* HiddenView.swift */; };
+		B51D0B6B270384680098A3FD /* MeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51D0B6A270384680098A3FD /* MeButton.swift */; };
 		B52F2D4526E13F6100AAEDC0 /* Date-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */; };
 		B54E5EB126EBE07A0076C55C /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = B54E5EB026EBE07A0076C55C /* Introspect */; };
 		B57A2C5126D6B37F0047C6E2 /* AcrylicApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5026D6B37F0047C6E2 /* AcrylicApp.swift */; };
@@ -110,6 +121,16 @@
 		B507F04C26E9EAAB00861CEE /* ReadSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadSize.swift; sourceTree = "<group>"; };
 		B507F05026EA929900861CEE /* MeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeView.swift; sourceTree = "<group>"; };
 		B51D0B3D27016F920098A3FD /* TipJarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarView.swift; sourceTree = "<group>"; };
+		B51D0B522702D5520098A3FD /* Luminosity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Luminosity.swift; sourceTree = "<group>"; };
+		B51D0B532702D5520098A3FD /* RandomColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RandomColor.swift; sourceTree = "<group>"; };
+		B51D0B542702D5520098A3FD /* ColorDefinition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorDefinition.swift; sourceTree = "<group>"; };
+		B51D0B552702D5520098A3FD /* Hue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hue.swift; sourceTree = "<group>"; };
+		B51D0B5D270301F30098A3FD /* Assignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assignment.swift; sourceTree = "<group>"; };
+		B51D0B602703077E0098A3FD /* AcrylicWhatsNew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcrylicWhatsNew.swift; sourceTree = "<group>"; };
+		B51D0B62270309360098A3FD /* SafariView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariView.swift; sourceTree = "<group>"; };
+		B51D0B64270316510098A3FD /* CellHeightAnimatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellHeightAnimatable.swift; sourceTree = "<group>"; };
+		B51D0B66270318830098A3FD /* HiddenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenView.swift; sourceTree = "<group>"; };
+		B51D0B6A270384680098A3FD /* MeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeButton.swift; sourceTree = "<group>"; };
 		B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date-Extensions.swift"; sourceTree = "<group>"; };
 		B57A2C4D26D6B37F0047C6E2 /* Acrylic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Acrylic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B57A2C5026D6B37F0047C6E2 /* AcrylicApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcrylicApp.swift; sourceTree = "<group>"; };
@@ -199,11 +220,23 @@
 			path = AssignmentWidget;
 			sourceTree = "<group>";
 		};
+		B51D0B512702D5520098A3FD /* RandomColor */ = {
+			isa = PBXGroup;
+			children = (
+				B51D0B522702D5520098A3FD /* Luminosity.swift */,
+				B51D0B532702D5520098A3FD /* RandomColor.swift */,
+				B51D0B542702D5520098A3FD /* ColorDefinition.swift */,
+				B51D0B552702D5520098A3FD /* Hue.swift */,
+			);
+			path = RandomColor;
+			sourceTree = "<group>";
+		};
 		B52F2D4226E11DEE00AAEDC0 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
 				B5A0986F26DEFA9500411DCC /* Settings.swift */,
 				B51D0B3D27016F920098A3FD /* TipJarView.swift */,
+				B51D0B66270318830098A3FD /* HiddenView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -212,6 +245,7 @@
 			isa = PBXGroup;
 			children = (
 				B57A2C9726DD7B650047C6E2 /* AssignmentList.swift */,
+				B51D0B6A270384680098A3FD /* MeButton.swift */,
 				B507F05026EA929900861CEE /* MeView.swift */,
 			);
 			path = Assignments;
@@ -247,6 +281,7 @@
 				B507F03F26E4038900861CEE /* Acrylic.entitlements */,
 				B57A2C5026D6B37F0047C6E2 /* AcrylicApp.swift */,
 				B57A2C5226D6B37F0047C6E2 /* ContentView.swift */,
+				B51D0B602703077E0098A3FD /* AcrylicWhatsNew.swift */,
 				B5ACC11627001550009A8E69 /* AppIcons.swift */,
 				B5A920E926EFB4FF00A71336 /* Boarding */,
 				B5A0986D26DEFA4500411DCC /* Courses */,
@@ -290,12 +325,15 @@
 		B57A2C8C26D96E170047C6E2 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				B51D0B512702D5520098A3FD /* RandomColor */,
 				B52F2D4426E13F6100AAEDC0 /* Date-Extensions.swift */,
 				B57A2C8D26D96E280047C6E2 /* Color-Extensions.swift */,
 				B5ACC11226FEE8C7009A8E69 /* ColorsEqual.swift */,
 				B5ACC11426FFF6CA009A8E69 /* Bundle-Extensions.swift */,
+				B51D0B62270309360098A3FD /* SafariView.swift */,
 				B5A920E026EF3F3300A71336 /* Gradient-Foreground.swift */,
 				B5A0987626E00E3300411DCC /* Array-AppStorage.swift */,
+				B51D0B64270316510098A3FD /* CellHeightAnimatable.swift */,
 				B507F04C26E9EAAB00861CEE /* ReadSize.swift */,
 				B507F04326E409D000861CEE /* URL-Extensions.swift */,
 				B57A2C9126DB37B00047C6E2 /* CourseColors.swift */,
@@ -320,6 +358,7 @@
 				B507F00726E2C0F600861CEE /* CanvasStructs.swift */,
 				B5A920E226EF439200A71336 /* CanvasAPI.swift */,
 				B507F04626E413A600861CEE /* Course.swift */,
+				B51D0B5D270301F30098A3FD /* Assignment.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -503,6 +542,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B51D0B5F2703024F0098A3FD /* Assignment.swift in Sources */,
 				B507F04826E41EBA00861CEE /* Course.swift in Sources */,
 				B507F03C26E3E26600861CEE /* Array-AppStorage.swift in Sources */,
 				B507F03A26E3E26200861CEE /* Date-Extensions.swift in Sources */,
@@ -522,6 +562,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B57A2C9226DB37B00047C6E2 /* CourseColors.swift in Sources */,
+				B51D0B65270316510098A3FD /* CellHeightAnimatable.swift in Sources */,
 				B51D0B3E27016F920098A3FD /* TipJarView.swift in Sources */,
 				B57A2C9E26DE8A450047C6E2 /* GetCourses.swift in Sources */,
 				B507F04426E409D000861CEE /* URL-Extensions.swift in Sources */,
@@ -533,10 +574,17 @@
 				B57A2C5126D6B37F0047C6E2 /* AcrylicApp.swift in Sources */,
 				B5ACC11526FFF6CA009A8E69 /* Bundle-Extensions.swift in Sources */,
 				B507F04D26E9EAAB00861CEE /* ReadSize.swift in Sources */,
+				B51D0B5A2702D5520098A3FD /* ColorDefinition.swift in Sources */,
+				B51D0B5B2702D5520098A3FD /* Hue.swift in Sources */,
 				B507F04726E413A600861CEE /* Course.swift in Sources */,
+				B51D0B592702D5520098A3FD /* RandomColor.swift in Sources */,
 				B5A0987726E00E3300411DCC /* Array-AppStorage.swift in Sources */,
 				B5A920E826EFB4FC00A71336 /* BoardingView.swift in Sources */,
+				B51D0B5E270301F30098A3FD /* Assignment.swift in Sources */,
 				B57A2C9826DD7B650047C6E2 /* AssignmentList.swift in Sources */,
+				B51D0B6B270384680098A3FD /* MeButton.swift in Sources */,
+				B51D0B612703077E0098A3FD /* AcrylicWhatsNew.swift in Sources */,
+				B51D0B67270318830098A3FD /* HiddenView.swift in Sources */,
 				B5A0987026DEFA9500411DCC /* Settings.swift in Sources */,
 				B57A2C8E26D96E280047C6E2 /* Color-Extensions.swift in Sources */,
 				B5A920E326EF439200A71336 /* CanvasAPI.swift in Sources */,
@@ -544,7 +592,9 @@
 				B507F00826E2C0F700861CEE /* CanvasStructs.swift in Sources */,
 				B5ACC11326FEE8C7009A8E69 /* ColorsEqual.swift in Sources */,
 				B5ACC11727001550009A8E69 /* AppIcons.swift in Sources */,
+				B51D0B63270309360098A3FD /* SafariView.swift in Sources */,
 				B57A2C8B26D967250047C6E2 /* CourseList.swift in Sources */,
+				B51D0B582702D5520098A3FD /* Luminosity.swift in Sources */,
 				B51D0B2F2700342D0098A3FD /* AssignmentWidgetIntent.intentdefinition in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -593,7 +643,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = AssignmentWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = T8PATWK92J;
 				INFOPLIST_FILE = AssignmentWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
@@ -618,7 +668,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = AssignmentWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = T8PATWK92J;
 				INFOPLIST_FILE = AssignmentWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
@@ -762,7 +812,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Acrylic/Acrylic.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Acrylic/Preview Content\"";
 				DEVELOPMENT_TEAM = T8PATWK92J;
 				ENABLE_PREVIEWS = YES;
@@ -791,7 +841,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Acrylic/Acrylic.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Acrylic/Preview Content\"";
 				DEVELOPMENT_TEAM = T8PATWK92J;
 				ENABLE_PREVIEWS = YES;

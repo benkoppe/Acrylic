@@ -7,7 +7,7 @@
 
 import SwiftUI
 import CoreData
-import WidgetKit
+import WidgetKit    
 
 @main
 struct AcrylicApp: App {

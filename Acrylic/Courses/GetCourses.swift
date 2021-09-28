@@ -46,7 +46,7 @@ struct GetCourses: View {
                 }
             }
         }
-        .onAppear(perform: fetchCourses)
+        .onAppear(perform: loadCourses)
     }
     
     
@@ -121,84 +121,70 @@ struct GetCourses: View {
         }
     }
     
-    func fetchCourses() {
-        var loadedPrefixes: [String] = []
-        errorType = .none
+    func loadCourses() {
+        fetchState = .loading
+        var fetchedPrefixes: [String] = []
+        var fetchedCourses: [CanvasCourse] = []
         
-        for prefix in prefixes {
-            fetchState = .loading
+        fetchCourses(auth: auth, prefixes: prefixes) { result in
+            var thisFetchedCourses: [CanvasCourse] = []
             
-            let urlString = "https://\(prefix).instructure.com/api/v1/courses?per_page=100&include[]=term&include[]=favorites&include[]=teachers"
-            guard let url = URL(string: urlString) else {
-                print("Bad URL: \(urlString)")
-                fetchState = .failure
-                errorType = .badURL
+            switch result {
+            case .success((let prefix, let courses)):
+                fetchedPrefixes.append(prefix)
+                for course in courses {
+                    if let term = course.term {
+                        if let start = term.startDate, let end = term.endDate, let startDate = ISO8601DateFormatter().date(from: start), let endDate = ISO8601DateFormatter().date(from: end) {
+                            if Date() > startDate && Date() < endDate {
+                                thisFetchedCourses.append(course)
+                            }
+                        }
+                    }
+                }
+                if thisFetchedCourses.isEmpty {
+                    for course in courses {
+                        if course.isFavorite ?? false {
+                            thisFetchedCourses.append(course)
+                        }
+                    }
+                }
+                if thisFetchedCourses.isEmpty {
+                    for course in courses {
+                        thisFetchedCourses.append(course)
+                    }
+                }
+                
+                fetchedCourses += thisFetchedCourses
+                
+                if fetchedPrefixes.sorted() == prefixes.sorted() {
+                    var removeIndices = IndexSet()
+                    for enumCourse in fetchedCourses.enumerated() {
+                        let code = String(enumCourse.element.id)
+                        if code.hasPrefix("179010000000") {
+                            removeIndices.update(with: enumCourse.offset)
+                        }
+                    }
+                    fetchedCourses.remove(atOffsets: removeIndices)
+                    
+                    self.canvasCourses = fetchedCourses
+                    fetchState = .success
+                }
+                
+            case .failure(let error):
+                self.fetchState = .failure
+                print("Error: \(error.localizedDescription)")
                 return
             }
-            var request = URLRequest(url: url)
-            let auth = auth
-            request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
-            
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                loadedPrefixes.append(prefix)
-                var isLastPrefix: Bool {
-                    for prefix in prefixes {
-                        if !loadedPrefixes.contains(prefix) {
-                            return false
-                        }
-                    }
-                    return true
-                }
-                
-                if let response = response, let httpResponse = response as? HTTPURLResponse {
-                    if httpResponse.statusCode == 401 {
-                        fetchState = .failure
-                        errorType = .badAuth
-                        return
-                    }
-                }
-                
-                if let data = data {
-                    let decoder = JSONDecoder()
-                    if let list = try? decoder.decode([CanvasCourse].self, from: data) {
-                        for course in list {
-                            if let term = course.term {
-                                if let start = term.startDate, let end = term.endDate, let startDate = ISO8601DateFormatter().date(from: start), let endDate = ISO8601DateFormatter().date(from: end) {
-                                    if Date() > startDate && Date() < endDate {
-                                        canvasCourses.append(course)
-                                    }
-                                }
-                            }
-                        }
-                        if canvasCourses.isEmpty {
-                            for course in list {
-                                if course.isFavorite ?? false {
-                                    canvasCourses.append(course)
-                                }
-                            }
-                        }
-                        if canvasCourses.isEmpty {
-                            for course in list {
-                                canvasCourses.append(course)
-                            }
-                        }
-                        
-                        if isLastPrefix {
-                            fetchState = .success
-                        }
-                    }
-                } else {
-                    fetchState = .failure
-                    errorType = .badLoad
-                    return
-                }
-            }.resume()
         }
     }
     
     func addCourses() {
         var order = 0
+        
         var colorsAdded = 0
+        var randomColorsAdded = 0
+        let hues: [Hue] = [.red, .orange, .yellow, .green, .blue, .purple, .pink]
+        
         var arr: [Course] = []
         for course in canvasCourses {
             guard let name = course.name else { return }
@@ -210,10 +196,13 @@ struct GetCourses: View {
                 }
             }
             
-            var color = Color(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1))
+            var color = Color(randomColor(hue: hues[randomColorsAdded % hues.count], luminosity: .bright))
+            
             if colorsAdded < courseColors.count {
                 color = Color(courseColors[colorsAdded])
                 colorsAdded += 1
+            } else {
+                randomColorsAdded += 1
             }
             
             let newCourse = Course(name: name, code: course.id, order: order, color: color, teacher: teacher)

@@ -19,7 +19,6 @@ struct AssignmentList: View {
     @AppStorage("firstLaunch", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLanding: Bool = true
     
     @State private var showingMeView = false
-    @State private var showingSettingsView = false
     
     @State private var doneFetching = false
     
@@ -31,6 +30,7 @@ struct AssignmentList: View {
     @State private var fetchState: FetchState = .loading
     
     @EnvironmentObject var courseArray: CourseArray
+    @EnvironmentObject var hiddenAssignments: AssignmentArray
     
     @AppStorage("invertSortSwipe", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var invertSwipe: Bool = false
     @AppStorage("defaultSort", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var defaultSortMode: SortMode = .date
@@ -152,7 +152,9 @@ struct AssignmentList: View {
                         .fixedSize(horizontal: true, vertical: false)
                         .foregroundColor(.white)
                 }
+                
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
+                
                     Picker("Sort Mode", selection: $sortMode) {
                         ForEach(SortMode.allCases, id: \.self) {
                             Text($0.id)
@@ -163,12 +165,7 @@ struct AssignmentList: View {
                     .disabled(fetchState != .success)
                     .pickerStyle(InlinePickerStyle())
                     
-                    Button(action: {
-                        showingMeView = true
-                    }) {
-                        Image(systemName: "person.crop.circle")
-                            .font(.body)
-                    }
+                    MeButton(showingMeView: $showingMeView)
                 }
             }
             .sheet(isPresented: $showingMeView, onDismiss: {
@@ -176,6 +173,7 @@ struct AssignmentList: View {
             }) {
                 MeView()
                     .environmentObject(courseArray)
+                    .environmentObject(hiddenAssignments)
             }
             .onChange(of: sortMode) { sort in
                 let duration = 0.25
@@ -309,6 +307,7 @@ struct AssignmentList: View {
         @AppStorage("showLate", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLate: Bool = true
         
         @EnvironmentObject var courseArray: CourseArray
+        @EnvironmentObject var hiddenAssignments: AssignmentArray
         
         var animateRefresh: () -> Void
         
@@ -339,7 +338,9 @@ struct AssignmentList: View {
                             shortAssy = []
                         }
                         
-                        shortAssy.append(assignment)
+                        if !hiddenAssignments.assignments.contains(where: { $0.name == assignment.name && $0.url == assignment.url }) {
+                            shortAssy.append(assignment)
+                        }
                         
                         lastDate = assignment.due
                     }
@@ -360,7 +361,9 @@ struct AssignmentList: View {
                             shortAssy = []
                         }
                         
-                        shortAssy.append(assignment)
+                        if !hiddenAssignments.assignments.contains(where: { $0.name == assignment.name && $0.url == assignment.url }) {
+                            shortAssy.append(assignment)
+                        }
                         
                         lastOrder = assignment.courseOrder
                     }
@@ -376,14 +379,16 @@ struct AssignmentList: View {
             ScrollViewReader { proxy in
                 List {
                     ForEach(Array(zip(splitAssignments.indices, splitAssignments)), id: \.0) { index, assignmentArray in
-                        Section {
-                            if #available(iOS 15.0, *) {
-                                assignmentGroup(hasAnimated: $hasAnimated, sortMode: $sortMode, assignmentArray: assignmentArray, index: index)
-                                    .listRowSeparator(.hidden)
-                                    .id(index)
-                            } else {
-                                assignmentGroup(hasAnimated: $hasAnimated, sortMode: $sortMode, assignmentArray: assignmentArray, index: index)
-                                    .id(index)
+                        if !assignmentArray.isEmpty {
+                            Section {
+                                if #available(iOS 15.0, *) {
+                                    assignmentGroup(hasAnimated: $hasAnimated, sortMode: $sortMode, assignmentArray: assignmentArray, index: index)
+                                        .listRowSeparator(.hidden)
+                                        .id(index)
+                                } else {
+                                    assignmentGroup(hasAnimated: $hasAnimated, sortMode: $sortMode, assignmentArray: assignmentArray, index: index)
+                                        .id(index)
+                                }
                             }
                         }
                     }
@@ -459,7 +464,10 @@ struct AssignmentList: View {
             @Binding var sortMode: SortMode
             let assignmentArray: [Assignment]
             let index: Int
+            
             @EnvironmentObject var courseArray: CourseArray
+            
+            @State private var specificDate = false
             
             @State private var yOffset: CGFloat = 200
             @State private var opacity: Double = 0
@@ -476,13 +484,21 @@ struct AssignmentList: View {
                     
                     HStack {
                         VStack(alignment: .leading, spacing: 0) {
-                            Text(sortMode == .date ? createDateTitleText(for: assignmentArray[0].due) : courseArray.courses[assignmentArray[0].courseOrder].name)
-                                .foregroundColor(sortMode == .date ? .primary : assignmentArray[0].color)
-                                .font(.system(size: 25, weight: .semibold, design: .rounded))
-                                .padding(.bottom, 7)
+                            Button {
+                                if sortMode == .date {
+                                    specificDate.toggle()
+                                }
+                            } label: {
+                                Text(sortMode == .date ? createDateTitleText(for: assignmentArray[0].due, isSpecific: specificDate) : courseArray.courses[assignmentArray[0].courseOrder].name)
+                                    .foregroundColor(sortMode == .date ? .primary : assignmentArray[0].color)
+                                    .font(.system(size: 25, weight: .semibold, design: .rounded))
+                                    .padding(.bottom, 7)
+                            }
+                            .buttonStyle(.plain)
                             
                             ForEach(assignmentArray, id: \.self) { assignment in
                                 assignmentItem(assignment: assignment, sortMode: $sortMode)
+                                    .transition(.identity)
                             }
                         }
                         Spacer()
@@ -515,8 +531,9 @@ struct AssignmentList: View {
                 }
             }
             
-            func createDateTitleText(for date: Date) -> String {
-                let day = date.getYearDay()
+            func createDateTitleText(for date: Date, isSpecific: Bool) -> String {
+                let daysBetween = abs(Calendar.current.numberOfDaysBetween(Date(), and: date))
+                
                 var shortFormatter: DateFormatter {
                     let formatter = DateFormatter()
                     formatter.dateFormat = "EEEE"
@@ -527,15 +544,18 @@ struct AssignmentList: View {
                     formatter.dateFormat = "EEEE, MMM d"
                     return formatter
                 }
-                
-                if date < Date() {
-                    return formatter.string(from: date)
-                } else if day == Date().getYearDay() {
-                    return "Today"
-                } else if day == (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() {
-                    return "Tomorrow"
-                } else if (Calendar.current.date(byAdding: .day, value: 1, to: Date())!).getYearDay() - day < 7 {
-                    return shortFormatter.string(from: date)
+                if !isSpecific {
+                    if date < Date() {
+                        return "\(daysBetween) Days Ago"
+                    } else if daysBetween == 0 {
+                        return "Today"
+                    } else if daysBetween == 1 {
+                        return "Tomorrow"
+                    } else if daysBetween < 7 {
+                        return shortFormatter.string(from: date)
+                    } else {
+                        return "In \(daysBetween) Days"
+                    }
                 } else {
                     return formatter.string(from: date)
                 }
@@ -545,6 +565,10 @@ struct AssignmentList: View {
                 let assignment: Assignment
                 @Binding var sortMode: SortMode
                 
+                @EnvironmentObject var hiddenAssignments: AssignmentArray
+                
+                @State private var showSafari = false
+                
                 var timeFormatter: DateFormatter {
                     let formatter = DateFormatter()
                     formatter.dateStyle = .none
@@ -553,8 +577,20 @@ struct AssignmentList: View {
                 }
                 
                 var body: some View {
-                    
-                    Link(destination: assignment.url) {
+                    Menu {
+                        Button {
+                            showSafari = true
+                        } label: {
+                            Image(systemName: "safari")
+                            Text("Open Assignment")
+                        }
+                        Button {
+                            hiddenAssignments.assignments.append(assignment)
+                        } label: {
+                            Image(systemName: "eye.slash")
+                            Text("Hide Assignment")
+                        }
+                    } label: {
                         HStack {
                             Text(String("\u{007C}"))
                                 .font(.system(size: 42, weight: .semibold, design: .rounded))
@@ -581,12 +617,16 @@ struct AssignmentList: View {
                                 .lineLimit(1)
                                 .offset(x: 2, y: 0)
                             }
+                            
+                            Spacer()
                         }
                         .foregroundColor(.primary)
                         .offset(x: 10, y: 0)
                     }
                     .buttonStyle(PlainButtonStyle())
-                    
+                    .fullScreenCover(isPresented: $showSafari) {
+                        SafariView(url: assignment.url)
+                    }
                 }
                 
                 func createDateText(for date: Date) -> String {

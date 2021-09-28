@@ -65,7 +65,6 @@ struct AssignmentList: View {
                             .gesture(DragGesture(minimumDistance: 10, coordinateSpace: .local).onEnded({ value in
                                 if (!invertSwipe && value.translation.width > 0) || (invertSwipe && value.translation.width < 0) {
                                     sortMode = .date
-                                    
                                 }
                                 
                                 if (!invertSwipe && value.translation.width < 0) || (invertSwipe && value.translation.width > 0) {

@@ -551,6 +551,7 @@ struct Settings: View {
         @AppStorage("icon", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var currentIcon: String = "AppIcon"
         @AppStorage("defaultSort", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var defaultSortMode: SortMode = .date
         @AppStorage("invertSortSwipe", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var invertSwipe: Bool = false
+        @AppStorage("exactHeaders", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var exactHeaders: Bool = false
         @State private var showingAppIcon = false
         
         
@@ -598,11 +599,20 @@ struct Settings: View {
                     
                 }
                 
-                Toggle(isOn: $invertSwipe) {
-                    Text("Invert Swipe Gesture")
+                Toggle(isOn: $exactHeaders) {
+                    Text("Exact Date Headers")
                 }
             } header: {
                 Text("Preferences")
+            } footer: {
+                Text("Will show exact dates (ex. Sunday, Sep 26) in place of relative dates (ex. 3 Days Ago)")
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            
+            Section {
+                Toggle(isOn: $invertSwipe) {
+                    Text("Invert Swipe Gesture")
+                }
             } footer: {
                 Text("Swiping on the main page can change the sort mode. This setting inverts the swipe directions.")
                     .fixedSize(horizontal: false, vertical: true)

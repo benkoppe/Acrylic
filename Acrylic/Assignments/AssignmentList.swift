@@ -460,6 +460,8 @@ struct AssignmentList: View {
         }
         
         struct assignmentGroup: View {
+            @AppStorage("exactHeaders", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var exactHeaders: Bool = false
+            
             @Binding var hasAnimated: Bool
             @Binding var sortMode: SortMode
             let assignmentArray: [Assignment]
@@ -532,7 +534,7 @@ struct AssignmentList: View {
             }
             
             func createDateTitleText(for date: Date, isSpecific: Bool) -> String {
-                let daysBetween = abs(Calendar.current.numberOfDaysBetween(Date(), and: date))
+                let daysBetween = Calendar.current.numberOfDaysBetween(Date(), and: date)
                 
                 var shortFormatter: DateFormatter {
                     let formatter = DateFormatter()
@@ -544,17 +546,21 @@ struct AssignmentList: View {
                     formatter.dateFormat = "EEEE, MMM d"
                     return formatter
                 }
-                if !isSpecific {
-                    if date < Date() {
-                        return "\(daysBetween) Days Ago"
-                    } else if daysBetween == 0 {
+                
+                if !(exactHeaders && (daysBetween < 0 || daysBetween >= 7)) ? !isSpecific : isSpecific {
+                    switch daysBetween {
+                    case ..<0:
+                        return "\(abs(daysBetween)) Days Ago"
+                    case 0:
                         return "Today"
-                    } else if daysBetween == 1 {
+                    case 1:
                         return "Tomorrow"
-                    } else if daysBetween < 7 {
+                    case 2..<7:
                         return shortFormatter.string(from: date)
-                    } else {
+                    case 7...:
                         return "In \(daysBetween) Days"
+                    default:
+                        return formatter.string(from: date)
                     }
                 } else {
                     return formatter.string(from: date)

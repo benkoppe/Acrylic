@@ -22,7 +22,7 @@ struct Settings: View {
                     Preferences()
                 }
                 
-                SettingsGroup(name: "Hidden Assignments", systemName: "eye.slash", background: Color("indigo")) {
+                SettingsGroup(name: "Hidden Assignments", systemName: "eye.slash", background: Color("indigo"), customContent: true) {
                     HiddenView()
                 }
                 
@@ -68,13 +68,17 @@ struct Settings: View {
         let image: Image
         let foreground: Color
         let background: Color
+        
+        let customContent: Bool
         let sheet: Content
         
-        init(name: String, systemName: String, foreground: Color = .primary, background: Color, @ViewBuilder content: () -> Content) {
+        init(name: String, systemName: String, foreground: Color = .primary, background: Color, customContent: Bool = false, @ViewBuilder content: () -> Content) {
             self.name = name
             self.image = Image(systemName: systemName)
             self.foreground = foreground
             self.background = background
+            
+            self.customContent = customContent
             self.sheet = content()
         }
         
@@ -100,8 +104,12 @@ struct Settings: View {
                 .padding(.vertical, 5)
             }
             .sheet(isPresented: $showSheet) {
-                GroupSheet(name: name, image: image, foreground: foreground, background: background) {
+                if customContent {
                     sheet
+                } else {
+                    GroupSheet(name: name, image: image, foreground: foreground, background: background) {
+                        sheet
+                    }
                 }
             }
         }

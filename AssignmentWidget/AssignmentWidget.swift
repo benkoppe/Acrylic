@@ -14,6 +14,7 @@ struct Provider: IntentTimelineProvider {
     @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var auth: String = ""
     @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
     @ObservedObject var courseArray = CourseArray()
+    @ObservedObject var hiddenAssignments = AssignmentArray(key: "hiddenAssignments")
     
     func placeholder(in context: Context) -> Entry {
         return Entry(date: Date(), result: .success(Assignment.sampleAssignments()), exactHeaders: false)
@@ -31,10 +32,12 @@ struct Provider: IntentTimelineProvider {
                     
                     for assignment in assignments {
                         if let newAssignment = createAssignment(assignment) {
-                            if configuration.showLate?.boolValue ?? false {
-                                fetchedAssignments.append(newAssignment)
-                            } else if newAssignment.due > Date() {
-                                fetchedAssignments.append(newAssignment)
+                            if !hiddenAssignments.assignments.contains(where: { $0.name == newAssignment.name && $0.url == newAssignment.url }) {
+                                if configuration.showLate?.boolValue ?? false {
+                                    fetchedAssignments.append(newAssignment)
+                                } else if newAssignment.due > Date() {
+                                    fetchedAssignments.append(newAssignment)
+                                }
                             }
                         }
                     }
@@ -70,10 +73,12 @@ struct Provider: IntentTimelineProvider {
                     
                     for assignment in assignments {
                         if let newAssignment = createAssignment(assignment) {
-                            if configuration.showLate?.boolValue ?? false {
-                                fetchedAssignments.append(newAssignment)
-                            } else if newAssignment.due > Date() {
-                                fetchedAssignments.append(newAssignment)
+                            if !hiddenAssignments.assignments.contains(where: { $0.name == newAssignment.name && $0.url == newAssignment.url }) {
+                                if configuration.showLate?.boolValue ?? false {
+                                    fetchedAssignments.append(newAssignment)
+                                } else if newAssignment.due > Date() {
+                                    fetchedAssignments.append(newAssignment)
+                                }
                             }
                         }
                     }

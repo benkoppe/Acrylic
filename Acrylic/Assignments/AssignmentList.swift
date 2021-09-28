@@ -710,7 +710,7 @@ struct AssignmentList: View {
 
 struct WidgetView_Previews: PreviewProvider {
     static var previews: some View {
-        AssignmentList(auth: "26~yxSOVTuYIh0Fx9dMdm1VgaMXyv7VvCa1Ub7JHMZUhzJpakh254MmtBblpzmv7Gb9", prefixes: ["hsccsd"])
+        AssignmentList(auth: "", prefixes: [""])
             .preferredColorScheme(.dark)
     }
 }

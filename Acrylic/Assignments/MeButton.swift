@@ -39,7 +39,7 @@ struct MeButton: View {
             MeSheet(name: "Preferences") { Settings.Preferences() }
         }
         .sheet(isPresented: $hidden) {
-            MeSheet(name: "Hidden Assignments") { HiddenView() }
+            HiddenView()
         }
     }
     

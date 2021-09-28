@@ -246,35 +246,40 @@ struct AssignmentList: View {
     
     func load() {
         fetchState = .loading
+        var fetchedPrefixes: [String] = []
+        var fetchedAssignments: [Assignment] = []
+        
         fetchAssignments(auth: auth, prefixes: prefixes) { result in
             switch result {
-            case .success(let assignments):
-                var arr: [Assignment] = []
+            case .success((let prefix, let assignments)):
+                fetchedPrefixes.append(prefix)
                 for assignment in assignments {
                     if let newAssignment = createAssignment(courseArray: courseArray, assignment) {
                         if showLate {
-                            arr.append(newAssignment)
+                            fetchedAssignments.append(newAssignment)
                         } else if newAssignment.due > Date() {
-                            arr.append(newAssignment)
+                            fetchedAssignments.append(newAssignment)
                         }
                     }
                 }
-                switch sortMode {
-                case .date:
-                    arr.sort()
-                case .course:
-                    arr.sort {
-                        if $0.courseOrder == $1.courseOrder {
-                            return $0.due < $1.due
-                        } else {
-                            return $0.courseOrder < $1.courseOrder
+                
+                if fetchedPrefixes.sorted() == prefixes.sorted() {
+                    switch sortMode {
+                    case .date:
+                        fetchedAssignments.sort()
+                    case .course:
+                        fetchedAssignments.sort {
+                            if $0.courseOrder == $1.courseOrder {
+                                return $0.due < $1.due
+                            } else {
+                                return $0.courseOrder < $1.courseOrder
+                            }
                         }
                     }
+                    self.assignments = fetchedAssignments
+                    self.sortedAssignments = fetchedAssignments
+                    self.fetchState = .success
                 }
-                self.assignments = []
-                self.assignments = arr
-                self.sortedAssignments = arr
-                self.fetchState = .success
                 
             case .failure(let error):
                 self.fetchState = .failure
@@ -392,33 +397,41 @@ struct AssignmentList: View {
                 }
                 .onChange(of: sortMode) { _ in proxy.scrollTo(0) }
                 .onChange(of: refreshController.shouldReload) { value in
+                    var fetchedPrefixes: [String] = []
+                    var fetchedAssignments: [Assignment] = []
+                    
                     fetchAssignments(auth: auth, prefixes: prefixes) { result in
                         switch result {
-                        case .success(let assignments):
-                            var arr: [Assignment] = []
+                        
+                        case .success((let prefix, let assignments)):
+                            fetchedPrefixes.append(prefix)
+                            
                             for assignment in assignments {
                                 if let newAssignment = createAssignment(courseArray: courseArray, assignment) {
                                     if showLate {
-                                        arr.append(newAssignment)
+                                        fetchedAssignments.append(newAssignment)
                                     } else if newAssignment.due > Date() {
-                                        arr.append(newAssignment)
+                                        fetchedAssignments.append(newAssignment)
                                     }
                                 }
                             }
-                            switch sortMode {
-                            case .date:
-                                arr.sort()
-                            case .course:
-                                arr.sort {
-                                    if $0.courseOrder == $1.courseOrder {
-                                        return $0.due < $1.due
-                                    } else {
-                                        return $0.courseOrder < $1.courseOrder
+                            
+                            if fetchedPrefixes.sorted() == prefixes.sorted() {
+                                switch sortMode {
+                                case .date:
+                                    fetchedAssignments.sort()
+                                case .course:
+                                    fetchedAssignments.sort {
+                                        if $0.courseOrder == $1.courseOrder {
+                                            return $0.due < $1.due
+                                        } else {
+                                            return $0.courseOrder < $1.courseOrder
+                                        }
                                     }
                                 }
+                                self.assignments = fetchedAssignments
+                                endRefresh()
                             }
-                            self.assignments = arr
-                            endRefresh()
                             
                         case .failure(let error):
                             endRefresh()

@@ -8,10 +8,7 @@
 import Foundation
 import SwiftUI
 
-func fetchAssignments(auth: String, prefixes: [String], completion: @escaping (Result<[TodoAssignment], FetchError>) -> Void) {
-    var loadedPrefixes: [String] = []
-    var fetchedAssignments: [TodoAssignment] = []
-    
+func fetchAssignments(auth: String, prefixes: [String], completion: @escaping (Result<(prefix: String, assignments: [TodoAssignment]), FetchError>) -> Void) {
     for prefix in prefixes {
         let urlString = "https://\(prefix).instructure.com/api/v1/users/self/todo?per_page=100"
         guard let url = URL(string: urlString) else {
@@ -24,24 +21,14 @@ func fetchAssignments(auth: String, prefixes: [String], completion: @escaping (R
         request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
         
         URLSession.shared.dataTask(with: request) { data, response, error in
-            loadedPrefixes.append(prefix)
-            var isLastPrefix: Bool {
-                for prefix in prefixes {
-                    if !loadedPrefixes.contains(prefix) {
-                        return false
-                    }
-                }
-                return true
-            }
+            var fetchedAssignments: [TodoAssignment] = []
             
             if let response = response, let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode == 401 {
                     completion(.failure(.noAuth))
-                    return
                 }
                 if httpResponse.statusCode == 404 {
                     completion(.failure(.badPrefix))
-                    return
                 }
             }
             
@@ -49,19 +36,15 @@ func fetchAssignments(auth: String, prefixes: [String], completion: @escaping (R
                 let decoder = JSONDecoder()
                 if let list = try? decoder.decode(TodoList.self, from: data) {
                     for item in list {
-                        if let assignment = item.assignment, !fetchedAssignments.contains(where: { assignment.name == $0.name } ) {
+                        if let assignment = item.assignment {
                             fetchedAssignments.append(assignment)
                         }
                     }
                     
-                    if isLastPrefix {
-                        completion(.success(fetchedAssignments))
-                        return
-                    }
+                    completion(.success((prefix: prefix, assignments: fetchedAssignments)))
                 }
             } else {
                 completion(.failure(.badLoad))
-                return
             }
         }.resume()
     }

@@ -67,7 +67,7 @@ struct BoardingView: View {
             VStack {
                 Spacer()
                 Text("Welcome to")
-                    .font(.system(size: 60))
+                    .font(.system(size: 40))
                     .foregroundColor(.primary)
                     .multilineTextAlignment(.center)
                     .offset(y: 40)
@@ -81,6 +81,7 @@ struct BoardingView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 300, height: 300)
+                    .padding(.top)
                 Text("Easily track and view your assignments.")
                     .foregroundColor(.secondary)
                     .italic()

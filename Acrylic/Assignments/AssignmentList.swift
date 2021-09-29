@@ -114,24 +114,26 @@ struct AssignmentList: View {
                     
                 default:
                     VStack {
-                        Image(systemName: "xmark.circle")
-                            .font(.system(size: 40))
-                            .padding(.horizontal, 5)
-                            .foregroundColor(.red)
-                        Spacer()
-                            .frame(height: 10)
-                        Text("An error occured. Please check your settings and internet connection, and try again.")
-                            .font(.caption)
-                            .multilineTextAlignment(.center)
-                            .frame(width: 300)
-                        Spacer()
-                            .frame(height: 10)
-                        Button(action: {
-                            load()
-                        }) {
-                            Text("\(Image(systemName: "arrow.clockwise")) Refresh")
-                                .foregroundColor(.blue)
+                        if !showLanding {
+                            Image(systemName: "xmark.circle")
+                                .font(.system(size: 40))
+                                .padding(.horizontal, 5)
+                                .foregroundColor(.red)
+                            Spacer()
+                                .frame(height: 10)
+                            Text("An error occured. Please check your settings and internet connection, and try again.")
                                 .font(.caption)
+                                .multilineTextAlignment(.center)
+                                .frame(width: 300)
+                            Spacer()
+                                .frame(height: 10)
+                            Button(action: {
+                                load()
+                            }) {
+                                Text("\(Image(systemName: "arrow.clockwise")) Refresh")
+                                    .foregroundColor(.blue)
+                                    .font(.caption)
+                            }
                         }
                     }
                     .offset(y: -40)

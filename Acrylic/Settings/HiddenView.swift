@@ -57,52 +57,28 @@ struct HiddenView: View {
                     }
                     .padding()
                 } else {
-                    if #available(iOS 15.0, *) {
-                        List {
-                            ForEach(assignments.keys.sorted().reversed(), id: \.self) { key in
-                                Section {
-                                    if let shortAssignments = assignments[key] {
-                                        ForEach(shortAssignments, id: \.self) { assignment in
-                                            AssignmentItem(assignment: assignment)
-                                        }
-                                        .onDelete { offsets in
-                                            for offset in offsets {
-                                                let assignment = shortAssignments[offset]
-                                                if let index = hiddenAssignments.assignments.firstIndex(of: assignment) {
-                                                    hiddenAssignments.assignments.remove(at: index)
-                                                }
+                    List {
+                        ForEach(assignments.keys.sorted().reversed(), id: \.self) { key in
+                            Section {
+                                if let shortAssignments = assignments[key] {
+                                    ForEach(shortAssignments, id: \.self) { assignment in
+                                        AssignmentItem(assignment: assignment)
+                                    }
+                                    .onDelete { offsets in
+                                        for offset in offsets {
+                                            let assignment = shortAssignments[offset]
+                                            if let index = hiddenAssignments.assignments.firstIndex(of: assignment) {
+                                                hiddenAssignments.assignments.remove(at: index)
                                             }
                                         }
                                     }
-                                } header: {
-                                    Text(key, formatter: formatter)
                                 }
-                            }
-                        }
-                        .searchable(text: $search)
-                    } else {
-                        List {
-                            ForEach(assignments.keys.sorted().reversed(), id: \.self) { key in
-                                Section {
-                                    if let shortAssignments = assignments[key] {
-                                        ForEach(shortAssignments, id: \.self) { assignment in
-                                            AssignmentItem(assignment: assignment)
-                                        }
-                                        .onDelete { offsets in
-                                            for offset in offsets {
-                                                let assignment = shortAssignments[offset]
-                                                if let index = hiddenAssignments.assignments.firstIndex(of: assignment) {
-                                                    hiddenAssignments.assignments.remove(at: index)
-                                                }
-                                            }
-                                        }
-                                    }
-                                } header: {
-                                    Text(key, formatter: formatter)
-                                }
+                            } header: {
+                                Text(key, formatter: formatter)
                             }
                         }
                     }
+                    .searchable(text: $search)
                 }
             }
             .listStyle(.insetGrouped)

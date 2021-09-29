@@ -64,11 +64,15 @@ struct AssignmentList: View {
                             .id(assignments)
                             .gesture(DragGesture(minimumDistance: 10, coordinateSpace: .local).onEnded({ value in
                                 if (!invertSwipe && value.translation.width > 0) || (invertSwipe && value.translation.width < 0) {
-                                    sortMode = .date
+                                    if sortMode == .course {
+                                        sortMode = .date
+                                    }
                                 }
                                 
                                 if (!invertSwipe && value.translation.width < 0) || (invertSwipe && value.translation.width > 0) {
-                                    sortMode = .course
+                                    if sortMode == .date {
+                                        sortMode = .course
+                                    }
                                 }
                             }))
                             .opacity(opacity)
@@ -385,18 +389,15 @@ struct AssignmentList: View {
                     ForEach(Array(zip(splitAssignments.indices, splitAssignments)), id: \.0) { index, assignmentArray in
                         if !assignmentArray.isEmpty {
                             Section {
-                                if #available(iOS 15.0, *) {
-                                    assignmentGroup(hasAnimated: $hasAnimated, sortMode: $sortMode, assignmentArray: assignmentArray, index: index)
-                                        .listRowSeparator(.hidden)
-                                        .id(index)
-                                } else {
-                                    assignmentGroup(hasAnimated: $hasAnimated, sortMode: $sortMode, assignmentArray: assignmentArray, index: index)
-                                        .id(index)
-                                }
+                                assignmentGroup(hasAnimated: $hasAnimated, sortMode: $sortMode, assignmentArray: assignmentArray, index: index)
+                                    .listRowSeparator(.hidden)
+                                    .id(index)
+                                
                             }
                         }
                     }
                 }
+                .id(assignments)
                 .listStyle(PlainListStyle())
                 .introspectTableView { tableView in
                     tableView.refreshControl = refreshController.controller
@@ -457,9 +458,9 @@ struct AssignmentList: View {
         func endRefresh() {
             DispatchQueue.main.async {
                 if refreshController.shouldReload {
-                    animateRefresh()
                     refreshController.shouldReload = false
                     refreshController.controller.endRefreshing()
+                    animateRefresh()
                 }
             }
         }
@@ -680,7 +681,7 @@ struct AssignmentList: View {
     }
     
     struct failureView: View {
-        
+        let load: () -> Void
         
         var body: some View {
             VStack {
@@ -697,7 +698,7 @@ struct AssignmentList: View {
                 Spacer()
                     .frame(height: 10)
                 Button(action: {
-                    
+                    load()
                 }) {
                     Text("\(Image(systemName: "arrow.clockwise")) Refresh")
                         .foregroundColor(.blue)

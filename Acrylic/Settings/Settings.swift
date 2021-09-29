@@ -52,12 +52,6 @@ struct Settings: View {
                 }
             }
         }
-        .introspectTableView { tableView in
-            if #available(iOS 15.0, *) {
-            } else {
-                tableView.contentInset.top += 40
-            }
-        }
         .listStyle(.insetGrouped)
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)

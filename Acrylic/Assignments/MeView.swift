@@ -30,12 +30,7 @@ struct MeView: View {
         NavigationView {
             VStack {
                 if showingSettings {
-                    if #available(iOS 15.0, *) {
-                        Settings()
-                    } else {
-                        Settings()
-                            .padding(.top)
-                    }
+                   Settings()
                 } else {
                     CourseList()
                 }

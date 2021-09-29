@@ -190,7 +190,10 @@ struct Assignment_WidgetEntryView: View {
             if assignments.count > 0 {
                 successView(assignments: assignments, exactHeaders: entry.exactHeaders)
             } else {
-                Text("No assignments!")
+                Text("No assignments!\n\nIf you just downloaded the app, it may need a bit to update this widget.")
+                    .padding()
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                     .foregroundColor(.primary)
             }
             

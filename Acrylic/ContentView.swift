@@ -35,8 +35,7 @@ struct ContentView: View {
                 }
             }
             .tabItem {
-                //Image(systemName: "checklist")
-                //Image(systemName: "list.bullet.rectangle")
+                Image(systemName: "checklist")
                 Text("Assignments")
             }
     }

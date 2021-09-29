@@ -54,6 +54,39 @@ func fetchAssignments(auth: String, prefixes: [String], completion: @escaping (R
     }
 }
 
+func asyncFetchAssignments(auth: String, prefixes: [String]) async throws -> [TodoAssignment] {
+    var fetchedAssignments: [TodoAssignment] = []
+    
+    for prefix in prefixes {
+        guard let url = URL(string: "https://\(prefix).instructure.com/api/v1/users/self/todo?per_page=100") else {
+            throw FetchError.badURL
+        }
+        
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        if let response = response as? HTTPURLResponse {
+            if response.statusCode == 401 {
+                throw FetchError.noAuth
+            }
+            if response.statusCode == 404 {
+                throw FetchError.badPrefix
+            }
+        }
+        
+        if let list = try? JSONDecoder().decode(TodoList.self, from: data) {
+        
+            for item in list {
+                if let assignment = item.assignment {
+                    fetchedAssignments.append(assignment)
+                }
+            }
+            
+        }
+    }
+    
+    return fetchedAssignments
+}
+
 func createAssignment(courseArray: CourseArray, _ todoAssignment: TodoAssignment) -> Assignment? {
     var id: Int?
     var name: String?

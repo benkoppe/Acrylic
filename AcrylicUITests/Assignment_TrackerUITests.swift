@@ -40,3 +40,4 @@ class Assignment_TrackerUITests: XCTestCase {
         }
     }
 }
+

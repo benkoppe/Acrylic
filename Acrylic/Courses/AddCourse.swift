@@ -113,7 +113,6 @@ struct AddCourse: View {
                                             .foregroundColor(.white)
                                             .font(.system(.callout, design: .rounded))
                                     )
-                                    .animation(.easeOut(duration: 0.2))
                             }
                         }
                     }

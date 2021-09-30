@@ -154,7 +154,6 @@ struct Settings: View {
         
         @State private var userFetchState: FetchState = .unstarted
         
-        @State private var userName: String = ""
         @State private var pfp: UIImage?
             
         enum FetchState {
@@ -185,7 +184,7 @@ struct Settings: View {
                     }
                 }
                 .foregroundColor(.primary)
-                .sheet(isPresented: $showingPrefixes, onDismiss: loadUser) {
+                .sheet(isPresented: $showingPrefixes, onDismiss: { Task { await loadUser() } }) {
                     PrefixView(prefixes: $prefixes)
                 }
                 
@@ -215,17 +214,12 @@ struct Settings: View {
                         }
                     }
                     .foregroundColor(.primary)
-                    .fullScreenCover(isPresented: $showingAuth, onDismiss: loadUser) {
+                    .fullScreenCover(isPresented: $showingAuth, onDismiss: { Task { await loadUser() } }) {
                         AuthView(authCode: $authCode)
                     }
                 }
-                .onAppear() { loadUser() }
-                .onChange(of: authCode) { _ in
-                    loadUser()
-                }
-                .onChange(of: prefixes) { _ in
-                    print("running")
-                    loadUser()
+                .task {
+                    await loadUser()
                 }
             } header: {
                 Text("Canvas Authentication")
@@ -234,54 +228,23 @@ struct Settings: View {
             }
         }
         
-        func loadUser() {
-            self.pfp = nil
+        func loadUser() async {
+            userFetchState = .loading
             let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
-            for prefix in prefixes {
-                userFetchState = .loading
-                let urlString = "https://\(prefix).instructure.com/api/v1/users/self/profile"
-                guard let url = URL(string: urlString) else {
-                    userFetchState = .failure
-                    print("URL Failure")
-                    defaults?.setValue(nil, forKey: "pfp")
-                    return
-                }
-                var request = URLRequest(url: url)
-                request.allHTTPHeaderFields = ["Authorization" : "Bearer " + authCode]
-                URLSession.shared.dataTask(with: request) { data, response, error in
-                    if let response = response, let httpResponse = response as? HTTPURLResponse {
-                        if httpResponse.statusCode == 401 {
-                            userFetchState = .failure
-                            defaults?.setValue(nil, forKey: "pfp")
-                            return
-                        }
-                        if httpResponse.statusCode == 404 {
-                            userFetchState = .failure
-                            defaults?.setValue(nil, forKey: "pfp")
-                            return
-                        }
-                    }
-                    if let data = data {
-                        let decoder = JSONDecoder()
-                        if let list = try? decoder.decode(CanvasUser.self, from: data) {
-                            userName = list.name
-                            if let pfpURLString = list.avatarURL, let pfpURL = URL(string: pfpURLString)  {
-                                fetchImage(url: pfpURL)
-                            }
-                            userFetchState = .success
-                            return
-                        }
-                    } else {
-                        print("Failure")
-                        userFetchState = .failure
-                    }
-                }.resume()
-            }
-            if prefixes.isEmpty {
-                defaults?.setValue(nil, forKey: "pfp")
+            
+            do {
+                let _ = try await asyncLoadUser(auth: authCode, prefixes: prefixes)
+                userFetchState = .success
+                //fetch pfp image
+            } catch {
+                print("user error \(error)")
                 userFetchState = .failure
+                defaults?.setValue(nil, forKey: "pfp")
             }
-            return
+        }
+        
+        func fetchImage(users: [CanvasUser]) {
+            
         }
         
         func fetchImage(url: URL) {
@@ -553,7 +516,6 @@ struct Settings: View {
         @AppStorage("icon", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var currentIcon: String = "AppIcon"
         @AppStorage("defaultSort", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var defaultSortMode: SortMode = .date
         @AppStorage("hideScrollBar", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var hideScrollBar: Bool = true
-        @AppStorage("invertSortSwipe", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var invertSwipe: Bool = false
         @AppStorage("exactHeaders", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var exactHeaders: Bool = false
         @State private var showingAppIcon = false
         
@@ -586,6 +548,12 @@ struct Settings: View {
                     AppIconView()
                 }
                 
+                
+            } header: {
+                Text("Preferences")
+            }
+            
+            Section {
                 HStack {
                     Text("Default Sort Mode")
                     
@@ -602,26 +570,15 @@ struct Settings: View {
                     
                 }
                 
-                Toggle(isOn: $exactHeaders) {
-                    Text("Exact Date Headers")
-                }
-            } header: {
-                Text("Preferences")
-            } footer: {
-                Text("Will show exact dates (ex. Sunday, Sep 26) in place of relative dates (ex. 3 Days Ago)")
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            
-            Section {
                 Toggle(isOn: $hideScrollBar) {
                     Text("Hide Scroll Bar")
                 }
                 
-                Toggle(isOn: $invertSwipe) {
-                    Text("Invert Swipe Gesture")
+                Toggle(isOn: $exactHeaders) {
+                    Text("Exact Date Headers")
                 }
             } footer: {
-                Text("Swiping on the main page can change the sort mode. This setting inverts the swipe directions.")
+                Text("Will show exact dates (ex. Sunday, Sep 26) in place of relative dates (ex. 3 Days Ago)")
                     .fixedSize(horizontal: false, vertical: true)
             }
             

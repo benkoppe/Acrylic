@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 
 class AssignmentArray: ObservableObject {
     var key: String
@@ -36,7 +37,7 @@ class AssignmentArray: ObservableObject {
     func save() {
         let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
         defaults?.setValue(Assignment.getData(array: assignments), forKey: key)
-        print("saving")
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }
 

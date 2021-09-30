@@ -20,28 +20,22 @@ struct AssignmentList: View {
     
     @State private var showingMeView = false
     
-    @State private var doneFetching = false
-    
     @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var auth: String = ""
     @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
     @AppStorage("showLate", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLate: Bool = true
+    
     @State private var assignments: [Assignment] = []
-    @State private var sortedAssignments: [Assignment] = []
     @State private var fetchState: FetchState = .loading
     
     @EnvironmentObject var courseArray: CourseArray
     @EnvironmentObject var hiddenAssignments: AssignmentArray
     
-    @AppStorage("invertSortSwipe", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var invertSwipe: Bool = false
     @AppStorage("defaultSort", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var defaultSortMode: SortMode = .date
+    
     @State private var sortMode: SortMode = .date
-    @State private var sortedMode: SortMode = .date
     
     enum FetchState {
         case success, loading, failure
-    }
-    enum ErrorType {
-        case none, badLoad, badURL, badAuth
     }
     
     var formatter: DateFormatter {
@@ -50,9 +44,6 @@ struct AssignmentList: View {
         return formatter
     }
     
-    @State private var xOffset: CGFloat = 0
-    @State private var opacity: Double = 1
-    
     var body: some View {
         NavigationView {
             Group {
@@ -60,30 +51,22 @@ struct AssignmentList: View {
                     
                 case .success:
                     if !assignments.isEmpty && !courseArray.courses.isEmpty {
-                        successView(assignments: $sortedAssignments, fetchState: $fetchState, sortMode: $sortedMode, animateRefresh: refreshSuccess)
-                            .id(assignments)
-                            .gesture(DragGesture(minimumDistance: 10, coordinateSpace: .local).onEnded({ value in
-                                if (!invertSwipe && value.translation.width > 0) || (invertSwipe && value.translation.width < 0) {
-                                    if sortMode == .course {
-                                        sortMode = .date
-                                    }
-                                }
-                                
-                                if (!invertSwipe && value.translation.width < 0) || (invertSwipe && value.translation.width > 0) {
-                                    if sortMode == .date {
-                                        sortMode = .course
-                                    }
-                                }
-                            }))
-                            .opacity(opacity)
-                            .offset(x: xOffset, y: 0)
+                        TabView(selection: $sortMode) {
+                            successView(assignments: assignments, fetchState: $fetchState, sortMode: .date, load: load)
+                                .tag(SortMode.date)
+                            successView(assignments: assignments, fetchState: $fetchState, sortMode: .course, load: load)
+                                .tag(SortMode.course)
+                        }
+                        .tabViewStyle(.page(indexDisplayMode: .never))
+                        .ignoresSafeArea(.all)
+                        .id(assignments)
                     } else if assignments.isEmpty && !courseArray.courses.isEmpty {
                         VStack {
                             Text("You don't have any assignments due!")
                                 .multilineTextAlignment(.center)
                                 .foregroundColor(.secondary)
                             Button(action: {
-                                load()
+                                Task { await load() }
                             }) {
                                 Text("\(Image(systemName: "arrow.clockwise")) Refresh")
                                     .foregroundColor(.blue)
@@ -98,7 +81,7 @@ struct AssignmentList: View {
                                 .multilineTextAlignment(.center)
                                 .foregroundColor(.secondary)
                             Button(action: {
-                                load()
+                                Task { await load() }
                             }) {
                                 Text("\(Image(systemName: "arrow.clockwise")) Refresh")
                                     .foregroundColor(.blue)
@@ -132,7 +115,7 @@ struct AssignmentList: View {
                             Spacer()
                                 .frame(height: 10)
                             Button(action: {
-                                load()
+                                Task { await load() }
                             }) {
                                 Text("\(Image(systemName: "arrow.clockwise")) Refresh")
                                     .foregroundColor(.blue)
@@ -145,7 +128,7 @@ struct AssignmentList: View {
                     
                 }
             }
-            .fullScreenCover(isPresented: $showLanding, onDismiss: { load() }) {
+            .fullScreenCover(isPresented: $showLanding, onDismiss: { Task { await load() } } ) {
                 BoardingView()
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -161,7 +144,7 @@ struct AssignmentList: View {
                 
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                 
-                    Picker("Sort Mode", selection: $sortMode) {
+                    Picker("Sort Mode", selection: $sortMode.animation()) {
                         ForEach(SortMode.allCases, id: \.self) {
                             Text($0.id)
                         }
@@ -174,173 +157,68 @@ struct AssignmentList: View {
                     MeButton(showingMeView: $showingMeView)
                 }
             }
-            .sheet(isPresented: $showingMeView, onDismiss: {
-                if fetchState == .loading { load() }
-            }) {
+            .sheet(isPresented: $showingMeView) {
                 MeView()
                     .environmentObject(courseArray)
                     .environmentObject(hiddenAssignments)
             }
-            .onChange(of: sortMode) { sort in
-                let duration = 0.25
-                let offset: CGFloat = 50
-                switch sort {
-                case .date:
-                    withAnimation(.easeIn(duration: duration)) {
-                        xOffset = offset
-                        opacity = 0
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + duration + 0.03) {
-                        NotificationCenter.default.post(name: Notification.Name("StartSort"), object: nil)
-                        xOffset = -offset
-                        withAnimation(.easeOut(duration: duration)) {
-                            xOffset = 0
-                            opacity = 1
-                        }
-                    }
-                case .course:
-                    withAnimation(.easeIn(duration: duration)) {
-                        xOffset = -offset
-                        opacity = 0
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + duration + 0.03) {
-                        NotificationCenter.default.post(name: Notification.Name("StartSort"), object: nil)
-                        xOffset = offset
-                        withAnimation(.easeOut(duration: duration)) {
-                            xOffset = 0
-                            opacity = 1
-                        }
-                    }
-                }
-            }
-            .onReceive(NotificationCenter.default.publisher(for: Notification.Name("StartSort"))) { _ in
-                var arr = assignments
-                switch sortMode {
-                case .date:
-                    arr.sort()
-                case .course:
-                    arr.sort {
-                        if $0.courseOrder == $1.courseOrder {
-                            return $0.due < $1.due
-                        } else {
-                            return $0.courseOrder < $1.courseOrder
-                        }
-                    }
-                }
-                sortedAssignments = arr
-                sortedMode = sortMode
-            }
         }
-        .onAppear {
-            load()
+        .task {
             sortMode = defaultSortMode
+            await load()
         }
     }
     
-    func getCourseColors() -> [Color] {
-        var arr: [Color] = []
-        for course in courseArray.courses {
-            arr.append(course.color)
+    func load(resetState: Bool = true) async {
+        if resetState {
+            fetchState = .loading
         }
-        if arr.isEmpty {
-            return [.primary]
-        }
-        return arr
-    }
-    
-    func load() {
-        fetchState = .loading
-        var fetchedPrefixes: [String] = []
-        var fetchedAssignments: [Assignment] = []
         
-        fetchAssignments(auth: auth, prefixes: prefixes) { result in
-            switch result {
-            case .success((let prefix, let assignments)):
-                fetchedPrefixes.append(prefix)
-                for assignment in assignments {
-                    if let newAssignment = createAssignment(courseArray: courseArray, assignment) {
-                        if showLate {
-                            fetchedAssignments.append(newAssignment)
-                        } else if newAssignment.due > Date() {
-                            fetchedAssignments.append(newAssignment)
-                        }
+        do {
+            let todoAssignments = try await asyncFetchAssignments(auth: auth, prefixes: prefixes)
+            var fetchedAssignments: [Assignment] = []
+            for assignment in todoAssignments {
+                if let newAssignment = createAssignment(courseArray: courseArray, assignment) {
+                    if showLate {
+                        fetchedAssignments.append(newAssignment)
+                    } else if newAssignment.due > Date() {
+                        fetchedAssignments.append(newAssignment)
                     }
                 }
-                
-                if fetchedPrefixes.sorted() == prefixes.sorted() {
-                    switch sortMode {
-                    case .date:
-                        fetchedAssignments.sort()
-                    case .course:
-                        fetchedAssignments.sort {
-                            if $0.courseOrder == $1.courseOrder {
-                                return $0.due < $1.due
-                            } else {
-                                return $0.courseOrder < $1.courseOrder
-                            }
-                        }
-                    }
-                    self.assignments = fetchedAssignments
-                    self.sortedAssignments = fetchedAssignments
-                    self.fetchState = .success
-                }
-                
-            case .failure(let error):
-                self.fetchState = .failure
-                print("Error: \(error.localizedDescription)")
             }
-        }
-    }
-    
-    func refreshSuccess() {
-        withAnimation { self.fetchState = .loading }
-        if fetchState == .loading {
-            fetchState = .success
+            self.assignments = fetchedAssignments
+            self.fetchState = .success
+            
+        } catch {
+            fetchState = .failure
+            print("error: \(error)")
         }
     }
     
     struct successView: View {
-        @Binding var assignments: [Assignment]
+        let assignments: [Assignment]
         @Binding var fetchState: FetchState
-        @Binding var sortMode: SortMode
+        
+        let sortMode: SortMode
         
         @State private var hasAnimated = false
         
-        @ObservedObject private var refreshController = AssignmentRefresh()
-        
         @AppStorage("hideScrollBar", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var hideScrollBar: Bool = true
-        
-        @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var auth: String = ""
-        @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
-        @AppStorage("showLate", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLate: Bool = true
         
         @EnvironmentObject var courseArray: CourseArray
         @EnvironmentObject var hiddenAssignments: AssignmentArray
         
-        var animateRefresh: () -> Void
-        
-        class AssignmentRefresh: ObservableObject {
-            @Published var controller: UIRefreshControl
-            @Published var shouldReload = false
-            
-            init() {
-                controller = UIRefreshControl()
-                controller.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
-            }
-            
-            @objc func handleRefresh() {
-                self.shouldReload = true
-            }
-        }
+        let load: (Bool) async -> Void
         
         var splitAssignments: [[Assignment]] {
             if sortMode == .date {
-                if assignments.count > 0 {
+                let sortedAssignments = assignments.sorted()
+                if sortedAssignments.count > 0 {
                     var assy: [[Assignment]] = []
                     var shortAssy: [Assignment] = []
                     var lastDate = assignments[0].due
                     
-                    for assignment in assignments {
+                    for assignment in sortedAssignments {
                         if assignment.due.getYearDay() != lastDate.getYearDay() {
                             assy.append(shortAssy)
                             shortAssy = []
@@ -358,12 +236,19 @@ struct AssignmentList: View {
                     
                 } else { return [] }
             } else {
-                if assignments.count > 0 {
+                let sortedAssignments = assignments.sorted {
+                    if $0.courseOrder == $1.courseOrder {
+                        return $0.due < $1.due
+                    } else {
+                        return $0.courseOrder < $1.courseOrder
+                    }
+                }
+                if sortedAssignments.count > 0 {
                     var assy: [[Assignment]] = []
                     var shortAssy: [Assignment] = []
                     var lastOrder = assignments[0].courseOrder
                     
-                    for assignment in assignments {
+                    for assignment in sortedAssignments {
                         if assignment.courseOrder != lastOrder {
                             assy.append(shortAssy)
                             shortAssy = []
@@ -389,7 +274,7 @@ struct AssignmentList: View {
                     ForEach(Array(zip(splitAssignments.indices, splitAssignments)), id: \.0) { index, assignmentArray in
                         if !assignmentArray.isEmpty {
                             Section {
-                                assignmentGroup(hasAnimated: $hasAnimated, sortMode: $sortMode, assignmentArray: assignmentArray, index: index)
+                                assignmentGroup(hasAnimated: $hasAnimated, sortMode: sortMode, assignmentArray: assignmentArray, index: index)
                                     .listRowSeparator(.hidden)
                                     .id(index)
                                 
@@ -400,67 +285,11 @@ struct AssignmentList: View {
                 .id(assignments)
                 .listStyle(PlainListStyle())
                 .introspectTableView { tableView in
-                    tableView.refreshControl = refreshController.controller
-                    tableView.separatorStyle = .none
-                    tableView.separatorColor = .clear
-                    tableView.separatorInset = .zero
                     tableView.showsVerticalScrollIndicator = !hideScrollBar
                 }
                 .onChange(of: sortMode) { _ in proxy.scrollTo(0) }
-                .onChange(of: refreshController.shouldReload) { value in
-                    var fetchedPrefixes: [String] = []
-                    var fetchedAssignments: [Assignment] = []
-                    
-                    fetchAssignments(auth: auth, prefixes: prefixes) { result in
-                        switch result {
-                        
-                        case .success((let prefix, let assignments)):
-                            fetchedPrefixes.append(prefix)
-                            
-                            for assignment in assignments {
-                                if let newAssignment = createAssignment(courseArray: courseArray, assignment) {
-                                    if showLate {
-                                        fetchedAssignments.append(newAssignment)
-                                    } else if newAssignment.due > Date() {
-                                        fetchedAssignments.append(newAssignment)
-                                    }
-                                }
-                            }
-                            
-                            if fetchedPrefixes.sorted() == prefixes.sorted() {
-                                switch sortMode {
-                                case .date:
-                                    fetchedAssignments.sort()
-                                case .course:
-                                    fetchedAssignments.sort {
-                                        if $0.courseOrder == $1.courseOrder {
-                                            return $0.due < $1.due
-                                        } else {
-                                            return $0.courseOrder < $1.courseOrder
-                                        }
-                                    }
-                                }
-                                self.assignments = fetchedAssignments
-                                endRefresh()
-                            }
-                            
-                        case .failure(let error):
-                            endRefresh()
-                            fetchState = .failure
-                            print("Error: \(error.localizedDescription)")
-                            
-                        }
-                    }
-                }
-            }
-        }
-        
-        func endRefresh() {
-            DispatchQueue.main.async {
-                if refreshController.shouldReload {
-                    refreshController.shouldReload = false
-                    refreshController.controller.endRefreshing()
-                    animateRefresh()
+                .refreshable {
+                    await load(false)
                 }
             }
         }
@@ -469,7 +298,7 @@ struct AssignmentList: View {
             @AppStorage("exactHeaders", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var exactHeaders: Bool = false
             
             @Binding var hasAnimated: Bool
-            @Binding var sortMode: SortMode
+            let sortMode: SortMode
             let assignmentArray: [Assignment]
             let index: Int
             
@@ -505,8 +334,7 @@ struct AssignmentList: View {
                             .buttonStyle(.plain)
                             
                             ForEach(assignmentArray, id: \.self) { assignment in
-                                assignmentItem(assignment: assignment, sortMode: $sortMode)
-                                    .transition(.identity)
+                                assignmentItem(assignment: assignment, sortMode: sortMode)
                             }
                         }
                         Spacer()
@@ -577,7 +405,7 @@ struct AssignmentList: View {
                 @AppStorage("exactHeaders", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var exactHeaders: Bool = false
                 
                 let assignment: Assignment
-                @Binding var sortMode: SortMode
+                let sortMode: SortMode
                 
                 @EnvironmentObject var hiddenAssignments: AssignmentArray
                 
@@ -677,36 +505,6 @@ struct AssignmentList: View {
                     }
                 }
             }
-        }
-    }
-    
-    struct failureView: View {
-        let load: () -> Void
-        
-        var body: some View {
-            VStack {
-                Image(systemName: "xmark.circle")
-                    .font(.system(size: 40))
-                    .padding(.horizontal, 5)
-                    .foregroundColor(.red)
-                Spacer()
-                    .frame(height: 10)
-                Text("An error occured. Please check your settings and internet connection, and try again.")
-                    .font(.caption)
-                    .multilineTextAlignment(.center)
-                    .frame(width: 300)
-                Spacer()
-                    .frame(height: 10)
-                Button(action: {
-                    load()
-                }) {
-                    Text("\(Image(systemName: "arrow.clockwise")) Refresh")
-                        .foregroundColor(.blue)
-                        .font(.caption)
-                }
-            }
-            .offset(y: -40)
-            .foregroundColor(.secondary)
         }
     }
 }

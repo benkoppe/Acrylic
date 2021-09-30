@@ -26,6 +26,7 @@
 		B507F04D26E9EAAB00861CEE /* ReadSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04C26E9EAAB00861CEE /* ReadSize.swift */; };
 		B507F04F26E9EFDD00861CEE /* ReadSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F04C26E9EAAB00861CEE /* ReadSize.swift */; };
 		B507F05126EA929900861CEE /* MeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F05026EA929900861CEE /* MeView.swift */; };
+		B51547C927054F0C00AE5C3B /* CanvasAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A920E226EF439200A71336 /* CanvasAPI.swift */; };
 		B51D0B2E27002A8F0098A3FD /* AssignmentWidgetIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B5ACC118270026AD009A8E69 /* AssignmentWidgetIntent.intentdefinition */; };
 		B51D0B2F2700342D0098A3FD /* AssignmentWidgetIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B5ACC118270026AD009A8E69 /* AssignmentWidgetIntent.intentdefinition */; };
 		B51D0B3A27004A0A0098A3FD /* WhatsNewKit in Frameworks */ = {isa = PBXBuildFile; productRef = B51D0B3927004A0A0098A3FD /* WhatsNewKit */; };
@@ -552,6 +553,7 @@
 				B51D0B2E27002A8F0098A3FD /* AssignmentWidgetIntent.intentdefinition in Sources */,
 				B507F02B26E3E15500861CEE /* AssignmentWidget.swift in Sources */,
 				B507F03B26E3E26400861CEE /* Color-Extensions.swift in Sources */,
+				B51547C927054F0C00AE5C3B /* CanvasAPI.swift in Sources */,
 				B507F03E26E3E26A00861CEE /* View-Extensions.swift in Sources */,
 				B507F04526E409D700861CEE /* URL-Extensions.swift in Sources */,
 			);

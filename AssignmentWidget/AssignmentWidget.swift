@@ -13,8 +13,6 @@ import Intents
 struct Provider: IntentTimelineProvider {
     @AppStorage("auth", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var auth: String = ""
     @AppStorage("prefixes", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var prefixes: [String] = []
-    @ObservedObject var courseArray = CourseArray()
-    @ObservedObject var hiddenAssignments = AssignmentArray(key: "hiddenAssignments")
     
     func placeholder(in context: Context) -> Entry {
         return Entry(date: Date(), result: .success(Assignment.sampleAssignments()), exactHeaders: false)
@@ -22,36 +20,9 @@ struct Provider: IntentTimelineProvider {
     
     func getSnapshot(for configuration: AssignmentWidgetConfigurationIntent, in context: Context, completion: @escaping (Entry) -> Void) {
         if !context.isPreview {
-            var fetchedPrefixes: [String] = []
-            var fetchedAssignments: [Assignment] = []
-            
-            fetchAssignments() { result in
-                switch result {
-                case .success((let prefix, let assignments)):
-                    fetchedPrefixes.append(prefix)
-                    
-                    for assignment in assignments {
-                        if let newAssignment = createAssignment(assignment) {
-                            if !hiddenAssignments.assignments.contains(where: { $0.name == newAssignment.name && $0.url == newAssignment.url }) {
-                                if configuration.showLate?.boolValue ?? false {
-                                    fetchedAssignments.append(newAssignment)
-                                } else if newAssignment.due > Date() {
-                                    fetchedAssignments.append(newAssignment)
-                                }
-                            }
-                        }
-                    }
-                    
-                    if fetchedPrefixes.sorted() == prefixes.sorted() {
-                        fetchedAssignments.sort()
-                        let entry = Entry(date: Date(), result: Result<[Assignment], FetchError>.success(fetchedAssignments), exactHeaders: configuration.exactHeaders?.boolValue ?? false)
-                        completion(entry)
-                    }
-                    
-                case .failure(let error):
-                    let entry = Entry(date: Date(), result: Result<[Assignment], FetchError>.failure(error), exactHeaders: configuration.exactHeaders?.boolValue ?? false)
-                    completion(entry)
-                }
+            Task {
+                let entry = await loadEntry(configuration: configuration)
+                completion(entry)
             }
         } else {
             let entry = Entry(date: Date(), result: .success(Assignment.sampleAssignments()), exactHeaders: configuration.exactHeaders?.boolValue ?? false)
@@ -60,111 +31,43 @@ struct Provider: IntentTimelineProvider {
     }
     
     func getTimeline(for configuration: AssignmentWidgetConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
-        let nextUpdateDate = Calendar.current.date(byAdding: .second, value: 1, to: Date())!
-        
         if !context.isPreview {
-            var fetchedPrefixes: [String] = []
-            var fetchedAssignments: [Assignment] = []
-            
-            fetchAssignments() { result in
-                switch result {
-                case .success((let prefix, let assignments)):
-                    fetchedPrefixes.append(prefix)
-                    
-                    for assignment in assignments {
-                        if let newAssignment = createAssignment(assignment) {
-                            if !hiddenAssignments.assignments.contains(where: { $0.name == newAssignment.name && $0.url == newAssignment.url }) {
-                                if configuration.showLate?.boolValue ?? false {
-                                    fetchedAssignments.append(newAssignment)
-                                } else if newAssignment.due > Date() {
-                                    fetchedAssignments.append(newAssignment)
-                                }
-                            }
-                        }
-                    }
-                    
-                    if fetchedPrefixes.sorted() == prefixes.sorted() {
-                        fetchedAssignments.sort()
-                        let entry = Entry(date: Date(), result: Result<[Assignment], FetchError>.success(fetchedAssignments), exactHeaders: configuration.exactHeaders?.boolValue ?? false)
-                        let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
-                        completion(timeline)
-                    }
-                    
-                case .failure(let error):
-                    let entry = Entry(date: Date(), result: Result<[Assignment], FetchError>.failure(error), exactHeaders: configuration.exactHeaders?.boolValue ?? false)
-                    let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
-                    completion(timeline)
-                }
+            Task {
+                let entry = await loadEntry(configuration: configuration)
+                let timeline = Timeline(entries: [entry], policy: .atEnd)
+                completion(timeline)
             }
         } else {
             let entry = Entry(date: Date(), result: .success(Assignment.sampleAssignments()), exactHeaders: configuration.exactHeaders?.boolValue ?? false)
-            let timeline = Timeline(entries: [entry], policy: .after(nextUpdateDate))
+            let timeline = Timeline(entries: [entry], policy: .atEnd)
             completion(timeline)
         }
-        
     }
     
-    func fetchAssignments(completion: @escaping (Result<(prefix: String, assignments: [TodoAssignment]), FetchError>) -> Void) {
-        for prefix in prefixes {
-            let urlString = "https://\(prefix).instructure.com/api/v1/users/self/todo?per_page=100"
-            guard let url = URL(string: urlString) else {
-                print("Bad URL: \(urlString)")
-                completion(.failure(.badURL))
-                return
-            }
-            var request = URLRequest(url: url)
-            let auth = auth
-            request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
-            
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                var fetchedAssignments: [TodoAssignment] = []
-                
-                if let response = response, let httpResponse = response as? HTTPURLResponse {
-                    if httpResponse.statusCode == 401 {
-                        completion(.failure(.noAuth))
-                    }
-                    if httpResponse.statusCode == 404 {
-                        completion(.failure(.badPrefix))
-                    }
-                }
-                
-                if let data = data {
-                    let decoder = JSONDecoder()
-                    if let list = try? decoder.decode(TodoList.self, from: data) {
-                        for item in list {
-                            if let assignment = item.assignment {
-                                fetchedAssignments.append(assignment)
-                            }
+    func loadEntry(configuration: AssignmentWidgetConfigurationIntent) async -> Entry {
+        do {
+            let hiddenAssignments = AssignmentArray(key: "hiddenAssignments")
+            let todoAssignments = try await asyncFetchAssignments(auth: auth, prefixes: prefixes)
+            var fetchedAssignments: [Assignment] = []
+            for assignment in todoAssignments {
+                if let newAssignment = createAssignment(courseArray: CourseArray(), assignment) {
+                    if !hiddenAssignments.assignments.contains(where: { $0.name == newAssignment.name && $0.url == newAssignment.url }) {
+                        if configuration.showLate?.boolValue ?? false {
+                            fetchedAssignments.append(newAssignment)
+                        } else if newAssignment.due > Date() {
+                            fetchedAssignments.append(newAssignment)
                         }
-                        
-                        completion(.success((prefix: prefix, assignments: fetchedAssignments)))
                     }
-                } else {
-                    completion(.failure(.badLoad))
                 }
-            }.resume()
-        }
-    }
-    
-    func createAssignment(_ todoAssignment: TodoAssignment) -> Assignment? {
-        var id: Int?
-        var name: String?
-        var order: Int?
-        var color: Color?
-        for course in courseArray.courses {
-            if course.code == todoAssignment.courseID {
-                id = course.code
-                name = course.name
-                order = course.order
-                color = course.color
-                break
             }
+            
+            fetchedAssignments.sort()
+            let entry = Entry(date: Date(), result: Result<[Assignment], FetchError>.success(fetchedAssignments), exactHeaders: configuration.exactHeaders?.boolValue ?? false)
+            return entry
+        } catch {
+            let entry = Entry(date: Date(), result: Result<[Assignment], FetchError>.failure(error as? FetchError ?? .badLoad), exactHeaders: configuration.exactHeaders?.boolValue ?? false)
+            return entry
         }
-        guard let courseID = id, let courseName = name, let courseOrder = order, let courseColor = color else { return nil }
-        guard let url = URL(string: todoAssignment.htmlURL) else { return nil }
-        guard let due = ISO8601DateFormatter().date(from: todoAssignment.dueAt) else { return nil }
-        
-        return Assignment(name: todoAssignment.name, due: due, courseID: courseID, courseName: courseName, courseOrder: courseOrder, url: url, color: courseColor)
     }
 }
 
@@ -190,7 +93,7 @@ struct Assignment_WidgetEntryView: View {
             if assignments.count > 0 {
                 successView(assignments: assignments, exactHeaders: entry.exactHeaders)
             } else {
-                Text("No assignments!\n\nIf you just downloaded the app, it may need a bit to update this widget.")
+                Text("No assignments!")
                     .padding()
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
@@ -211,7 +114,6 @@ struct Assignment_WidgetEntryView: View {
                         .multilineTextAlignment(.center)
                         .frame(width: 300)
                 }
-                .offset(y: -40)
                 .foregroundColor(.secondary)
             }
         }
@@ -500,6 +402,7 @@ struct AssignmentWidget: Widget {
             Assignment_WidgetEntryView(entry: entry)
                 .preferredColorScheme(.dark)
                 .colorScheme(.dark)
+                .widgetURL(URL(string: "widget://")!)
         }
         .configurationDisplayName("Assignments")
         .description("View your upcoming assignments")

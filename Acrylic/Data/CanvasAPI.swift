@@ -8,62 +8,27 @@
 import Foundation
 import SwiftUI
 
-func fetchAssignments(auth: String, prefixes: [String], completion: @escaping (Result<(prefix: String, assignments: [TodoAssignment]), FetchError>) -> Void) {
-    for prefix in prefixes {
-        let urlString = "https://\(prefix).instructure.com/api/v1/users/self/todo?per_page=100"
-        guard let url = URL(string: urlString) else {
-            print("Bad URL: \(urlString)")
-            completion(.failure(.badURL))
-            return
-        }
-        var request = URLRequest(url: url)
-        let auth = auth
-        request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            var fetchedAssignments: [TodoAssignment] = []
-            
-            if let response = response, let httpResponse = response as? HTTPURLResponse {
-                if httpResponse.statusCode == 401 {
-                    completion(.failure(.noAuth))
-                }
-                if httpResponse.statusCode == 404 {
-                    completion(.failure(.badPrefix))
-                }
-            }
-            
-            if let data = data {
-                let decoder = JSONDecoder()
-                if let list = try? decoder.decode(TodoList.self, from: data) {
-                    for item in list {
-                        if let assignment = item.assignment {
-                            fetchedAssignments.append(assignment)
-                        }
-                    }
-                    
-                    completion(.success((prefix: prefix, assignments: fetchedAssignments)))
-                }
-            } else {
-                completion(.failure(.badLoad))
-            }
-        }.resume()
-    }
-    if prefixes.isEmpty {
-        completion(.failure(.noPrefixes))
-        return
-    }
+enum FetchError: Error {
+    case badURL, noAuth, badLoad, noPrefixes, badPrefix
 }
 
 func asyncFetchAssignments(auth: String, prefixes: [String]) async throws -> [TodoAssignment] {
     var fetchedAssignments: [TodoAssignment] = []
-    
+
+    if prefixes.isEmpty {
+        throw FetchError.noPrefixes
+    }
+
     for prefix in prefixes {
         guard let url = URL(string: "https://\(prefix).instructure.com/api/v1/users/self/todo?per_page=100") else {
             throw FetchError.badURL
         }
-        
-        let (data, response) = try await URLSession.shared.data(from: url)
-        
+
+        var request = URLRequest(url: url)
+        request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
         if let response = response as? HTTPURLResponse {
             if response.statusCode == 401 {
                 throw FetchError.noAuth
@@ -72,18 +37,17 @@ func asyncFetchAssignments(auth: String, prefixes: [String]) async throws -> [To
                 throw FetchError.badPrefix
             }
         }
-        
+
         if let list = try? JSONDecoder().decode(TodoList.self, from: data) {
-        
             for item in list {
                 if let assignment = item.assignment {
                     fetchedAssignments.append(assignment)
                 }
             }
-            
+
         }
     }
-    
+
     return fetchedAssignments
 }
 
@@ -108,46 +72,72 @@ func createAssignment(courseArray: CourseArray, _ todoAssignment: TodoAssignment
     return Assignment(name: todoAssignment.name, due: due, courseID: courseID, courseName: courseName, courseOrder: courseOrder, url: url, color: courseColor)
 }
 
-func fetchCourses(auth: String, prefixes: [String], completion: @escaping (Result<(prefix: String, courses: [CanvasCourse]), FetchError>) -> Void) {
+func asyncFetchCourses(auth: String, prefixes: [String]) async throws -> [CanvasCourse] {
+    var fetchedCourses: [CanvasCourse] = []
+    
+    if prefixes.isEmpty {
+        throw FetchError.noPrefixes
+    }
+    
     for prefix in prefixes {
-        let urlString = "https://\(prefix).instructure.com/api/v1/courses?per_page=100&include[]=term&include[]=favorites&include[]=teachers"
-        guard let url = URL(string: urlString) else {
-            print("Bad URL: \(urlString)")
-            completion(.failure(.badURL))
-            return
+        guard let url = URL(string: "https://\(prefix).instructure.com/api/v1/courses?per_page=100&include[]=term&include[]=favorites&include[]=teachers") else {
+            throw FetchError.badURL
         }
+        
         var request = URLRequest(url: url)
-        let auth = auth
         request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            var fetchedCourses: [CanvasCourse] = []
-            
-            if let response = response, let httpResponse = response as? HTTPURLResponse {
-                if httpResponse.statusCode == 401 {
-                    completion(.failure(.noAuth))
-                }
-                if httpResponse.statusCode == 404 {
-                    completion(.failure(.badPrefix))
-                }
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        if let response = response as? HTTPURLResponse {
+            if response.statusCode == 401 {
+                throw FetchError.noAuth
             }
-            
-            if let data = data {
-                let decoder = JSONDecoder()
-                if let list = try? decoder.decode([CanvasCourse].self, from: data) {
-                    for course in list {
-                        fetchedCourses.append(course)
-                    }
-                    
-                    completion(.success((prefix: prefix, courses: fetchedCourses)))
-                }
-            } else {
-                completion(.failure(.badLoad))
+            if response.statusCode == 404 {
+                throw FetchError.badPrefix
             }
-        }.resume()
+        }
+        
+        if let list = try? JSONDecoder().decode([CanvasCourse].self, from: data) {
+            for course in list {
+                fetchedCourses.append(course)
+            }
+        }
     }
+    
+    return fetchedCourses
+}
+
+func asyncLoadUser(auth: String, prefixes: [String]) async throws -> [CanvasUser] {
+    var fetchedUsers: [CanvasUser] = []
+    
     if prefixes.isEmpty {
-        completion(.failure(.noPrefixes))
-        return
+        throw FetchError.noPrefixes
     }
+    
+    for prefix in prefixes {
+        guard let url = URL(string: "https://\(prefix).instructure.com/api/v1/users/self/profile") else {
+            throw FetchError.badURL
+        }
+        
+        var request = URLRequest(url: url)
+        request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        if let response = response as? HTTPURLResponse {
+            if response.statusCode == 401 {
+                throw FetchError.noAuth
+            }
+            if response.statusCode == 404 {
+                throw FetchError.badPrefix
+            }
+        }
+        
+        if let user = try? JSONDecoder().decode(CanvasUser.self, from: data) {
+            fetchedUsers.append(user)
+        }
+    }
+    
+    return fetchedUsers
 }

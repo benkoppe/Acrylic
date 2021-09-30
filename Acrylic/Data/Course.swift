@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 
 class CourseArray: ObservableObject {
     var key: String
@@ -34,6 +35,7 @@ class CourseArray: ObservableObject {
     func save() {
         let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
         defaults?.setValue(Course.getData(array: courses), forKey: key)
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }
 

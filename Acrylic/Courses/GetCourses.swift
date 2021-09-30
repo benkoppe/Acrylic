@@ -46,9 +46,10 @@ struct GetCourses: View {
                 }
             }
         }
-        .onAppear(perform: loadCourses)
+        .task {
+            await load()
+        }
     }
-    
     
     struct LoadingView: View {
         var body: some View {
@@ -121,60 +122,50 @@ struct GetCourses: View {
         }
     }
     
-    func loadCourses() {
+    func load() async {
         fetchState = .loading
-        var fetchedPrefixes: [String] = []
-        var fetchedCourses: [CanvasCourse] = []
         
-        fetchCourses(auth: auth, prefixes: prefixes) { result in
-            var thisFetchedCourses: [CanvasCourse] = []
+        do {
+            let canvasCourses = try await asyncFetchCourses(auth: auth, prefixes: prefixes)
+            var fetchedCourses: [CanvasCourse] = []
             
-            switch result {
-            case .success((let prefix, let courses)):
-                fetchedPrefixes.append(prefix)
-                for course in courses {
-                    if let term = course.term {
-                        if let start = term.startDate, let end = term.endDate, let startDate = ISO8601DateFormatter().date(from: start), let endDate = ISO8601DateFormatter().date(from: end) {
-                            if Date() > startDate && Date() < endDate {
-                                thisFetchedCourses.append(course)
-                            }
+            for course in canvasCourses {
+                if let term = course.term {
+                    if let start = term.startDate, let end = term.endDate, let startDate = ISO8601DateFormatter().date(from: start), let endDate = ISO8601DateFormatter().date(from: end) {
+                        if Date() > startDate && Date() < endDate {
+                            fetchedCourses.append(course)
                         }
                     }
                 }
-                if thisFetchedCourses.isEmpty {
-                    for course in courses {
-                        if course.isFavorite ?? false {
-                            thisFetchedCourses.append(course)
-                        }
-                    }
-                }
-                if thisFetchedCourses.isEmpty {
-                    for course in courses {
-                        thisFetchedCourses.append(course)
-                    }
-                }
-                
-                fetchedCourses += thisFetchedCourses
-                
-                if fetchedPrefixes.sorted() == prefixes.sorted() {
-                    var removeIndices = IndexSet()
-                    for enumCourse in fetchedCourses.enumerated() {
-                        let code = String(enumCourse.element.id)
-                        if code.hasPrefix("179010000000") {
-                            removeIndices.update(with: enumCourse.offset)
-                        }
-                    }
-                    fetchedCourses.remove(atOffsets: removeIndices)
-                    
-                    self.canvasCourses = fetchedCourses
-                    fetchState = .success
-                }
-                
-            case .failure(let error):
-                self.fetchState = .failure
-                print("Error: \(error.localizedDescription)")
-                return
             }
+            if fetchedCourses.isEmpty {
+                for course in canvasCourses {
+                    if course.isFavorite ?? false {
+                        fetchedCourses.append(course)
+                    }
+                }
+            }
+            if fetchedCourses.isEmpty {
+                for course in canvasCourses {
+                    fetchedCourses.append(course)
+                }
+            }
+            
+            var removeIndices = IndexSet()
+            for enumCourse in fetchedCourses.enumerated() {
+                let code = String(enumCourse.element.id)
+                if code.hasPrefix("179010000000") {
+                    removeIndices.update(with: enumCourse.offset)
+                }
+            }
+            fetchedCourses.remove(atOffsets: removeIndices)
+            
+            self.canvasCourses = fetchedCourses
+            fetchState = .success
+            
+        } catch {
+            self.fetchState = .failure
+            print("course error: \(error)")
         }
     }
     

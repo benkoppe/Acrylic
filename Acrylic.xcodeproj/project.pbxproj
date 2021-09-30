@@ -47,9 +47,9 @@
 		B54E5EB126EBE07A0076C55C /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = B54E5EB026EBE07A0076C55C /* Introspect */; };
 		B55564982705FE3C00E059B1 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55564972705FE3C00E059B1 /* PreferencesView.swift */; };
 		B555649A2705FF1600E059B1 /* CanvasSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55564992705FF1600E059B1 /* CanvasSettingsView.swift */; };
+		B57554E227063EE6005548B1 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B57A2C5E26D6B3800047C6E2 /* Info.plist */; };
 		B57A2C5126D6B37F0047C6E2 /* AcrylicApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5026D6B37F0047C6E2 /* AcrylicApp.swift */; };
 		B57A2C5326D6B37F0047C6E2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5226D6B37F0047C6E2 /* ContentView.swift */; };
-		B57A2C5526D6B3800047C6E2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B57A2C5426D6B3800047C6E2 /* Assets.xcassets */; };
 		B57A2C5826D6B3800047C6E2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B57A2C5726D6B3800047C6E2 /* Preview Assets.xcassets */; };
 		B57A2C6826D6B3800047C6E2 /* Assignment_TrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C6726D6B3800047C6E2 /* Assignment_TrackerTests.swift */; };
 		B57A2C7326D6B3800047C6E2 /* Assignment_TrackerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C7226D6B3800047C6E2 /* Assignment_TrackerUITests.swift */; };
@@ -524,7 +524,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B57A2C5826D6B3800047C6E2 /* Preview Assets.xcassets in Resources */,
-				B57A2C5526D6B3800047C6E2 /* Assets.xcassets in Resources */,
+				B57554E227063EE6005548B1 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

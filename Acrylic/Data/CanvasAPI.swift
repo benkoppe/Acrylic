@@ -12,134 +12,100 @@ enum FetchError: Error {
     case badURL, noAuth, badLoad, noPrefixes, badPrefix
 }
 
-func asyncFetchAssignments(auth: String, prefixes: [String]) async throws -> [TodoAssignment] {
-    var fetchedAssignments: [TodoAssignment] = []
-
-    if prefixes.isEmpty {
-        throw FetchError.noPrefixes
-    }
-
-    for prefix in prefixes {
-        guard let url = URL(string: "https://\(prefix).instructure.com/api/v1/users/self/todo?per_page=100") else {
-            throw FetchError.badURL
+private func asyncFetch<T: Codable>(request: URLRequest) async throws -> T {
+    let (data, response) = try await URLSession.shared.data(for: request)
+    
+    if let response = response as? HTTPURLResponse {
+        if response.statusCode == 401 {
+            throw FetchError.noAuth
         }
-
-        var request = URLRequest(url: url)
-        request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
-
-        let (data, response) = try await URLSession.shared.data(for: request)
-
-        if let response = response as? HTTPURLResponse {
-            if response.statusCode == 401 {
-                throw FetchError.noAuth
-            }
-            if response.statusCode == 404 {
-                throw FetchError.badPrefix
-            }
-        }
-
-        if let list = try? JSONDecoder().decode(TodoList.self, from: data) {
-            for item in list {
-                if let assignment = item.assignment {
-                    fetchedAssignments.append(assignment)
-                }
-            }
-
+        if response.statusCode == 404 {
+            throw FetchError.badPrefix
         }
     }
-
-    return fetchedAssignments
+    
+    guard let fetch = try? JSONDecoder().decode(T.self, from: data)  else {
+        throw FetchError.badLoad
+    }
+    
+    return fetch
 }
 
-func createAssignment(courseArray: CourseArray, _ todoAssignment: TodoAssignment) -> Assignment? {
-    var id: Int?
-    var name: String?
-    var order: Int?
-    var color: Color?
-    for course in courseArray.courses {
-        if course.code == todoAssignment.courseID {
-            id = course.code
-            name = course.name
-            order = course.order
-            color = course.color
-            break
+private func asyncFetchGroup<T: Codable & RangeReplaceableCollection>(auth: String, prefixes: [String], fetch: @escaping (String, String) async throws -> T) async throws -> T {
+    return try await withThrowingTaskGroup(of: T.self) { group in
+        var fetchGroup: T = [] as! T
+        
+        if prefixes.isEmpty {
+            throw FetchError.noPrefixes
+        }
+        
+        for prefix in prefixes {
+            group.addTask {
+                return try await fetch(auth, prefix)
+            }
+            
+            for try await arr in group {
+                fetchGroup += arr
+            }
+        }
+        
+        return fetchGroup
+    }
+}
+
+func asyncFetchAssignments(auth: String, prefixes: [String]) async throws -> [TodoAssignment] {
+    return try await asyncFetchGroup(auth: auth, prefixes: prefixes, fetch: asyncFetchAssignments)
+}
+
+private func asyncFetchAssignments(auth: String, prefix: String) async throws -> [TodoAssignment] {
+    guard let url = URL(string: "https://\(prefix).instructure.com/api/v1/users/self/todo?per_page=100") else {
+        throw FetchError.badURL
+    }
+    
+    var request = URLRequest(url: url)
+    request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
+    
+    let todoList: TodoList = try await asyncFetch(request: request)
+    
+    var fetch: [TodoAssignment] = []
+    
+    for item in todoList {
+        if let assignment = item.assignment {
+            fetch.append(assignment)
         }
     }
-    guard let courseID = id, let courseName = name, let courseOrder = order, let courseColor = color else { return nil }
-    guard let url = URL(string: todoAssignment.htmlURL) else { return nil }
-    guard let due = ISO8601DateFormatter().date(from: todoAssignment.dueAt) else { return nil }
     
-    return Assignment(name: todoAssignment.name, due: due, courseID: courseID, courseName: courseName, courseOrder: courseOrder, url: url, color: courseColor)
+    return fetch
 }
 
 func asyncFetchCourses(auth: String, prefixes: [String]) async throws -> [CanvasCourse] {
-    var fetchedCourses: [CanvasCourse] = []
-    
-    if prefixes.isEmpty {
-        throw FetchError.noPrefixes
+    return try await asyncFetchGroup(auth: auth, prefixes: prefixes, fetch: asyncFetchCourses)
+}
+
+private func asyncFetchCourses(auth: String, prefix: String) async throws -> [CanvasCourse] {
+    guard let url = URL(string: "https://\(prefix).instructure.com/api/v1/courses?per_page=100&include[]=term&include[]=favorites&include[]=teachers") else {
+        throw FetchError.badURL
     }
     
-    for prefix in prefixes {
-        guard let url = URL(string: "https://\(prefix).instructure.com/api/v1/courses?per_page=100&include[]=term&include[]=favorites&include[]=teachers") else {
-            throw FetchError.badURL
-        }
-        
-        var request = URLRequest(url: url)
-        request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
-        
-        let (data, response) = try await URLSession.shared.data(for: request)
-        
-        if let response = response as? HTTPURLResponse {
-            if response.statusCode == 401 {
-                throw FetchError.noAuth
-            }
-            if response.statusCode == 404 {
-                throw FetchError.badPrefix
-            }
-        }
-        
-        if let list = try? JSONDecoder().decode([CanvasCourse].self, from: data) {
-            for course in list {
-                fetchedCourses.append(course)
-            }
-        }
-    }
+    var request = URLRequest(url: url)
+    request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
     
-    return fetchedCourses
+    return try await asyncFetch(request: request)
 }
 
 func asyncLoadUser(auth: String, prefixes: [String]) async throws -> [CanvasUser] {
-    var fetchedUsers: [CanvasUser] = []
-    
-    if prefixes.isEmpty {
-        throw FetchError.noPrefixes
+    return try await asyncFetchGroup(auth: auth, prefixes: prefixes, fetch: asyncLoadUser)
+}
+
+private func asyncLoadUser(auth: String, prefix: String) async throws -> [CanvasUser] {
+    guard let url = URL(string: "https://\(prefix).instructure.com/api/v1/users/self/profile") else {
+        throw FetchError.badURL
     }
     
-    for prefix in prefixes {
-        guard let url = URL(string: "https://\(prefix).instructure.com/api/v1/users/self/profile") else {
-            throw FetchError.badURL
-        }
-        
-        var request = URLRequest(url: url)
-        request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
-        
-        let (data, response) = try await URLSession.shared.data(for: request)
-        
-        if let response = response as? HTTPURLResponse {
-            if response.statusCode == 401 {
-                throw FetchError.noAuth
-            }
-            if response.statusCode == 404 {
-                throw FetchError.badPrefix
-            }
-        }
-        
-        if let user = try? JSONDecoder().decode(CanvasUser.self, from: data) {
-            fetchedUsers.append(user)
-        }
-    }
+    var request = URLRequest(url: url)
+    request.allHTTPHeaderFields = ["Authorization" : "Bearer " + auth]
     
-    return fetchedUsers
+    return [try await asyncFetch(request: request)]
 }
 
 func asyncFetchImage(urlString: String) async throws -> UIImage {

@@ -203,7 +203,7 @@ struct BoardingView: View {
                         }
                         .foregroundColor(.primary)
                         .sheet(isPresented: $editPrefix, onDismiss: { Task { await loadUser() } } ) {
-                            Settings.CanvasSettings.PrefixView(prefixes: $prefixes)
+                            CanvasSettingsView.PrefixView(prefixes: $prefixes)
                         }
                         
                         Button(action: {
@@ -227,7 +227,7 @@ struct BoardingView: View {
                         }
                         .foregroundColor(.primary)
                         .fullScreenCover(isPresented: $editAuth, onDismiss: { Task { await loadUser() } } ) {
-                            Settings.CanvasSettings.AuthView(authCode: $authCode)
+                            CanvasSettingsView.AuthView(authCode: $authCode)
                         }
                 }
                 }

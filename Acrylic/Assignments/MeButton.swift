@@ -36,7 +36,7 @@ struct MeButton: View {
                 .padding([.vertical, .leading])
         }
         .sheet(isPresented: $preferences) {
-            MeSheet(name: "Preferences") { Settings.Preferences() }
+            MeSheet(name: "Preferences") { PreferencesView() }
         }
         .sheet(isPresented: $hidden) {
             HiddenView()

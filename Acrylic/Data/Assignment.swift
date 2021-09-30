@@ -196,3 +196,24 @@ extension Assignment: Codable {
         color = Color(uiColor ?? UIColor.white)
     }
 }
+
+func createAssignment(courseArray: CourseArray, _ todoAssignment: TodoAssignment) -> Assignment? {
+    var id: Int?
+    var name: String?
+    var order: Int?
+    var color: Color?
+    for course in courseArray.courses {
+        if course.code == todoAssignment.courseID {
+            id = course.code
+            name = course.name
+            order = course.order
+            color = course.color
+            break
+        }
+    }
+    guard let courseID = id, let courseName = name, let courseOrder = order, let courseColor = color else { return nil }
+    guard let url = URL(string: todoAssignment.htmlURL) else { return nil }
+    guard let due = ISO8601DateFormatter().date(from: todoAssignment.dueAt) else { return nil }
+    
+    return Assignment(name: todoAssignment.name, due: due, courseID: courseID, courseName: courseName, courseOrder: courseOrder, url: url, color: courseColor)
+}

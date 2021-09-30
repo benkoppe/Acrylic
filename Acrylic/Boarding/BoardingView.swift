@@ -229,7 +229,7 @@ struct BoardingView: View {
                         .fullScreenCover(isPresented: $editAuth, onDismiss: { Task { await loadUser() } } ) {
                             Settings.CanvasSettings.AuthView(authCode: $authCode)
                         }
-                    }
+                }
                 }
                 .frame(height: 150)
                 .introspectTableView { tableView in

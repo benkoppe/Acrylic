@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B50687CA2706406C004A58C9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B57A2C5426D6B3800047C6E2 /* Assets.xcassets */; };
 		B507F00826E2C0F700861CEE /* CanvasStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B507F00726E2C0F600861CEE /* CanvasStructs.swift */; };
 		B507F02726E3E15500861CEE /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B507EFF326E2B6DD00861CEE /* WidgetKit.framework */; };
 		B507F02826E3E15500861CEE /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B507EFF526E2B6DD00861CEE /* SwiftUI.framework */; };
@@ -47,7 +48,6 @@
 		B54E5EB126EBE07A0076C55C /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = B54E5EB026EBE07A0076C55C /* Introspect */; };
 		B55564982705FE3C00E059B1 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55564972705FE3C00E059B1 /* PreferencesView.swift */; };
 		B555649A2705FF1600E059B1 /* CanvasSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55564992705FF1600E059B1 /* CanvasSettingsView.swift */; };
-		B57554E227063EE6005548B1 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B57A2C5E26D6B3800047C6E2 /* Info.plist */; };
 		B57A2C5126D6B37F0047C6E2 /* AcrylicApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5026D6B37F0047C6E2 /* AcrylicApp.swift */; };
 		B57A2C5326D6B37F0047C6E2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57A2C5226D6B37F0047C6E2 /* ContentView.swift */; };
 		B57A2C5826D6B3800047C6E2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B57A2C5726D6B3800047C6E2 /* Preview Assets.xcassets */; };
@@ -466,7 +466,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1300;
 				TargetAttributes = {
 					B507F02526E3E15500861CEE = {
 						CreatedOnToolsVersion = 12.5;
@@ -523,8 +523,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B50687CA2706406C004A58C9 /* Assets.xcassets in Resources */,
 				B57A2C5826D6B3800047C6E2 /* Preview Assets.xcassets in Resources */,
-				B57554E227063EE6005548B1 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

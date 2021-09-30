@@ -141,3 +141,29 @@ func asyncLoadUser(auth: String, prefixes: [String]) async throws -> [CanvasUser
     
     return fetchedUsers
 }
+
+func asyncFetchImage(urlString: String) async throws -> UIImage {
+    guard let url = URL(string: urlString) else {
+        throw FetchError.badURL
+    }
+    
+    let (data, _) = try await URLSession.shared.data(from: url)
+    
+    if let image = UIImage(data: data) {
+        return image
+    }
+    
+    throw FetchError.badLoad
+}
+
+func asyncFetchUserImage(userArray: [CanvasUser]) async -> Data? {
+    for user in userArray {
+        if let avatarURL = user.avatarURL {
+            let pfp = try? await asyncFetchImage(urlString: avatarURL)
+            if let pngData = pfp?.pngData() {
+                return pngData
+            }
+        }
+    }
+    return nil
+}

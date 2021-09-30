@@ -326,7 +326,7 @@ struct AssignmentList: View {
                                     specificDate.toggle()
                                 }
                             } label: {
-                                Text(sortMode == .date ? createDateTitleText(for: assignmentArray[0].due, isSpecific: specificDate) : courseArray.courses[assignmentArray[0].courseOrder].name)
+                                Text(sortMode == .date ? assignmentArray[0].createTitleText(exactHeaders: exactHeaders, isSpecific: specificDate) : courseArray.courses[assignmentArray[0].courseOrder].name)
                                     .foregroundColor(sortMode == .date ? .primary : assignmentArray[0].color)
                                     .font(.system(size: 25, weight: .semibold, design: .rounded))
                                     .padding(.bottom, 7)
@@ -364,40 +364,6 @@ struct AssignmentList: View {
                     cell.separatorInset = .zero
                     cell.clipsToBounds = false
                     cell.layer.borderWidth = 0
-                }
-            }
-            
-            func createDateTitleText(for date: Date, isSpecific: Bool) -> String {
-                let daysBetween = Calendar.current.numberOfDaysBetween(Date(), and: date)
-                
-                var shortFormatter: DateFormatter {
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "EEEE"
-                    return formatter
-                }
-                var formatter: DateFormatter {
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "EEEE, MMM d"
-                    return formatter
-                }
-                
-                if !(exactHeaders && (daysBetween < 0 || daysBetween >= 7)) ? !isSpecific : isSpecific {
-                    switch daysBetween {
-                    case ..<0:
-                        return "\(abs(daysBetween)) Days Ago"
-                    case 0:
-                        return "Today"
-                    case 1:
-                        return "Tomorrow"
-                    case 2..<7:
-                        return shortFormatter.string(from: date)
-                    case 7...:
-                        return "In \(daysBetween) Days"
-                    default:
-                        return formatter.string(from: date)
-                    }
-                } else {
-                    return formatter.string(from: date)
                 }
             }
             
@@ -447,7 +413,7 @@ struct AssignmentList: View {
                                     .padding(.bottom, 1)
                                 
                                 HStack(spacing: 0) {
-                                    Text(sortMode == .date ? timeFormatter.string(from: assignment.due) : createDateText(for: assignment.due))
+                                    Text(sortMode == .date ? timeFormatter.string(from: assignment.due) : assignment.createTitleText(exactHeaders: exactHeaders))
                                         .contrast(0.5)
                                     
                                     Text(" • ")
@@ -468,40 +434,6 @@ struct AssignmentList: View {
                     .buttonStyle(PlainButtonStyle())
                     .fullScreenCover(isPresented: $showSafari) {
                         SafariView(url: assignment.url)
-                    }
-                }
-                
-                func createDateText(for date: Date, isSpecific: Bool = false) -> String {
-                    let daysBetween = Calendar.current.numberOfDaysBetween(Date(), and: date)
-                    
-                    var shortFormatter: DateFormatter {
-                        let formatter = DateFormatter()
-                        formatter.dateFormat = "EEEE"
-                        return formatter
-                    }
-                    var formatter: DateFormatter {
-                        let formatter = DateFormatter()
-                        formatter.dateFormat = "EEEE, MMM d"
-                        return formatter
-                    }
-                    
-                    if !(exactHeaders && (daysBetween < 0 || daysBetween >= 7)) ? !isSpecific : isSpecific {
-                        switch daysBetween {
-                        case ..<0:
-                            return "\(abs(daysBetween)) Days Ago"
-                        case 0:
-                            return "Today"
-                        case 1:
-                            return "Tomorrow"
-                        case 2..<7:
-                            return shortFormatter.string(from: date)
-                        case 7...:
-                            return "In \(daysBetween) Days"
-                        default:
-                            return formatter.string(from: date)
-                        }
-                    } else {
-                        return formatter.string(from: date)
                     }
                 }
             }

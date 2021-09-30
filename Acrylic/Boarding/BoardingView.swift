@@ -202,7 +202,7 @@ struct BoardingView: View {
                             }
                         }
                         .foregroundColor(.primary)
-                        .sheet(isPresented: $editPrefix, onDismiss: loadUser) {
+                        .sheet(isPresented: $editPrefix, onDismiss: { Task { await loadUser() } } ) {
                             Settings.CanvasSettings.PrefixView(prefixes: $prefixes)
                         }
                         
@@ -226,7 +226,7 @@ struct BoardingView: View {
                             }
                         }
                         .foregroundColor(.primary)
-                        .fullScreenCover(isPresented: $editAuth, onDismiss: loadUser) {
+                        .fullScreenCover(isPresented: $editAuth, onDismiss: { Task { await loadUser() } } ) {
                             Settings.CanvasSettings.AuthView(authCode: $authCode)
                         }
                     }
@@ -279,7 +279,9 @@ struct BoardingView: View {
                 }
             }
             .padding()
-            .onAppear { loadUser() }
+            .task {
+                await loadUser()
+            }
             .onChange(of: userFetchState) { value in
                 if !prefixes.isEmpty && authCode != "" && value == .success {
                     withAnimation {
@@ -307,65 +309,26 @@ struct BoardingView: View {
             }
         }
         
-        func loadUser() {
-            self.pfp = nil
+        func loadUser() async {
+            userFetchState = .loading
             let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
-            for prefix in prefixes {
-                userFetchState = .loading
-                let urlString = "https://\(prefix).instructure.com/api/v1/users/self/profile"
-                guard let url = URL(string: urlString) else {
-                    userFetchState = .failure
-                    print("URL Failure")
-                    defaults?.setValue(nil, forKey: "pfp")
-                    return
-                }
-                var request = URLRequest(url: url)
-                request.allHTTPHeaderFields = ["Authorization" : "Bearer " + authCode]
-                URLSession.shared.dataTask(with: request) { data, response, error in
-                    if let response = response, let httpResponse = response as? HTTPURLResponse {
-                        if httpResponse.statusCode == 401 {
-                            userFetchState = .failure
-                            defaults?.setValue(nil, forKey: "pfp")
-                            return
-                        }
-                        if httpResponse.statusCode == 404 {
-                            userFetchState = .failure
-                            defaults?.setValue(nil, forKey: "pfp")
-                            return
-                        }
-                    }
-                    if let data = data {
-                        let decoder = JSONDecoder()
-                        if let list = try? decoder.decode(CanvasUser.self, from: data) {
-                            userName = list.name
-                            if let pfpURLString = list.avatarURL, let pfpURL = URL(string: pfpURLString)  {
-                                fetchImage(url: pfpURL)
-                            }
-                            userFetchState = .success
-                            return
-                        }
-                    } else {
-                        print("Failure")
-                        userFetchState = .failure
-                    }
-                }.resume()
+            var userArray: [CanvasUser] = []
+            
+            do {
+                userArray = try await asyncLoadUser(auth: authCode, prefixes: prefixes)
+                userFetchState = .success
+            } catch {
+                print("user error \(error)")
+                userFetchState = .failure
             }
-            return
-        }
-        
-        func fetchImage(url: URL) {
-            URLSession.shared.dataTask(with: url) { data, response, error in
-                guard let data = data else { return }
-                let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
-                if let pfp = UIImage(data: data) {
-                    if let pngData = pfp.pngData() {
-                        defaults?.setValue(pngData, forKey: "pfp")
-                    } else {
-                        defaults?.setValue(nil, forKey: "pfp")
-                    }
-                    self.pfp = pfp
-                }
-            }.resume()
+            
+            if let pngData = await asyncFetchUserImage(userArray: userArray) {
+                self.pfp = UIImage(data: pngData)
+                defaults?.setValue(pngData, forKey: "pfp")
+                return
+            }
+            
+            defaults?.setValue(nil, forKey: "pfp")
         }
     }
 }

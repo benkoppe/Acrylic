@@ -52,6 +52,45 @@ struct Assignment: Comparable, Equatable, Hashable, Identifiable {
     let url: URL
     let color: Color
     
+    func createTitleText(exactHeaders: Bool, isSpecific: Bool = false) -> String {
+        let date = self.due
+        let daysBetween = Calendar.current.numberOfDaysBetween(Date(), and: date)
+        
+        var shortFormatter: DateFormatter {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "EEEE"
+            return formatter
+        }
+        var formatter: DateFormatter {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "EEEE, MMM d"
+            return formatter
+        }
+        
+        if !(exactHeaders && (daysBetween < 0 || daysBetween >= 7)) ? !isSpecific : isSpecific {
+            switch daysBetween {
+            case ..<(-1):
+                return "\(abs(daysBetween)) Days Ago"
+            case -1:
+                return "1 Day Ago"
+            case 0:
+                return "Today"
+            case 1:
+                return "Tomorrow"
+            case 2..<7:
+                return shortFormatter.string(from: date)
+            case 7:
+                return "In 1 Day"
+            case 8...:
+                return "In \(daysBetween) Days"
+            default:
+                return formatter.string(from: date)
+            }
+        } else {
+            return formatter.string(from: date)
+        }
+    }
+    
     static func < (lhs: Assignment, rhs: Assignment) -> Bool {
         if lhs.due.roundMinuteDown() != rhs.due.roundMinuteDown() {
             return lhs.due < rhs.due

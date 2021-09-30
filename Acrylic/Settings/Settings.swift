@@ -231,35 +231,23 @@ struct Settings: View {
         func loadUser() async {
             userFetchState = .loading
             let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
+            var userArray: [CanvasUser] = []
             
             do {
-                let _ = try await asyncLoadUser(auth: authCode, prefixes: prefixes)
+                userArray = try await asyncLoadUser(auth: authCode, prefixes: prefixes)
                 userFetchState = .success
-                //fetch pfp image
             } catch {
                 print("user error \(error)")
                 userFetchState = .failure
-                defaults?.setValue(nil, forKey: "pfp")
             }
-        }
-        
-        func fetchImage(users: [CanvasUser]) {
             
-        }
-        
-        func fetchImage(url: URL) {
-            URLSession.shared.dataTask(with: url) { data, response, error in
-                guard let data = data else { return }
-                let defaults = UserDefaults.init(suiteName: "group.com.benk.acrylic")
-                if let pfp = UIImage(data: data) {
-                    if let pngData = pfp.pngData() {
-                        defaults?.setValue(pngData, forKey: "pfp")
-                    } else {
-                        defaults?.setValue(nil, forKey: "pfp")
-                    }
-                    self.pfp = pfp
-                }
-            }.resume()
+            if let pngData = await asyncFetchUserImage(userArray: userArray) {
+                self.pfp = UIImage(data: pngData)
+                defaults?.setValue(pngData, forKey: "pfp")
+                return
+            }
+            
+            defaults?.setValue(nil, forKey: "pfp")
         }
         
         struct AuthView: View {

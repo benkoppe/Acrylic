@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Introspect
+import BetterSafariView
 
 enum SortMode: String, CaseIterable, Equatable {
     case date
@@ -432,7 +433,7 @@ struct AssignmentList: View {
                         .offset(x: 10, y: 0)
                     }
                     .buttonStyle(PlainButtonStyle())
-                    .fullScreenCover(isPresented: $showSafari) {
+                    .safariView(isPresented: $showSafari) {
                         SafariView(url: assignment.url)
                     }
                 }

@@ -171,7 +171,6 @@ struct BoardingView: View {
                 Text("Setup")
                     .font(.system(size: 40))
                     .bold()
-                    //.gradientForeground(colors: [.red, .orange, .yellow, .green, .blue, .purple])
                 
                 Text("A prefix and auth code are required to access Canvas")
                     .foregroundColor(.secondary)

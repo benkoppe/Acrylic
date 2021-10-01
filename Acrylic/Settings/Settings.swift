@@ -44,11 +44,11 @@ struct Settings: View {
             Section {
                 
                 SettingsGroup(name: "Contact", systemName: "at", background: .blue) {
-                    Contact()
+                    ContactView()
                 }
                 
                 SettingsGroup(name: "Licenses", systemName: "text.justifyleft", background: Color("brown")) {
-                    Licenses()
+                    LicensesView()
                 }
             }
         }
@@ -140,133 +140,6 @@ struct Settings: View {
                             }
                         }
                     }
-                }
-            }
-        }
-    }
-    
-    struct Contact: View {
-        @State private var contactMailData = ComposeMailData(subject: "[Acrylic \(Bundle.main.releaseVersionNumber ?? "VERSION NOT FOUND") (\(Bundle.main.buildVersionNumber ?? "BUILD NOT FOUND"))]", recipients: ["Koppe.Development@gmail.com"], message: "", attachments: [])
-        @State private var showContactMail = false
-        
-        var body: some View {
-            Section {
-                Button {
-                    showContactMail = true
-                } label: {
-                    HStack {
-                        Text("Email")
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 13, weight: .bold))
-                            .foregroundColor(.tertiaryLabel)
-                    }
-                    .foregroundColor(.primary)
-                }
-                .sheet(isPresented: $showContactMail) {
-                    MailView(data: $contactMailData) { result in
-                        print(result)
-                    }
-                }
-                
-                Button {
-                    let screenName =  "ben.koppe"
-                    
-                    let appURL = URL(string:  "instagram://user?username=\(screenName)")
-                    let webURL = URL(string:  "https://instagram.com/\(screenName)")
-                    
-                    if let appURL = appURL, UIApplication.shared.canOpenURL(appURL) {
-                        UIApplication.shared.open(appURL, options: [:], completionHandler: nil)
-                    } else {
-                        if let webURL = webURL {
-                            UIApplication.shared.open(webURL, options: [:], completionHandler: nil)
-                        } else {
-                            print("Could not open instagram.")
-                        }
-                    }
-                } label: {
-                    HStack {
-                        Text("Instagram")
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 13, weight: .bold))
-                            .foregroundColor(.tertiaryLabel)
-                    }
-                    .foregroundColor(.primary)
-                }
-            } header: {
-                Text("Contact")
-            }
-        }
-    }
-    
-    struct Licenses: View {
-        @Environment(\.presentationMode) var presentationMode
-        
-        var body: some View {
-            Section {
-                Link(destination: URL(string: "https://github.com/instructure/canvas-lms/blob/master/LICENSE")!) {
-                    HStack {
-                        Text("Canvas LMS")
-                            .foregroundColor(.primary)
-                        Spacer()
-                        Text("License")
-                            .font(.callout)
-                    }
-                }
-                
-                Section {
-                    Link(destination: URL(string: "https://github.com/siteline/SwiftUI-Introspect/blob/master/LICENSE")!) {
-                        HStack {
-                            Text("Introspect for SwiftUI")
-                                .foregroundColor(.primary)
-                            Spacer()
-                            Text("License")
-                                .font(.callout)
-                        }
-                    }
-                    Link(destination: URL(string: "https://github.com/onevcat/RandomColorSwift/blob/master/LICENSE")!) {
-                        HStack {
-                            Text("Random Color Swift")
-                                .foregroundColor(.primary)
-                            Spacer()
-                            Text("License")
-                                .font(.callout)
-                        }
-                    }
-                    Link(destination: URL(string: "https://github.com/SvenTiigi/WhatsNewKit/blob/master/LICENSE")!) {
-                        HStack {
-                            Text("WhatsNewKit")
-                                .foregroundColor(.primary)
-                            Spacer()
-                            Text("License")
-                                .font(.callout)
-                        }
-                    }
-                    Link(destination: URL(string: "https://github.com/globulus/swiftui-mail-view/blob/main/LICENSE")!) {
-                        HStack {
-                            Text("SwiftUIMailView")
-                                .foregroundColor(.primary)
-                            Spacer()
-                            Text("License")
-                                .font(.callout)
-                        }
-                    }
-                }
-            }
-            .navigationTitle("Licenses")
-            .navigationBarTitleDisplayMode(.inline)
-        }
-    }
-    
-    struct DevTools: View {
-        @AppStorage("firstLaunch", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var showLanding: Bool = true
-        @Environment(\.presentationMode) var presentationMode
-        
-        var body: some View {
-            Section {
-                Button("Reset first launch") {
-                    self.presentationMode.wrappedValue.dismiss()
                 }
             }
         }

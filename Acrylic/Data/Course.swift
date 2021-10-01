@@ -8,6 +8,8 @@
 import SwiftUI
 import WidgetKit
 
+let courseColors = ["red", "orange", "yellow", "green", "cyan", "blue", "purple", "magenta", "brown"]
+
 class CourseArray: ObservableObject {
     var key: String
     

@@ -79,9 +79,7 @@ struct Assignment: Comparable, Equatable, Hashable, Identifiable {
                 return "Tomorrow"
             case 2..<7:
                 return shortFormatter.string(from: date)
-            case 7:
-                return "In 1 Day"
-            case 8...:
+            case 7...:
                 return "In \(daysBetween) Days"
             default:
                 return formatter.string(from: date)

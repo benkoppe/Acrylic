@@ -295,6 +295,20 @@ struct AssignmentList: View {
             }
         }
         
+        func scrollToToday(proxy: ScrollViewProxy) {
+            if sortMode == .date {
+                for (index, assignmentGroup) in Array(zip(splitAssignments.indices, splitAssignments)) {
+                    if !assignmentGroup.isEmpty {
+                        let due = assignmentGroup[0].due
+                        if Calendar.current.numberOfDaysBetween(Date(), and: due) >= 0 {
+                            proxy.scrollTo(index, anchor: .top)
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        
         struct assignmentGroup: View {
             @AppStorage("exactHeaders", store: UserDefaults(suiteName: "group.com.benk.acrylic")) var exactHeaders: Bool = false
             
